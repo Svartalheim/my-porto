@@ -1,0 +1,94 @@
+---
+import Layout from '../layouts/layout.astro';
+---
+
+<Layout>
+	<div class="min-h-screen flex items-center justify-center bg-white">
+		<div class="logo-container flex items-center -space-x-0">
+			<img 
+				src="/logo/main-logo/logo_s.svg" 
+				alt="S" 
+				class="logo-letter " 
+				data-letter="s"
+			/>
+			<img 
+				src="/logo/main-logo/logo_v.svg" 
+				alt="V" 
+				class="logo-letter" 
+				data-letter="v"
+			/>
+			<img 
+				src="/logo/main-logo/logo_r.svg" 
+				alt="R" 
+				class="logo-letter" 
+				data-letter="r"
+			/>
+			<img 
+				src="/logo/main-logo/logo_h.svg" 
+				alt="H" 
+				class="logo-letter -ml-2" 
+				data-letter="h"
+			/>
+			<img 
+				src="/logo/main-logo/logo_m.svg" 
+				alt="M" 
+				class="logo-letter" 
+				data-letter="m"
+			/>
+		</div>
+	</div>
+
+	<script>
+		import { gsap } from 'gsap';
+
+		// Wait for DOM to be ready
+		document.addEventListener('DOMContentLoaded', () => {
+			const letters = document.querySelectorAll('.logo-letter');
+			
+			// Set initial state - letters positioned above the viewport and to the right
+			gsap.set(letters, {
+				y: -200,
+				x: 100,
+				opacity: 0,
+				rotation: 15
+			});
+
+			// Create the animation timeline
+			const tl = gsap.timeline({ delay: 0.5 });
+
+			// Animate each letter with a staggered delay
+			letters.forEach((letter, index) => {
+				tl.to(letter, {
+					y: 0,
+					x: 0,
+					opacity: 1,
+					rotation: 0,
+					duration: 1.2,
+					ease: "back.out(1.7)",
+					// Add some bounce and elasticity to the animation
+				}, index * 0.15); // Stagger delay of 0.15 seconds between each letter
+			});
+
+			// Add a subtle hover animation for each letter
+			letters.forEach(letter => {
+				letter.addEventListener('mouseenter', () => {
+					gsap.to(letter, {
+						scale: 1.1,
+						rotation: 5,
+						duration: 0.3,
+						ease: "power2.out"
+					});
+				});
+
+				letter.addEventListener('mouseleave', () => {
+					gsap.to(letter, {
+						scale: 1,
+						rotation: 0,
+						duration: 0.3,
+						ease: "power2.out"
+					});
+				});
+			});
+		});
+	</script>
+</Layout>
