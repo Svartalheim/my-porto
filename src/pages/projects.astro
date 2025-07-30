@@ -1,0 +1,69 @@
+---
+import Layout from '../layouts/layout.astro';
+
+// Example project data - in a real app, this might come from a CMS or API
+const projects = [
+  {
+    id: 1,
+    title: "Portfolio Website",
+    description: "A modern portfolio built with Astro and GSAP animations",
+    image: "/api/placeholder/400/300",
+    tech: ["Astro", "GSAP", "Tailwind CSS"],
+    link: "/projects/portfolio"
+  },
+  {
+    id: 2,
+    title: "E-commerce App",
+    description: "Full-stack e-commerce application with React and Node.js",
+    image: "/api/placeholder/400/300",
+    tech: ["React", "Node.js", "MongoDB"],
+    link: "/projects/ecommerce"
+  },
+  {
+    id: 3,
+    title: "Task Manager",
+    description: "Productivity app with real-time collaboration features",
+    image: "/api/placeholder/400/300",
+    tech: ["Next.js", "Prisma", "Socket.io"],
+    link: "/projects/task-manager"
+  }
+];
+---
+
+<Layout>
+  <div class="min-h-screen pt-16">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+      <h1 class="text-4xl font-bold mb-12 text-center">My Projects</h1>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {projects.map(project => (
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div class="h-48 bg-gray-200 flex items-center justify-center">
+              <span class="text-gray-500">Project Image</span>
+            </div>
+            
+            <div class="p-6">
+              <h3 class="text-xl font-semibold mb-2">{project.title}</h3>
+              <p class="text-gray-600 mb-4">{project.description}</p>
+              
+              <div class="flex flex-wrap gap-2 mb-4">
+                {project.tech.map(tech => (
+                  <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+              
+              <a 
+                href={project.link}
+                class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+              >
+                View Project
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</Layout>
