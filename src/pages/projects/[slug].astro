@@ -1,0 +1,135 @@
+---
+import Layout from '../../layouts/layout.astro';
+
+// This function tells Astro which slugs to generate at build time
+export async function getStaticPaths() {
+  return [
+    { params: { slug: 'portfolio' } },
+    { params: { slug: 'ecommerce' } },
+    { params: { slug: 'task-manager' } },
+  ];
+}
+
+// Get the project slug from the URL
+const { slug } = Astro.params;
+
+// In a real app, you'd fetch project data based on the slug
+const projectData = {
+  portfolio: {
+    title: "Portfolio Website",
+    description: "A modern, animated portfolio showcasing my work and skills.",
+    longDescription: "This portfolio website was built using Astro for optimal performance and GSAP for smooth animations. It features a responsive design, dark/light mode toggle, and dynamic routing for project pages.",
+    tech: ["Astro", "GSAP", "Tailwind CSS", "TypeScript"],
+    github: "https://github.com/yourusername/portfolio",
+    live: "https://yourportfolio.com",
+    images: ["/api/placeholder/800/600", "/api/placeholder/800/600"]
+  },
+  ecommerce: {
+    title: "E-commerce Application",
+    description: "Full-stack e-commerce platform with payment integration.",
+    longDescription: "A complete e-commerce solution featuring user authentication, product catalog, shopping cart, payment processing with Stripe, and admin dashboard for inventory management.",
+    tech: ["React", "Node.js", "Express", "MongoDB", "Stripe"],
+    github: "https://github.com/yourusername/ecommerce",
+    live: "https://yourecommerce.com",
+    images: ["/api/placeholder/800/600", "/api/placeholder/800/600"]
+  },
+  "task-manager": {
+    title: "Task Manager",
+    description: "Collaborative task management application.",
+    longDescription: "A productivity application that allows teams to collaborate in real-time, manage tasks, set deadlines, and track progress with an intuitive interface and real-time updates.",
+    tech: ["Next.js", "Prisma", "Socket.io", "PostgreSQL"],
+    github: "https://github.com/yourusername/task-manager",
+    live: "https://yourtaskmanager.com",
+    images: ["/api/placeholder/800/600", "/api/placeholder/800/600"]
+  }
+};
+
+const project = projectData[slug as keyof typeof projectData];
+
+// If project doesn't exist, return 404
+if (!project) {
+  return Astro.redirect('/404');
+}
+---
+
+<Layout>
+  <div class="min-h-screen pt-16">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+      <!-- Back button -->
+      <a 
+        href="/projects" 
+        class="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8"
+      >
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to Projects
+      </a>
+
+      <!-- Project header -->
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-4">{project.title}</h1>
+        <p class="text-xl text-gray-600">{project.description}</p>
+      </div>
+
+      <!-- Project images -->
+      <div class="grid md:grid-cols-2 gap-4 mb-8">
+        {project.images.map((image, index) => (
+          <div class="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
+            <span class="text-gray-500">Project Screenshot {index + 1}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Project details -->
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="md:col-span-2">
+          <h2 class="text-2xl font-semibold mb-4">About This Project</h2>
+          <p class="text-gray-700 leading-relaxed mb-6">{project.longDescription}</p>
+          
+          <h3 class="text-xl font-semibold mb-4">Features</h3>
+          <ul class="list-disc list-inside text-gray-700 space-y-2">
+            <li>Responsive design for all devices</li>
+            <li>Modern and intuitive user interface</li>
+            <li>Optimized performance and loading times</li>
+            <li>Cross-browser compatibility</li>
+          </ul>
+        </div>
+
+        <div class="space-y-6">
+          <!-- Technologies -->
+          <div>
+            <h3 class="text-lg font-semibold mb-3">Technologies Used</h3>
+            <div class="flex flex-wrap gap-2">
+              {project.tech.map(tech => (
+                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <!-- Links -->
+          <div class="space-y-3">
+            <a 
+              href={project.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block w-full bg-blue-600 text-white text-center py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              View Live Site
+            </a>
+            <a 
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block w-full border border-gray-300 text-gray-700 text-center py-3 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              View on GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
