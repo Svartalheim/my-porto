@@ -1,94 +1,131 @@
 ---
-import Layout from '../layouts/layout.astro';
+import Layout from "../layouts/layout.astro";
 ---
 
+<style>
+  /* position the logo container in bottom-left of loading screen */
+  .logo-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+  .logo-letter {
+    /* Dynamic sizing based on viewport width */
+    height: 17vw;
+    width: auto;
+    flex: 1;
+    display: inline-block;
+    pointer-events: none;
+    user-select: none;
+  }
+</style>
+
 <Layout>
-	<div class="min-h-screen flex items-center justify-center bg-white">
-		<div class="logo-container flex items-center -space-x-0">
-			<img 
-				src="/logo/main-logo/logo_s.svg" 
-				alt="S" 
-				class="logo-letter " 
-				data-letter="s"
-			/>
-			<img 
-				src="/logo/main-logo/logo_v.svg" 
-				alt="V" 
-				class="logo-letter" 
-				data-letter="v"
-			/>
-			<img 
-				src="/logo/main-logo/logo_r.svg" 
-				alt="R" 
-				class="logo-letter" 
-				data-letter="r"
-			/>
-			<img 
-				src="/logo/main-logo/logo_h.svg" 
-				alt="H" 
-				class="logo-letter -ml-2" 
-				data-letter="h"
-			/>
-			<img 
-				src="/logo/main-logo/logo_m.svg" 
-				alt="M" 
-				class="logo-letter" 
-				data-letter="m"
-			/>
-		</div>
-	</div>
+  <!-- <div id="loading-screen" class="fixed inset-0 bg-background z-50"> -->
+  <div class="logo-container flex items-center w-[50vw] p-5">
+    <img src="/logo/main-logo/logo_s.svg" alt="S" class="logo-letter -ml-[3vw]" data-letter="s" />
+    <img src="/logo/main-logo/logo_v.svg" alt="V" class="logo-letter -ml-[6vw]" data-letter="v" />
+    <img src="/logo/main-logo/logo_r.svg" alt="R" class="logo-letter -ml-[8vw] -mb-[56px]" data-letter="r" />
+    <img src="/logo/main-logo/logo_h.svg" alt="H" class="logo-letter -ml-[9vw]" data-letter="h" />
+    <img src="/logo/main-logo/logo_m.svg" alt="M" class="logo-letter -ml-[2vw]" data-letter="m" />
+  </div>
 
-	<script>
-		import { gsap } from 'gsap';
+  <!-- Progress bar -->
+  <!-- <div class="progress-container ml-8 flex flex-col justify-center">
+      <div class="progress-bar w-32 h-1 bg-gray-200 rounded-full overflow-hidden">
+        <div class="progress-fill h-full bg-gray-400 rounded-full" style="width: 0%"></div>
+      </div>
+      <div class="progress-text mt-2 text-xs text-gray-500 font-mono">0%</div>
+    </div> -->
+  <!-- </div> -->
 
-		// Wait for DOM to be ready
-		document.addEventListener('DOMContentLoaded', () => {
-			const letters = document.querySelectorAll('.logo-letter');
-			
-			// Set initial state - letters positioned above the viewport and to the right
-			gsap.set(letters, {
-				y: -200,
-				x: 100,
-				opacity: 0,
-				rotation: 15
-			});
+  <!-- <div id="main-content" class="hidden">
+    <div class="min-h-screen flex items-center justify-center bg-white">
+      <div class="logo-container flex iteDms-center space-x-5">
+        <img src="/logo/main-logo/logo_s.svg" alt="S" class="logo-letter" data-letter="s" />
+        <img src="/logo/main-logo/logo_v.svg" alt="V" class="logo-letter" data-letter="v" />
+        <img src="/logo/main-logo/logo_r.svg" alt="R" class="logo-letter" data-letter="r" />
+        <img src="/logo/main-logo/logo_h.svg" alt="H" class="logo-letter" data-letter="h" />
+        <img src="/logo/main-logo/logo_m.svg" alt="M" class="logo-letter" data-letter="m" />
+      </div>
+    </div>
+  </div> -->
 
-			// Create the animation timeline
-			const tl = gsap.timeline({ delay: 0.5 });
+  <script>
+    import { gsap } from "gsap";
+    import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+    gsap.registerPlugin(MotionPathPlugin);
+    document.addEventListener("DOMContentLoaded", () => {
+      const letters = document.querySelectorAll(".logo-letter");
+      const progressFill = document.querySelector(".progress-fill");
+      const progressText = document.querySelector(".progress-text");
 
-			// Animate each letter with a staggered delay
-			letters.forEach((letter, index) => {
-				tl.to(letter, {
-					y: 0,
-					x: 0,
-					opacity: 1,
-					rotation: 0,
-					duration: 1.2,
-					ease: "back.out(1.7)",
-					// Add some bounce and elasticity to the animation
-				}, index * 0.15); // Stagger delay of 0.15 seconds between each letter
-			});
+      // Set initial state for all letters off-screen top-right
+      gsap.set(letters, { x: "100vw", y: "-100vh", skewX: 0, skewY: -60, opacity: 0, scale: 0.4, rotation: 45 });
 
-			// Add a subtle hover animation for each letter
-			letters.forEach(letter => {
-				letter.addEventListener('mouseenter', () => {
-					gsap.to(letter, {
-						scale: 1.1,
-						rotation: 5,
-						duration: 0.3,
-						ease: "power2.out"
-					});
-				});
+      // Animate each letter one by one with stagger
+      gsap.to(letters, {
+        duration: 0.8,
+        ease: "power1.out",
+        motionPath: {
+          path: [
+            { x: "50vw", y: "-100vh" },
+            { x: "5vw", y: "-50vh" },
+            { x: 0, y: 0 },
+          ],
+          curviness: 2,
+          autoRotate: false,
+        },
+        skewX: 0,
+        skewY: 0,
+        opacity: 1,
+        scale: 1,
+        rotation: 0,
+        stagger: 0.2, // delay between each letter animation
+      });
+      // Animate progress bar
+      gsap.to(progressFill, {
+        width: "100%",
+        duration: 3,
+        ease: "power2.out",
+        onUpdate: function () {
+          const progress = Math.round(this.progress() * 100);
+          if (progressText) {
+            progressText.textContent = progress + "%";
+          }
+        },
+      });
+    });
 
-				letter.addEventListener('mouseleave', () => {
-					gsap.to(letter, {
-						scale: 1,
-						rotation: 0,
-						duration: 0.3,
-						ease: "power2.out"
-					});
-				});
-			});
-		});
-	</script>
+    // window.addEventListener("load", () => {
+    //   gsap.to(".loader", { opacity: 0, duration: 0.3 });
+    //   const tl2 = gsap.timeline({ delay: 0.2 });
+    //   tl2.to(document.querySelectorAll(".logo-letter"), {
+    //     duration: 1,
+    //     motionPath: {
+    //       path: [
+    //         { x: "5vw", y: "85vh" },
+    //         { x: "5vw", y: "5vh" },
+    //       ],
+    //       curviness: 1.5,
+    //       autoRotate: true,
+    //     },
+    //     ease: "power2.inOut",
+    //   });
+    //   tl2.to("#loading-screen", {
+    //     opacity: 0,
+    //     duration: 10,
+    //     onComplete: () => {
+    //       const loadingScreen = document.getElementById("loading-screen");
+    //       if (loadingScreen) {
+    //         loadingScreen.style.display = "none";
+    //       }
+    //       const mainContent = document.getElementById("main-content");
+    //       if (mainContent) {
+    //         mainContent.classList.remove("hidden");
+    //       }
+    //     },
+    //   });
+    // });
+  </script>
 </Layout>
