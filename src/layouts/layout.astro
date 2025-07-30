@@ -1,21 +1,21 @@
 ---
-import '../styles/global.css';
-import { ClientRouter } from 'astro:transitions';
-import Navigation from '../components/Navigation.astro';
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
+import Navigation from "../components/Navigation.astro";
 ---
 
-<html lang='en'>
+<html lang="en">
   <head>
     <ClientRouter />
-    <meta charset='utf-8' />
-    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
-    <meta name='viewport' content='width=device-width' />
-    <meta name='generator' content={Astro.generator} />
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
     <title>Astro</title>
 
     <script>
-      import { gsap } from 'gsap';
-      console.log('using GSAP: ', gsap.version);
+      import { gsap } from "gsap";
+      console.log("using GSAP: ", gsap.version);
     </script>
 
     <style is:global>
@@ -50,15 +50,13 @@ import Navigation from '../components/Navigation.astro';
 
       /* Control the animations with strict timing */
       ::view-transition-old(page) {
-        animation: slide-out-down var(--transition-duration) var(--transition-timing)
-          var(--transition-delay) both;
+        animation: slide-out-down var(--transition-duration) var(--transition-timing) var(--transition-delay) both;
         z-index: -100;
         transform-origin: top left;
       }
 
       ::view-transition-new(page) {
-        animation: slide-in-bottom var(--transition-duration) var(--transition-timing)
-          var(--transition-delay) both;
+        animation: slide-in-bottom var(--transition-duration) var(--transition-timing) var(--transition-delay) both;
         z-index: 100;
       }
 
@@ -113,19 +111,31 @@ import Navigation from '../components/Navigation.astro';
       ::view-transition-old(logo) {
         animation: scaleOut 0.3s ease-in;
       }
-      
+
       ::view-transition-new(logo) {
         animation: scaleIn 0.5s ease-out;
       }
 
       @keyframes scaleIn {
-        from { transform: scale(0.8); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
       }
-      
+
       @keyframes scaleOut {
-        from { transform: scale(1); opacity: 1; }
-        to { transform: scale(1.1); opacity: 0; }
+        from {
+          transform: scale(1);
+          opacity: 1;
+        }
+        to {
+          transform: scale(1.1);
+          opacity: 0;
+        }
       }
 
       /* Smooth transitions for all elements */
@@ -133,7 +143,7 @@ import Navigation from '../components/Navigation.astro';
         transition-property: transform, opacity, scale;
         transition-timing-function: var(--transition-timing);
       }
-      
+
       /* Disable transitions during page load */
       .page-loading * {
         transition: none !important;
@@ -162,7 +172,7 @@ import Navigation from '../components/Navigation.astro';
       }
     </style>
   </head>
-  <body class='bg-gray-900 text-gray-50'>
+  <body class="bg-gray-900 text-gray-50">
     <Navigation />
     <div class="page-container bg-white h-full" transition:name="page">
       <slot />
@@ -176,55 +186,55 @@ import Navigation from '../components/Navigation.astro';
     <script>
       // Check for View Transitions API support and enable features
       function initViewTransitions() {
-        const hasViewTransition = 'startViewTransition' in document;
-        const devIndicator = document.getElementById('dev-indicator');
-        const statusSpan = document.getElementById('transition-status');
+        const hasViewTransition = "startViewTransition" in document;
+        const devIndicator = document.getElementById("dev-indicator");
+        const statusSpan = document.getElementById("transition-status");
 
         if (hasViewTransition) {
-          console.log('View Transitions API is supported');
-          document.documentElement.classList.add('view-transition-enabled');
-          
+          console.log("View Transitions API is supported");
+          document.documentElement.classList.add("view-transition-enabled");
+
           if (devIndicator && statusSpan) {
-            devIndicator.classList.add('supported');
-            statusSpan.textContent = 'Enabled';
+            devIndicator.classList.add("supported");
+            statusSpan.textContent = "Enabled";
           }
         } else {
-          console.warn('View Transitions API is NOT supported in this browser');
-          
+          console.warn("View Transitions API is NOT supported in this browser");
+
           if (devIndicator && statusSpan) {
-            devIndicator.classList.add('not-supported');
-            statusSpan.textContent = 'Not Supported';
+            devIndicator.classList.add("not-supported");
+            statusSpan.textContent = "Not Supported";
           }
         }
 
         // Show dev indicator only in development
         if (devIndicator && import.meta.env.DEV) {
-          devIndicator.style.display = 'block';
+          devIndicator.style.display = "block";
         }
 
         // Add animating class during transitions to prevent scrolling
         if (hasViewTransition) {
-          document.addEventListener('astro:before-preparation', () => {
-            document.documentElement.classList.add('animating');
+          document.addEventListener("astro:before-preparation", () => {
+            document.documentElement.classList.add("animating");
           });
 
-          document.addEventListener('astro:after-swap', () => {
-            document.documentElement.classList.remove('animating');
+          document.addEventListener("astro:after-swap", () => {
+            document.documentElement.classList.remove("animating");
           });
         }
       }
 
       // Initialize on page load
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initViewTransitions);
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initViewTransitions);
       } else {
         initViewTransitions();
       }
 
       // Cleanup on page unload
-      window.addEventListener('beforeunload', () => {
-        document.documentElement.classList.remove('view-transition-enabled');
-        document.documentElement.classList.remove('animating');
+      window.addEventListener("beforeunload", () => {
+        document.documentElement.classList.remove("view-transition-enabled");
+        document.documentElement.classList.remove("animating");
       });
     </script>
   </body>
