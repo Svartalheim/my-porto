@@ -172,43 +172,38 @@ import Navigation from "../components/Navigation.astro";
       }
     </style>
   </head>
-  <<<<<<< HEAD
-  <body class="">
-    <slot />
-    =======
-    <body class="bg-gray-900 text-gray-50">
-      <Navigation />
-      <div class="page-container bg-white h-full" transition:name="page">
-        <slot />
-      </div>
+  <body class="bg-gray-900 text-gray-50">
+    <Navigation />
+    <div class="page-container bg-white h-full" transition:name="page">
+      <slot />
+    </div>
 
-      <!-- Development indicator for View Transitions support (only in dev) -->
-      <div id="dev-indicator" class="dev-indicator" style="display: none;">
-        View Transitions: <span id="transition-status">Checking...</span>
-      </div>
+    <!-- Development indicator for View Transitions support (only in dev) -->
+    <div id="dev-indicator" class="dev-indicator" style="display: none;">
+      View Transitions: <span id="transition-status">Checking...</span>
+    </div>
 
-      <script>
-        // Check for View Transitions API support and enable features
-        function initViewTransitions() {
-          const hasViewTransition = "startViewTransition" in document;
-          const devIndicator = document.getElementById("dev-indicator");
-          const statusSpan = document.getElementById("transition-status");
+    <script>
+      // Check for View Transitions API support and enable features
+      function initViewTransitions() {
+        const hasViewTransition = "startViewTransition" in document;
+        const devIndicator = document.getElementById("dev-indicator");
+        const statusSpan = document.getElementById("transition-status");
 
-          if (hasViewTransition) {
-            console.log("View Transitions API is supported");
-            document.documentElement.classList.add("view-transition-enabled");
+        if (hasViewTransition) {
+          console.log("View Transitions API is supported");
+          document.documentElement.classList.add("view-transition-enabled");
 
-            if (devIndicator && statusSpan) {
-              devIndicator.classList.add("supported");
-              statusSpan.textContent = "Enabled";
-            }
-          } else {
-            console.warn("View Transitions API is NOT supported in this browser");
+          if (devIndicator && statusSpan) {
+            devIndicator.classList.add("supported");
+            statusSpan.textContent = "Enabled";
+          }
+        } else {
+          console.warn("View Transitions API is NOT supported in this browser");
 
-            if (devIndicator && statusSpan) {
-              devIndicator.classList.add("not-supported");
-              statusSpan.textContent = "Not Supported";
-            }
+          if (devIndicator && statusSpan) {
+            devIndicator.classList.add("not-supported");
+            statusSpan.textContent = "Not Supported";
           }
 
           // Show dev indicator only in development
@@ -227,21 +222,19 @@ import Navigation from "../components/Navigation.astro";
             });
           }
         }
+      }
+      // Initialize on page load
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initViewTransitions);
+      } else {
+        initViewTransitions();
+      }
 
-        // Initialize on page load
-        if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", initViewTransitions);
-        } else {
-          initViewTransitions();
-        }
-
-        // Cleanup on page unload
-        window.addEventListener("beforeunload", () => {
-          document.documentElement.classList.remove("view-transition-enabled");
-          document.documentElement.classList.remove("animating");
-        });
-      </script>
-      >>>>>>> da6c682ec0b240fc9db0d0d709ac203fe1373a4d
-    </body>
+      // Cleanup on page unload
+      window.addEventListener("beforeunload", () => {
+        document.documentElement.classList.remove("view-transition-enabled");
+        document.documentElement.classList.remove("animating");
+      });
+    </script>
   </body>
 </html>
