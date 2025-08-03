@@ -1,6 +1,6 @@
 ---
-import { MenuIcon } from "lucide-react";
-import Layout from "../layouts/layout.astro";
+import { MenuIcon } from 'lucide-react';
+import Layout from '../layouts/layout.astro';
 ---
 
 <style>
@@ -29,49 +29,79 @@ import Layout from "../layouts/layout.astro";
     <img src="/logo/main-logo/logo_h.svg" alt="H" class="logo-letter -ml-[9vw]" data-letter="h" />
     <img src="/logo/main-logo/logo_m.svg" alt="M" class="logo-letter -ml-[2vw]" data-letter="m" />
   </div> -->
-  <div class="w-[50vw] p-5 border-b hidden lg:flex">
-    <img src="/logo/main-logo/logo_s.svg" alt="S" class="logo-letter -ml-[3vw]" data-letter="s" />
-    <img src="/logo/main-logo/logo_v.svg" alt="V" class="logo-letter -ml-[6vw]" data-letter="v" />
-    <img src="/logo/main-logo/logo_r.svg" alt="R" class="logo-letter -ml-[8vw] -mb-[56px]" data-letter="r" />
-    <img src="/logo/main-logo/logo_h.svg" alt="H" class="logo-letter -ml-[9vw]" data-letter="h" />
-    <img src="/logo/main-logo/logo_m.svg" alt="M" class="logo-letter -ml-[2vw]" data-letter="m" />
+  <div class='w-[50vw] p-5 border-b hidden lg:flex'>
+    <img
+      src='/logo/main-logo/logo_s.svg'
+      alt='S'
+      class='logo-letter -ml-[3vw]'
+      data-letter='s'
+    />
+    <img
+      src='/logo/main-logo/logo_v.svg'
+      alt='V'
+      class='logo-letter -ml-[6vw]'
+      data-letter='v'
+    />
+    <img
+      src='/logo/main-logo/logo_r.svg'
+      alt='R'
+      class='logo-letter -ml-[8vw] -mb-[56px]'
+      data-letter='r'
+    />
+    <img
+      src='/logo/main-logo/logo_h.svg'
+      alt='H'
+      class='logo-letter -ml-[9vw]'
+      data-letter='h'
+    />
+    <img
+      src='/logo/main-logo/logo_m.svg'
+      alt='M'
+      class='logo-letter -ml-[2vw]'
+      data-letter='m'
+    />
   </div>
-  <div class="relative px-[25vw] py-[7.333vh] border-b-container">
+  <div class='relative px-[25vw] py-[7.333vh] border-b-container'>
     <!-- Animated border element -->
-    <div class="animated-border absolute bottom-0 left-1/2 h-[1px] bg-current transform -translate-x-1/2" style="width: 0%">
+    <div
+      class='animated-border absolute bottom-0 left-1/2 h-[1px] bg-current transform -translate-x-1/2'
+      style='width: 0%'
+    >
     </div>
 
-    <h1 class="text-center text-4xl lg:text-7xl tracking-tight">
+    <h1 class='text-center text-4xl lg:text-7xl tracking-tight'>
       Crafting Powerful Digital Solutions ✦ Montreal Web Design & Development
     </h1>
     <div
-      class="border rounded-md w-[250px] mt-[5vh] tracking-tighter text-center justify-center mx-auto p-2 flex gap-2 items-center text-sm"
+      class='border rounded-md min-w-0 w-[250px] mt-[5vh] tracking-tighter text-center justify-center mx-auto p-2 flex gap-2 items-center text-sm'
     >
-      <p class="text-right text-xs font-medium leading-none uppercase">Grinding development since</p>
-      <span class="whitespace-nowrap text-2xl"> © 2022 </span>
+      <p class='text-right text-xs font-medium leading-none uppercase'>
+        Grinding development since
+      </p>
+      <span class='whitespace-nowrap text-2xl'> © 2022 </span>
     </div>
   </div>
 
   <script>
-    import { gsap } from "gsap";
-    import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+    import { gsap } from 'gsap';
+    import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
     gsap.registerPlugin(MotionPathPlugin);
-    document.addEventListener("DOMContentLoaded", () => {
-      const letters = document.querySelectorAll(".logo-letter");
-      const progressFill = document.querySelector(".progress-fill");
-      const progressText = document.querySelector(".progress-text");
-      const animatedBorder = document.querySelector(".animated-border");
+    document.addEventListener('DOMContentLoaded', () => {
+      const letters = document.querySelectorAll('.logo-letter');
+      const progressFill = document.querySelector('.progress-fill');
+      const progressText = document.querySelector('.progress-text');
+      const animatedBorder = document.querySelector('.animated-border');
 
       // Set initial state for all letters off-screen top-right
       gsap.set(letters, {
-        x: "100vw",
-        y: "-100vh",
+        x: '100vw',
+        y: '-100vh',
         skewX: 0,
         skewY: -60,
         opacity: 0,
         scale: 0.4,
         rotation: 45,
-        ease: "elastic.out",
+        ease: 'elastic.out',
       });
 
       // Animate border from center expanding left and right
@@ -79,12 +109,12 @@ import Layout from "../layouts/layout.astro";
         gsap.fromTo(
           animatedBorder,
           {
-            width: "0%",
+            width: '0%',
           },
           {
-            width: "100%",
+            width: '100%',
             duration: 1.5,
-            ease: "power2.out",
+            ease: 'power2.out',
             delay: 0.5, // Start after a small delay
           }
         );
@@ -93,11 +123,11 @@ import Layout from "../layouts/layout.astro";
       // Animate each letter one by one with stagger
       gsap.to(letters, {
         duration: 0.8,
-        ease: "power1.out",
+        ease: 'power1.out',
         motionPath: {
           path: [
-            { x: "50vw", y: "-100vh" },
-            { x: "5vw", y: "-50vh" },
+            { x: '50vw', y: '-100vh' },
+            { x: '5vw', y: '-50vh' },
             { x: 0, y: 0 },
           ],
           curviness: 2,
@@ -112,13 +142,13 @@ import Layout from "../layouts/layout.astro";
       });
       // Animate progress bar
       gsap.to(progressFill, {
-        width: "100%",
+        width: '100%',
         duration: 3,
-        ease: "power2.out",
+        ease: 'power2.out',
         onUpdate: function () {
           const progress = Math.round(this.progress() * 100);
           if (progressText) {
-            progressText.textContent = progress + "%";
+            progressText.textContent = progress + '%';
           }
         },
       });

@@ -1,0 +1,339 @@
+---
+import { Plus, Minus } from 'lucide-react';
+
+// BottomBar.astro - Persistent bottom navigation component
+---
+
+<!-- Persistent Bottom Bar -->
+<nav
+  id='bottom-bar'
+  class='fixed bottom-[var(--navbar-bottom)] transform h-[var(--navbar-height)] left-[var(--navbar-left)] z-10 w-navbar'
+>
+  <!-- Collapsed Bar -->
+  <div
+    id='collapsed-bar'
+    class='bg-black relative backdrop-blur-md text-white rounded-[20px] cursor-pointer transition-all duration-300 hover:bg-black/95 flex flex-col'
+  >
+    <!-- Main Bar Content -->
+    <div
+      id='main-bar-content'
+      class='h-[var(--navbar-height)] flex items-center justify-between px-[12px] gap-1 lg:px-[24px]'
+    >
+      <!-- SVG Container with overflow hidden for slide animation -->
+      <div class='relative w-8 h-8 overflow-hidden' id='svg-container'>
+        <!-- Original R logo -->
+        <div
+          id='r-logo'
+          class='w-8 h-8 absolute flex items-center justify-center'
+        >
+          <svg
+            width='24'
+            height='24'
+            viewBox='0 0 31 50'
+            fill='none'
+            xmlns='http://www.w3.org/2000/svg'
+            data-letter='r'
+            preserveAspectRatio='xMidYMid meet'
+          >
+            <path
+              fill-rule='evenodd'
+              clip-rule='evenodd'
+              d='M16.8815 49.1619V40L0 40V90C0 90 3.01762 70.6614 12 64C17.9391 59.5955 30 58.1272 30 58.1272V40C28.8737 40.107 27.7341 40.0644 26.6133 40.0225C22.6745 39.8753 18.967 42.7685 16.8815 49.1619Z'
+              fill='currentColor'
+              class='fill-white'
+              transform='translate(0, -40)'></path>
+          </svg>
+        </div>
+
+        <!-- Arrow up icon (starts below view) -->
+        <div
+          id='arrow-icon'
+          class='w-8 h-8 absolute flex items-center justify-center'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            width='24'
+            height='24'
+            viewBox='0 0 22 22'
+            ><path
+              fill='currentColor'
+              d='M10 3H8v1H7v1H6v1H5v1H4v2h2V8h1V7h1v4h1v2h1v1h2v1h7v-2h-6v-1h-2v-2h-1V7h1v1h1v1h2V7h-1V6h-1V5h-1V4h-1'
+            ></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Text Container with overflow hidden for slide animation -->
+      <div
+        class='relative overflow-hidden h-6 flex-1 ml-0 text-sm font-light'
+        id='text-container'
+      >
+        <!-- Default text -->
+        <div
+          class='absolute w-full h-full flex items-center'
+          id='default-text'
+          style='top: 0;'
+        >
+          <span>Portfolio</span>
+        </div>
+
+        <!-- Hover text (starts below view) -->
+        <div class='absolute w-full h-full flex items-center' id='hover-text'>
+          <span>Open Menu</span>
+        </div>
+      </div>
+      <button class='relative z-[1]' id='menu-toggle-button'>
+        <!-- Plus icon container -->
+        <div id='plus-icon' class='absolute'>
+          <Plus size={24} className='cursor-pointer' />
+        </div>
+        <!-- Minus icon container (hidden initially) -->
+        <div id='minus-icon' class='absolute opacity-0'>
+          <Minus size={24} className='cursor-pointer' />
+        </div>
+        <span class='span-menu'>Open / Close Menu</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Expanded Menu Content (hidden by default) -->
+  <div
+    id='expanded-content'
+    class='opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden'
+    style='height: 0;'
+  >
+    <div class='blurred-background h-full absolute -z-[1] w-full'></div>
+    <div>
+      <p class='h-[200px]'>gyattt</p>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .span-menu {
+    position: absolute;
+    width: calc(var(--navbar-width) + 16px);
+    height: calc(100% + 32px);
+    right: -24px;
+    top: -16px;
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  .blurred-background {
+    background: linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.85) 0,
+        rgba(0, 0, 0, 0.85) 100%
+      ),
+      var(--40-white, rgba(255, 255, 255, 0.4));
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  // Animation constants
+  const ANIMATION_DISTANCE = 32;
+  const HOVER_DURATION = 1;
+  const MENU_DURATION = 0.3;
+
+  // Bottom bar menu functionality
+  function initBottomBar() {
+    const collapsedBar = document.getElementById('collapsed-bar');
+    const expandedContent = document.getElementById('expanded-content');
+    const closeMenu = document.getElementById('close-menu');
+    const mainBarContent = document.getElementById('main-bar-content');
+    const menuToggleButton = document.getElementById('menu-toggle-button');
+    const plusIcon = document.getElementById('plus-icon');
+    const minusIcon = document.getElementById('minus-icon');
+
+    // GSAP Animation elements
+    const rLogo = document.getElementById('r-logo');
+    const arrowIcon = document.getElementById('arrow-icon');
+    const defaultText = document.getElementById('default-text');
+    const hoverText = document.getElementById('hover-text');
+
+    // Expanded state tracking
+    let isExpanded = false;
+
+    gsap.set(rLogo, { y: 0 }); // rLogo in view
+    gsap.set(defaultText, { y: 0 }); // defaultText in view
+    gsap.set(arrowIcon, { y: -ANIMATION_DISTANCE }); // arrowIcon hidden above
+    gsap.set(hoverText, { y: ANIMATION_DISTANCE }); // hoverText hidden below
+    
+    // Set initial icon states
+    gsap.set(plusIcon, { opacity: 1, rotation: 0 });
+    gsap.set(minusIcon, { opacity: 0, rotation: 90 });
+
+    let hoverTl = gsap.timeline({ paused: true });
+
+    hoverTl
+      .to(
+        rLogo,
+        {
+          y: -ANIMATION_DISTANCE,
+          duration: HOVER_DURATION,
+          ease: 'sine.inOut',
+        },
+        0
+      )
+      .to(arrowIcon, { y: 0, duration: HOVER_DURATION, ease: 'sine.inOut' }, 0)
+      .to(
+        defaultText,
+        { y: ANIMATION_DISTANCE, duration: HOVER_DURATION, ease: 'sine.inOut' },
+        0
+      )
+      .to(hoverText, { y: 0, duration: HOVER_DURATION, ease: 'sine.inOut' }, 0);
+
+    hoverTl.eventCallback('onReverseComplete', () => {
+      gsap.set(rLogo, { y: 0 });
+      gsap.set(defaultText, { y: 0 });
+      gsap.set(arrowIcon, { y: -ANIMATION_DISTANCE });
+      gsap.set(hoverText, { y: ANIMATION_DISTANCE });
+    });
+
+    // Mouse enter - play animation (only if not expanded)
+    mainBarContent?.addEventListener('mouseenter', () => {
+      if (!isExpanded) {
+        hoverTl.play();
+      }
+    });
+
+    // Mouse leave - reverse animation (only if not expanded)
+    mainBarContent?.addEventListener('mouseleave', () => {
+      if (!isExpanded) {
+        hoverTl.reverse();
+      }
+    });
+
+    function openMenu() {
+      if (collapsedBar && expandedContent && !isExpanded) {
+        isExpanded = true;
+
+        // Stop hover animation and reset to default state
+        hoverTl.pause();
+        gsap.set(rLogo, { y: 0 });
+        gsap.set(defaultText, { y: 0 });
+        gsap.set(arrowIcon, { y: -ANIMATION_DISTANCE });
+        gsap.set(hoverText, { y: ANIMATION_DISTANCE });
+
+        // Animate icon transition (Plus to Minus)
+        gsap.to(plusIcon, {
+          opacity: 0,
+          rotation: 90,
+          duration: MENU_DURATION,
+          ease: 'power2.inOut',
+        });
+        gsap.to(minusIcon, {
+          opacity: 1,
+          rotation: 0,
+          duration: MENU_DURATION,
+          ease: 'power2.inOut',
+        });
+
+        // Animate bar expansion upward
+        gsap.to(collapsedBar, {
+          height: 'auto',
+          duration: MENU_DURATION,
+          ease: 'power2.out',
+        });
+
+        // Animate expanded content in
+        gsap.to(expandedContent, {
+          height: 'auto',
+          opacity: 1,
+          duration: MENU_DURATION,
+          ease: 'power2.out',
+          onStart: () => {
+            expandedContent.style.pointerEvents = 'auto';
+          },
+        });
+      }
+    }
+
+    function closeMenuFunc() {
+      if (collapsedBar && expandedContent && isExpanded) {
+        isExpanded = false;
+
+        // Animate icon transition (Minus to Plus)
+        gsap.to(minusIcon, {
+          opacity: 0,
+          rotation: 90,
+          duration: MENU_DURATION,
+          ease: 'power2.inOut',
+        });
+        gsap.to(plusIcon, {
+          opacity: 1,
+          rotation: 0,
+          duration: MENU_DURATION,
+          ease: 'power2.inOut',
+        });
+
+        // Animate expanded content out
+        gsap.to(expandedContent, {
+          height: 0,
+          opacity: 0,
+          duration: MENU_DURATION,
+          ease: 'power2.in',
+          onComplete: () => {
+            expandedContent.style.pointerEvents = 'none';
+          },
+        });
+
+        // Animate bar back to original size
+        gsap.to(collapsedBar, {
+          height: 'var(--navbar-height)',
+          duration: MENU_DURATION,
+          ease: 'power2.in',
+        });
+      }
+    }
+
+    // Event listeners
+    mainBarContent?.addEventListener('click', (e) => {
+      // Prevent button click from bubbling to mainBarContent
+      if (e.target && e.target instanceof Element && e.target.closest('#menu-toggle-button')) {
+        return;
+      }
+      openMenu();
+    });
+    
+    // Button click handlers
+    menuToggleButton?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (isExpanded) {
+        closeMenuFunc();
+      } else {
+        openMenu();
+      }
+    });
+    
+    closeMenu?.addEventListener('click', closeMenuFunc);
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const bottomBar = document.getElementById('bottom-bar');
+      if (
+        bottomBar &&
+        e.target instanceof Node &&
+        !bottomBar.contains(e.target) &&
+        isExpanded
+      ) {
+        closeMenuFunc();
+      }
+    });
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBottomBar);
+  } else {
+    initBottomBar();
+  }
+
+  // Re-initialize after page transitions
+  document.addEventListener('astro:page-load', initBottomBar);
+</script>
