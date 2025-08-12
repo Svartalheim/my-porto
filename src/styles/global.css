@@ -92,6 +92,9 @@
   --sidebar-ring: oklch(0.708 0 0);
   --blr-s: 0.0369;
   --blr-p: 1;
+  /* Responsive page scale variable */
+  /* Responsive page scale variable */
+  --page-scale: clamp(0.95, 0.92 + 50vw, 0.99);
 }
 /* Media queries AFTER the main :root block */
 @media only screen and (max-width: 1290px) {
