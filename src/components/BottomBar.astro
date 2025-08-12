@@ -1,133 +1,96 @@
 ---
-import { Plus, Minus } from 'lucide-react';
+import { Plus, Minus } from "lucide-react";
 
 // BottomBar.astro - Persistent bottom navigation component
 ---
 
 <!-- Overlay (dark + blur) -->
-<div
-  id='bottom-bar-overlay'
-  class='fixed inset-0 opacity-0 pointer-events-none z-[9] bg-black/40 will-change-[opacity]'
->
-</div>
-
-<div id='page-frame' class='fixed inset-0 pointer-events-none z-[11] opacity-0'>
-  <!-- <div data-frame='top' class='absolute inset-x-0 top-0 h-px bg-primary'></div>
-  <div data-frame='left' class='absolute left-0 top-0 bottom-0 w-px bg-primary'>
-  </div>
-  <div
-    data-frame='right'
-    class='absolute right-0 top-0 bottom-0 w-px bg-primary'
-  >
-  </div> -->
+<div id="bottom-bar-overlay" class="fixed inset-0 opacity-0 pointer-events-none z-[9] bg-black/40 will-change-[opacity]">
 </div>
 <!-- Persistent Bottom Bar -->
 <nav
-  id='bottom-bar'
-  class='fixed bottom-[var(--navbar-bottom)] transform h-[var(--navbar-height)] left-[var(--navbar-left)] z-10 w-navbar'
+  id="bottom-bar"
+  class="fixed bottom-[var(--navbar-bottom)] transform h-[var(--navbar-height)] left-[var(--navbar-left)] z-10 w-navbar"
 >
   <!-- Collapsed Bar -->
   <div
-    id='collapsed-bar'
-    class='bg-black cursor-pointer relative z-20 backdrop-blur-md text-white rounded-[20px] transition-all duration-300 hover:bg-black/95 flex flex-col'
+    id="collapsed-bar"
+    class="bg-black cursor-pointer relative z-20 backdrop-blur-md text-white rounded-[20px] transition-all duration-300 hover:bg-black/95 flex flex-col"
   >
     <!-- Main Bar Content -->
     <div
-      id='main-bar-content'
-      class='h-[var(--navbar-height)] flex items-center justify-between px-[12px] gap-1 lg:px-[24px]'
+      id="main-bar-content"
+      class="h-[var(--navbar-height)] flex items-center justify-between px-[12px] gap-1 lg:px-[24px]"
     >
       <!-- SVG Container with overflow hidden for slide animation -->
-      <div class='relative w-8 h-8 overflow-hidden' id='svg-container'>
+      <div class="relative w-8 h-8 overflow-hidden" id="svg-container">
         <!-- Original R logo -->
-        <div
-          id='r-logo'
-          class='w-8 h-8 absolute flex items-center justify-center'
-        >
+        <div id="r-logo" class="w-8 h-8 absolute flex items-center justify-center">
           <svg
-            width='24'
-            height='24'
-            viewBox='0 0 31 50'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-            data-letter='r'
-            preserveAspectRatio='xMidYMid meet'
+            width="24"
+            height="24"
+            viewBox="0 0 31 50"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            data-letter="r"
+            preserveAspectRatio="xMidYMid meet"
           >
             <path
-              fill-rule='evenodd'
-              clip-rule='evenodd'
-              d='M16.8815 49.1619V40L0 40V90C0 90 3.01762 70.6614 12 64C17.9391 59.5955 30 58.1272 30 58.1272V40C28.8737 40.107 27.7341 40.0644 26.6133 40.0225C22.6745 39.8753 18.967 42.7685 16.8815 49.1619Z'
-              fill='currentColor'
-              class='fill-white'
-              transform='translate(0, -40)'></path>
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M16.8815 49.1619V40L0 40V90C0 90 3.01762 70.6614 12 64C17.9391 59.5955 30 58.1272 30 58.1272V40C28.8737 40.107 27.7341 40.0644 26.6133 40.0225C22.6745 39.8753 18.967 42.7685 16.8815 49.1619Z"
+              fill="currentColor"
+              class="fill-white"
+              transform="translate(0, -40)"></path>
           </svg>
         </div>
 
         <!-- Arrow up icon (starts below view) -->
-        <div
-          id='arrow-icon'
-          class='w-8 h-8 absolute flex items-center justify-center'
-        >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='24'
-            height='24'
-            viewBox='0 0 22 22'
+        <div id="arrow-icon" class="w-8 h-8 absolute flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 22 22"
             ><path
-              fill='currentColor'
-              d='M10 3H8v1H7v1H6v1H5v1H4v2h2V8h1V7h1v4h1v2h1v1h2v1h7v-2h-6v-1h-2v-2h-1V7h1v1h1v1h2V7h-1V6h-1V5h-1V4h-1'
+              fill="currentColor"
+              d="M10 3H8v1H7v1H6v1H5v1H4v2h2V8h1V7h1v4h1v2h1v1h2v1h7v-2h-6v-1h-2v-2h-1V7h1v1h1v1h2V7h-1V6h-1V5h-1V4h-1"
             ></path>
           </svg>
         </div>
       </div>
 
       <!-- Text Container with overflow hidden for slide animation -->
-      <div
-        class='relative overflow-hidden h-6 flex-1 ml-0 text-sm font-light'
-        id='text-container'
-      >
+      <div class="relative overflow-hidden h-6 flex-1 ml-0 text-sm font-light" id="text-container">
         <!-- Default text -->
-        <div
-          class='absolute w-full h-full flex items-center'
-          id='default-text'
-          style='top: 0;'
-        >
+        <div class="absolute w-full h-full flex items-center" id="default-text" style="top: 0;">
           <span>Portfolio</span>
         </div>
 
         <!-- Hover text (starts below view) -->
-        <div class='absolute w-full h-full flex items-center' id='hover-text'>
+        <div class="absolute w-full h-full flex items-center" id="hover-text">
           <span>Open Menu</span>
         </div>
       </div>
-      <button class='relative z-[999]' id='menu-toggle-button'>
+      <button class="relative z-[999]" id="menu-toggle-button">
         <!-- Plus icon container -->
-        <div
-          id='plus-icon'
-          class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
-        >
-          <Plus size={24} className='cursor-pointer' />
+        <div id="plus-icon" class="absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2">
+          <Plus size={24} className="cursor-pointer" />
         </div>
         <!-- Minus icon container (hidden initially) -->
-        <div
-          id='minus-icon'
-          class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
-        >
-          <Minus size={24} className='cursor-pointer' />
+        <div id="minus-icon" class="absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2">
+          <Minus size={24} className="cursor-pointer" />
         </div>
-        <span class='span-menu'>Open / Close Menu</span>
+        <span class="span-menu">Open / Close Menu</span>
       </button>
     </div>
   </div>
 
   <!-- Expanded Menu Content (hidden by default) -->
   <div
-    id='expanded-content'
-    class='opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden z-10'
-    style='height: 0;'
+    id="expanded-content"
+    class="opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden z-10"
+    style="height: 0;"
   >
-    <div class='blurred-background h-full absolute w-full'></div>
+    <div class="blurred-background h-full absolute w-full"></div>
     <div>
-      <p class='h-[750px]'>gyattt</p>
+      <p class="h-[750px]">gyattt</p>
     </div>
   </div>
 </nav>
@@ -149,12 +112,7 @@ import { Plus, Minus } from 'lucide-react';
     inset: 0;
     /* GLASS BACKGROUND (lighter so backdrop shows through) */
     background:
-      /* linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(255, 255, 255, 0.04) 45%,
-        rgba(255, 255, 255, 0) 100%
-      ), */
+      /* linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 45%, rgba(255, 255, 255, 0) 100%), */
       /* tinted body */ linear-gradient(
       0deg,
       rgba(17, 25, 40, 0.8),
@@ -176,14 +134,14 @@ import { Plus, Minus } from 'lucide-react';
 
   /* subtle grain overlay */
   .blurred-background::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
     /* SVG fractal noise as data URI */
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.35'/></svg>");
     background-size: 128px 128px;
-    opacity: 0.06; /* grain strength */
+    opacity: 0.5; /* grain strength */
     mix-blend-mode: overlay; /* sits nicely on light/dark */
   }
 
@@ -208,7 +166,7 @@ import { Plus, Minus } from 'lucide-react';
 </style>
 
 <script>
-  import { gsap } from 'gsap';
+  import { gsap } from "gsap";
 
   // Animation constants
   const ANIMATION_DISTANCE = 32;
@@ -219,52 +177,32 @@ import { Plus, Minus } from 'lucide-react';
   // Toggle page background scaling on/off
   const ENABLE_PAGE_SCALE = true;
 
-  const PAGE_RADIUS = style.getPropertyValue('--radius'); // match your bottom bar rounded-[20px]
-  function getPageScale() {
-    const v = getComputedStyle(document.documentElement).getPropertyValue(
-      '--page-scale'
-    );
-    const n = parseFloat(v);
-    return isNaN(n) ? 0.95 : n;
-  }
+  const PAGE_RADIUS = style.getPropertyValue("--radius");
 
-  let PAGE_SCALE = getPageScale();
-  // Compute Y offset so the top gap equals the side gap when scaling from bottom-center
-  function getEqualizeY(scale: number) {
-    const H = window.innerHeight;
-    const W = window.innerWidth;
-    const gTop = (1 - scale) * H; // natural top gap with origin at bottom
-    const gSide = ((1 - scale) * W) / 2; // natural side gap
-    return gTop - gSide; // move up by this to reduce top gap
-  }
-  const svgContainer = document.getElementById('svg-container');
-  const textContainer = document.getElementById('text-container');
+  const svgContainer = document.getElementById("svg-container");
+  const textContainer = document.getElementById("text-container");
   const leftGroup = [svgContainer, textContainer];
-
   // Bottom bar menu functionality
   function initBottomBar() {
-    const collapsedBar = document.getElementById('collapsed-bar');
-    const expandedContent = document.getElementById('expanded-content');
-    const closeMenu = document.getElementById('close-menu');
-    const mainBarContent = document.getElementById('main-bar-content');
-    const menuToggleButton = document.getElementById('menu-toggle-button');
-    const plusIcon = document.getElementById('plus-icon');
-    const minusIcon = document.getElementById('minus-icon');
-    const overlay = document.getElementById('bottom-bar-overlay');
-    const pageFrame = document.getElementById('page-frame');
+    const collapsedBar = document.getElementById("collapsed-bar");
+    const expandedContent = document.getElementById("expanded-content");
+    const closeMenu = document.getElementById("close-menu");
+    const mainBarContent = document.getElementById("main-bar-content");
+    const menuToggleButton = document.getElementById("menu-toggle-button");
+    const plusIcon = document.getElementById("plus-icon");
+    const minusIcon = document.getElementById("minus-icon");
+    const overlay = document.getElementById("bottom-bar-overlay");
+    const pageFrame = document.getElementById("page-frame");
     const getPageChildren = () =>
       Array.from(document.body.children).filter(
-        (el) =>
-          el.id !== 'bottom-bar' &&
-          el.id !== 'bottom-bar-overlay' &&
-          el.id !== 'page-frame'
+        (el) => el.id !== "bottom-bar" && el.id !== "bottom-bar-overlay" && el.id !== "page-frame"
       );
 
     // GSAP Animation elements
-    const rLogo = document.getElementById('r-logo');
-    const arrowIcon = document.getElementById('arrow-icon');
-    const defaultText = document.getElementById('default-text');
-    const hoverText = document.getElementById('hover-text');
+    const rLogo = document.getElementById("r-logo");
+    const arrowIcon = document.getElementById("arrow-icon");
+    const defaultText = document.getElementById("default-text");
+    const hoverText = document.getElementById("hover-text");
 
     // Expanded state tracking
     let isExpanded = false;
@@ -286,19 +224,15 @@ import { Plus, Minus } from 'lucide-react';
         {
           y: -ANIMATION_DISTANCE,
           duration: HOVER_DURATION,
-          ease: 'sine.inOut',
+          ease: "sine.inOut",
         },
         0
       )
-      .to(arrowIcon, { y: 0, duration: HOVER_DURATION, ease: 'sine.inOut' }, 0)
-      .to(
-        defaultText,
-        { y: ANIMATION_DISTANCE, duration: HOVER_DURATION, ease: 'sine.inOut' },
-        0
-      )
-      .to(hoverText, { y: 0, duration: HOVER_DURATION, ease: 'sine.inOut' }, 0);
+      .to(arrowIcon, { y: 0, duration: HOVER_DURATION, ease: "sine.inOut" }, 0)
+      .to(defaultText, { y: ANIMATION_DISTANCE, duration: HOVER_DURATION, ease: "sine.inOut" }, 0)
+      .to(hoverText, { y: 0, duration: HOVER_DURATION, ease: "sine.inOut" }, 0);
 
-    hoverTl.eventCallback('onReverseComplete', () => {
+    hoverTl.eventCallback("onReverseComplete", () => {
       gsap.set(rLogo, { y: 0 });
       gsap.set(defaultText, { y: 0 });
       gsap.set(arrowIcon, { y: -ANIMATION_DISTANCE });
@@ -306,18 +240,81 @@ import { Plus, Minus } from 'lucide-react';
     });
 
     // Mouse enter - play animation (only if not expanded)
-    mainBarContent?.addEventListener('mouseenter', () => {
+    mainBarContent?.addEventListener("mouseenter", () => {
       if (!isExpanded) {
         hoverTl.play();
       }
     });
 
     // Mouse leave - reverse animation (only if not expanded)
-    mainBarContent?.addEventListener('mouseleave', () => {
+    mainBarContent?.addEventListener("mouseleave", () => {
       if (!isExpanded) {
         hoverTl.reverse();
       }
     });
+
+    // Function to get current page scale (reads CSS custom property)
+    function getPageScale() {
+      const docStyle = getComputedStyle(document.documentElement);
+      let raw = docStyle.getPropertyValue("--page-scale").trim();
+      if (!raw) return 1;
+      if (/^-?\d*\.?\d+$/.test(raw)) return parseFloat(raw);
+      const probe = document.createElement("div");
+      probe.style.position = "absolute";
+      probe.style.visibility = "hidden";
+      probe.style.pointerEvents = "none";
+      probe.style.transform = `scale(${raw})`;
+      document.body.appendChild(probe);
+      const matrix = getComputedStyle(probe).transform;
+      probe.remove();
+      if (matrix && matrix.startsWith("matrix")) {
+        const nums = matrix.match(/matrix\(([^)]+)\)/);
+        if (nums && nums[1]) {
+          const parts = nums[1].split(",").map((v) => parseFloat(v.trim()));
+          if (!isNaN(parts[0])) return parts[0];
+        }
+      }
+      const min = parseFloat(docStyle.getPropertyValue("--page-scale-min")) || 1;
+      const max = parseFloat(docStyle.getPropertyValue("--page-scale-max")) || min;
+      // Simple linear fallback between min & max based on viewport width fraction (0-1) of a 1920px ref
+      const span = max - min;
+      if (span <= 0) return min;
+      const ref = 1920;
+      const t = Math.min(1, window.innerWidth / ref);
+      return +(min + span * t).toFixed(4);
+    }
+
+    let PAGE_SCALE = getPageScale();
+
+    // Update scaling dynamically while menu is open
+    function updatePageScale() {
+      if (!ENABLE_PAGE_SCALE) return;
+      const newScale = getPageScale();
+      PAGE_SCALE = newScale;
+      if (!isExpanded) return; // only visually update if menu currently expanded
+      const pageChildren = getPageChildren();
+      // stop ongoing scale tweens to prevent accumulation
+      gsap.killTweensOf(pageChildren);
+      gsap.to(pageChildren, {
+        scaleX: PAGE_SCALE,
+        scaleY: Math.max(PAGE_SCALE + window.innerWidth * 0.008, PAGE_SCALE),
+        transformOrigin: "50% 100%",
+        duration: 0.25,
+        ease: "power2.out",
+      });
+    }
+
+    // Debounced / rAF resize handler so scaling adapts if viewport changes mid-open
+    let resizeRaf;
+    window.addEventListener(
+      "resize",
+      () => {
+        if (resizeRaf) cancelAnimationFrame(resizeRaf);
+        resizeRaf = requestAnimationFrame(updatePageScale);
+      },
+      { passive: true }
+    );
+    window.addEventListener("orientationchange", updatePageScale, { passive: true });
 
     function openMenu() {
       if (collapsedBar && expandedContent && !isExpanded) {
@@ -327,55 +324,52 @@ import { Plus, Minus } from 'lucide-react';
           gsap.to(overlay, {
             autoAlpha: 1,
             duration: MENU_DURATION * 1.3,
-            ease: 'power2.out',
+            ease: "power2.out",
             onStart: () => {
-              overlay.style.pointerEvents = 'auto';
+              overlay.style.pointerEvents = "auto";
             },
           });
         }
         if (ENABLE_PAGE_SCALE) {
-          // Recompute scale on open for current viewport (CSS driven)
-          PAGE_SCALE = getPageScale();
+          // Always get current scale value for responsive behavior
           const pageChildren = getPageChildren();
           pageChildren.forEach((el) =>
-            el && el instanceof HTMLElement
-              ? (el.style.willChange =
-                  'transform, clip-path, filter, top, left')
-              : null
+            el && el instanceof HTMLElement ? (el.style.willChange = "transform, clip-path, filter, top, left") : null
           );
+
+          console.log("Calculated scale:", PAGE_SCALE);
           gsap.to(pageChildren, {
-            scale: PAGE_SCALE,
-            transformOrigin: '50% 100%', // bottom-center
+            scaleX: PAGE_SCALE,
+            scaleY: PAGE_SCALE + 0.02,
+
+            transformOrigin: "50% 100%", // bottom-center
             duration: MENU_DURATION * 1.2,
-            ease: 'power2.out',
+            ease: "power2.out",
           });
 
           gsap.to(pageChildren, {
             clipPath: `inset(0 round ${PAGE_RADIUS} ${PAGE_RADIUS} 0 0)`,
             duration: MENU_DURATION * 1.2,
-            ease: 'power2.out',
+            ease: "power2.out",
           });
           gsap.to(pageChildren, {
-            filter: 'blur(0px)',
+            filter: "blur(0px)",
             duration: MENU_DURATION * 1.2,
-            ease: 'power2.out',
+            ease: "power2.out",
           });
           if (pageFrame) {
             gsap.to(pageFrame, {
               autoAlpha: 1,
               duration: MENU_DURATION,
-              ease: 'power2.out',
+              ease: "power2.out",
             });
           }
         }
         gsap.to(leftGroup, {
           opacity: 0, // fade only; don't affect layout/visibility to avoid reflow quirks
           duration: MENU_DURATION,
-          ease: 'power2.out',
-          onStart: () =>
-            leftGroup.forEach((el) =>
-              el ? (el.style.pointerEvents = 'none') : null
-            ),
+          ease: "power2.out",
+          onStart: () => leftGroup.forEach((el) => (el ? (el.style.pointerEvents = "none") : null)),
         });
         // Stop hover animation and reset to default state
         hoverTl.pause();
@@ -389,30 +383,30 @@ import { Plus, Minus } from 'lucide-react';
           opacity: 0,
           rotation: 90,
           duration: MENU_DURATION,
-          ease: 'power2.inOut',
+          ease: "power2.inOut",
         });
         gsap.to(minusIcon, {
           opacity: 1,
           rotation: 0,
           duration: MENU_DURATION,
-          ease: 'power2.inOut',
+          ease: "power2.inOut",
         });
 
         // Animate bar expansion upward
         gsap.to(collapsedBar, {
-          height: 'auto',
+          height: "auto",
           duration: MENU_DURATION,
-          ease: 'power2.out',
+          ease: "power2.out",
         });
 
         // Animate expanded content in
         gsap.to(expandedContent, {
-          height: 'auto',
+          height: "auto",
           opacity: 1,
           duration: MENU_DURATION * 1.2,
-          ease: 'power2.in',
+          ease: "power2.in",
           onStart: () => {
-            expandedContent.style.pointerEvents = 'auto';
+            expandedContent.style.pointerEvents = "auto";
           },
         });
       }
@@ -426,41 +420,41 @@ import { Plus, Minus } from 'lucide-react';
 
           gsap.to(pageChildren, {
             scale: 1,
-            transformOrigin: '50% 100%',
+            transformOrigin: "50% 100%",
             duration: MENU_DURATION * 1.2,
-            ease: 'power2.in',
+            ease: "power2.in",
           });
           gsap.to(pageChildren, {
             y: 0,
             duration: MENU_DURATION * 1.2,
-            ease: 'power2.in',
+            ease: "power2.in",
           });
           gsap.to(pageChildren, {
-            clipPath: 'inset(0 round 0 0 0 0)',
+            clipPath: "inset(0 round 0 0 0 0)",
             duration: MENU_DURATION * 1.2,
-            ease: 'power2.in',
+            ease: "power2.in",
             onComplete: () =>
               pageChildren.forEach((el) => {
                 if (!el || !(el instanceof HTMLElement)) return;
-                el.style.willChange = '';
-                el.style.clipPath = '';
+                el.style.willChange = "";
+                el.style.clipPath = "";
               }),
           });
           gsap.to(pageChildren, {
-            filter: 'blur(0px)',
+            filter: "blur(0px)",
             duration: MENU_DURATION * 1.2,
-            ease: 'power2.in',
+            ease: "power2.in",
             onComplete: () =>
               pageChildren.forEach((el) => {
                 if (!el || !(el instanceof HTMLElement)) return;
-                el.style.filter = '';
+                el.style.filter = "";
               }),
           });
           if (pageFrame) {
             gsap.to(pageFrame, {
               autoAlpha: 0,
               duration: MENU_DURATION,
-              ease: 'power2.in',
+              ease: "power2.in",
             });
           }
         }
@@ -471,7 +465,7 @@ import { Plus, Minus } from 'lucide-react';
           gsap.to(overlay, {
             autoAlpha: 0,
             duration: MENU_DURATION * 1.3,
-            ease: 'power2.in',
+            ease: "power2.in",
             onComplete: () => {
               // overlay.style.pointerEvents = 'none';
               // overlay.style.backgroundColor = '';
@@ -486,31 +480,28 @@ import { Plus, Minus } from 'lucide-react';
           opacity: 0,
           rotation: 90,
           duration: MENU_DURATION,
-          ease: 'power2.inOut',
+          ease: "power2.inOut",
         });
         gsap.to(plusIcon, {
           opacity: 1,
           rotation: 0,
           duration: MENU_DURATION,
-          ease: 'power2.inOut',
+          ease: "power2.inOut",
         });
         gsap.to(leftGroup, {
           opacity: 1,
           duration: MENU_DURATION,
-          ease: 'power2.in',
-          onComplete: () =>
-            leftGroup.forEach((el) =>
-              el ? (el.style.pointerEvents = 'auto') : null
-            ),
+          ease: "power2.in",
+          onComplete: () => leftGroup.forEach((el) => (el ? (el.style.pointerEvents = "auto") : null)),
         });
         // Animate expanded content out
         gsap.to(expandedContent, {
           height: 0,
           opacity: 0,
           duration: MENU_DURATION * 1.2,
-          ease: 'power2.out',
+          ease: "power2.out",
           onComplete: () => {
-            expandedContent.style.pointerEvents = 'none';
+            expandedContent.style.pointerEvents = "none";
           },
         });
 
@@ -524,20 +515,16 @@ import { Plus, Minus } from 'lucide-react';
     }
 
     // Event listeners
-    mainBarContent?.addEventListener('click', (e) => {
+    mainBarContent?.addEventListener("click", (e) => {
       // Prevent button click from bubbling to mainBarContent
-      if (
-        e.target &&
-        e.target instanceof Element &&
-        e.target.closest('#menu-toggle-button')
-      ) {
+      if (e.target && e.target instanceof Element && e.target.closest("#menu-toggle-button")) {
         return;
       }
       openMenu();
     });
 
     // Button click handlers
-    menuToggleButton?.addEventListener('click', (e) => {
+    menuToggleButton?.addEventListener("click", (e) => {
       e.stopPropagation();
       if (isExpanded) {
         closeMenuFunc();
@@ -547,33 +534,28 @@ import { Plus, Minus } from 'lucide-react';
     });
 
     // Clicking overlay closes the menu
-    overlay?.addEventListener('click', () => {
+    overlay?.addEventListener("click", () => {
       if (isExpanded) closeMenuFunc();
     });
 
-    closeMenu?.addEventListener('click', closeMenuFunc);
+    closeMenu?.addEventListener("click", closeMenuFunc);
 
     // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      const bottomBar = document.getElementById('bottom-bar');
-      if (
-        bottomBar &&
-        e.target instanceof Node &&
-        !bottomBar.contains(e.target) &&
-        isExpanded
-      ) {
+    document.addEventListener("click", (e) => {
+      const bottomBar = document.getElementById("bottom-bar");
+      if (bottomBar && e.target instanceof Node && !bottomBar.contains(e.target) && isExpanded) {
         closeMenuFunc();
       }
     });
   }
 
   // Initialize on page load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initBottomBar);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initBottomBar);
   } else {
     initBottomBar();
   }
 
   // Re-initialize after page transitions
-  document.addEventListener('astro:page-load', initBottomBar);
+  document.addEventListener("astro:page-load", initBottomBar);
 </script>
