@@ -48,11 +48,9 @@
   --radius: 0.625rem;
   --100vw: 100dvw;
   --navbar-bottom: clamp(24px, 21.621px + 100vw * 0.0061, 32px);
-
-  /* Set default navbar-width-cols first */
   --navbar-width-cols: 10;
   --navbar-left: calc(0.5 * (var(--100vw) - var(--navbar-width)));
-  --grid-gap: /*lrs=20*/ clamp(4px, -0.758px + 100vw * 0.0122, 20px);
+  --grid-gap: clamp(4px, -0.758px + 100vw * 0.0122, 20px);
   --grid-margin: clamp(8px, 4.412px + 100vw * 0.0092, 20px);
   --grid-padding: calc(var(--grid-margin) - 0.5 * var(--grid-gap));
   --grid-width: calc(var(--100vw) - 2 * var(--grid-margin));
@@ -61,15 +59,13 @@
       var(--grid-gap)
   );
   --navbar-height: 46px;
-  /* Your color variables... */
   --background: oklch(0.9582 0.0041 271.37);
   --foreground: oklch(0.145 0 0);
-
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.1896 0.0347 256.41);
+  --primary: oklch(14.627% 0.01893 249.172);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -94,6 +90,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --blr-s: 0.0369;
+  --blr-p: 1;
 }
 /* Media queries AFTER the main :root block */
 @media only screen and (max-width: 1290px) {

@@ -17,14 +17,9 @@ import BottomBar from '../components/BottomBar.astro';
     <!-- Google Fonts -->
     <link rel='preconnect' href='https://fonts.googleapis.com' />
     <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
-    <link
-      href='https://fonts.googleapis.com/css2?family=Inconsolata:wdth,wght@50..200,200..900&family=Inter:ital,wght@0,200..900;1,200..900&display=swap'
-      rel='stylesheet'
-    />
 
     <script>
       import { gsap } from 'gsap';
-      console.log('using GSAP: ', gsap.version);
     </script>
 
     <style is:global>
@@ -205,7 +200,6 @@ import BottomBar from '../components/BottomBar.astro';
         const statusSpan = document.getElementById('transition-status');
 
         if (hasViewTransition) {
-          console.log('View Transitions API is supported');
           document.documentElement.classList.add('view-transition-enabled');
 
           if (devIndicator && statusSpan) {

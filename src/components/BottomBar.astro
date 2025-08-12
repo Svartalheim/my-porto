@@ -4,6 +4,23 @@ import { Plus, Minus } from 'lucide-react';
 // BottomBar.astro - Persistent bottom navigation component
 ---
 
+<!-- Overlay (dark + blur) -->
+<div
+  id='bottom-bar-overlay'
+  class='fixed inset-0 opacity-0 pointer-events-none z-[9] bg-black/40 backdrop-blur-[0.3333px] will-change-[opacity]'
+>
+</div>
+
+<div id='page-frame' class='fixed inset-0 pointer-events-none z-[11] opacity-0'>
+  <!-- <div data-frame='top' class='absolute inset-x-0 top-0 h-px bg-primary'></div>
+  <div data-frame='left' class='absolute left-0 top-0 bottom-0 w-px bg-primary'>
+  </div>
+  <div
+    data-frame='right'
+    class='absolute right-0 top-0 bottom-0 w-px bg-primary'
+  >
+  </div> -->
+</div>
 <!-- Persistent Bottom Bar -->
 <nav
   id='bottom-bar'
@@ -12,7 +29,7 @@ import { Plus, Minus } from 'lucide-react';
   <!-- Collapsed Bar -->
   <div
     id='collapsed-bar'
-    class='bg-black relative backdrop-blur-md text-white rounded-[20px] cursor-pointer transition-all duration-300 hover:bg-black/95 flex flex-col'
+    class='bg-black cursor-pointer relative z-20 backdrop-blur-md text-white rounded-[20px] transition-all duration-300 hover:bg-black/95 flex flex-col'
   >
     <!-- Main Bar Content -->
     <div
@@ -82,13 +99,19 @@ import { Plus, Minus } from 'lucide-react';
           <span>Open Menu</span>
         </div>
       </div>
-      <button class='relative z-[1]' id='menu-toggle-button'>
+      <button class='relative z-[999]' id='menu-toggle-button'>
         <!-- Plus icon container -->
-        <div id='plus-icon' class='absolute'>
+        <div
+          id='plus-icon'
+          class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
+        >
           <Plus size={24} className='cursor-pointer' />
         </div>
         <!-- Minus icon container (hidden initially) -->
-        <div id='minus-icon' class='absolute opacity-0'>
+        <div
+          id='minus-icon'
+          class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
+        >
           <Minus size={24} className='cursor-pointer' />
         </div>
         <span class='span-menu'>Open / Close Menu</span>
@@ -99,12 +122,12 @@ import { Plus, Minus } from 'lucide-react';
   <!-- Expanded Menu Content (hidden by default) -->
   <div
     id='expanded-content'
-    class='opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden'
+    class='opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden z-10'
     style='height: 0;'
   >
     <div class='blurred-background h-full absolute -z-[1] w-full'></div>
     <div>
-      <p class='h-[200px]'>gyattt</p>
+      <p class='h-[750px]'>gyattt</p>
     </div>
   </div>
 </nav>
@@ -118,6 +141,7 @@ import { Plus, Minus } from 'lucide-react';
     top: -16px;
     overflow: hidden;
     opacity: 0;
+    cursor: pointer;
   }
 
   .blurred-background {
@@ -130,6 +154,10 @@ import { Plus, Minus } from 'lucide-react';
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
   }
+  #expanded-content {
+    transform-origin: bottom;
+    will-change: transform, opacity;
+  }
 </style>
 
 <script>
@@ -139,6 +167,13 @@ import { Plus, Minus } from 'lucide-react';
   const ANIMATION_DISTANCE = 32;
   const HOVER_DURATION = 1;
   const MENU_DURATION = 0.3;
+  const style = window.getComputedStyle(document.body);
+
+  const PAGE_RADIUS = style.getPropertyValue('--radius'); // match your bottom bar rounded-[20px]
+  const PAGE_SCALE = 0.94;
+  const svgContainer = document.getElementById('svg-container');
+  const textContainer = document.getElementById('text-container');
+  const leftGroup = [svgContainer, textContainer];
 
   // Bottom bar menu functionality
   function initBottomBar() {
@@ -149,6 +184,45 @@ import { Plus, Minus } from 'lucide-react';
     const menuToggleButton = document.getElementById('menu-toggle-button');
     const plusIcon = document.getElementById('plus-icon');
     const minusIcon = document.getElementById('minus-icon');
+    const overlay = document.getElementById('bottom-bar-overlay');
+    const pageFrame = document.getElementById('page-frame');
+    // Position the top/left/right frame bars to match the scaled page edges
+    // function positionFrameBars(scale = PAGE_SCALE) {
+    //   const topBar = pageFrame?.querySelector('[data-frame="top"]');
+    //   const leftBar = pageFrame?.querySelector('[data-frame="left"]');
+    //   const rightBar = pageFrame?.querySelector('[data-frame="right"]');
+    //   if (!topBar || !leftBar || !rightBar) return;
+
+    //   const gTop = (1 - scale) * window.innerHeight; // top inset when scaling from bottom
+    //   const gSide = ((1 - scale) * window.innerWidth) / 2; // equal side insets
+
+    //   gsap.to(topBar, {
+    //     top: gTop,
+    //     left: gSide,
+    //     right: gSide,
+    //     duration: MENU_DURATION,
+    //     ease: 'power2.out',
+    //   });
+    //   gsap.to(leftBar, {
+    //     left: gSide,
+    //     top: gTop,
+    //     duration: MENU_DURATION,
+    //     ease: 'power2.out',
+    //   });
+    //   gsap.to(rightBar, {
+    //     right: gSide,
+    //     top: gTop,
+    //     duration: MENU_DURATION,
+    //     ease: 'power2.out',
+    //   });
+    // }
+    const getPageChildren = () =>
+      Array.from(document.body.children).filter(
+        (el) =>
+          el.id !== 'bottom-bar' &&
+          el.id !== 'bottom-bar-overlay' &&
+          el.id !== 'page-frame'
+      );
 
     // GSAP Animation elements
     const rLogo = document.getElementById('r-logo');
@@ -163,7 +237,7 @@ import { Plus, Minus } from 'lucide-react';
     gsap.set(defaultText, { y: 0 }); // defaultText in view
     gsap.set(arrowIcon, { y: -ANIMATION_DISTANCE }); // arrowIcon hidden above
     gsap.set(hoverText, { y: ANIMATION_DISTANCE }); // hoverText hidden below
-    
+
     // Set initial icon states
     gsap.set(plusIcon, { opacity: 1, rotation: 0 });
     gsap.set(minusIcon, { opacity: 0, rotation: 90 });
@@ -212,7 +286,53 @@ import { Plus, Minus } from 'lucide-react';
     function openMenu() {
       if (collapsedBar && expandedContent && !isExpanded) {
         isExpanded = true;
-
+        // Show overlay
+        if (overlay) {
+          gsap.to(overlay, {
+            autoAlpha: 1,
+            duration: MENU_DURATION * 1.3,
+            ease: 'power2.out',
+            onStart: () => {
+              overlay.style.pointerEvents = 'auto';
+            },
+          });
+        }
+        // Scale down page content and show black frame
+        const pageChildren = getPageChildren();
+        pageChildren.forEach((el) =>
+          el && el instanceof HTMLElement
+            ? (el.style.willChange = 'transform, clip-path')
+            : null
+        );
+        gsap.to(pageChildren, {
+          scale: PAGE_SCALE,
+          transformOrigin: '50% 100%', // bottom-center
+          duration: MENU_DURATION * 1.2,
+          ease: 'power2.out',
+        });
+        gsap.to(pageChildren, {
+          clipPath: `inset(0 round ${PAGE_RADIUS} ${PAGE_RADIUS} 0 0)`,
+          duration: MENU_DURATION * 1.2,
+          ease: 'power2.out',
+        });
+        if (pageFrame) {
+          gsap.to(pageFrame, {
+            autoAlpha: 1,
+            duration: MENU_DURATION,
+            ease: 'power2.out',
+          });
+          // Align frame bars to the scaled page edges so thickness matches top/left/right
+          // positionFrameBars(PAGE_SCALE);
+        }
+        gsap.to(leftGroup, {
+          autoAlpha: 0, // opacity 0 + visibility hidden
+          duration: MENU_DURATION,
+          ease: 'power2.out',
+          onStart: () =>
+            leftGroup.forEach((el) =>
+              el ? (el.style.pointerEvents = 'none') : null
+            ),
+        });
         // Stop hover animation and reset to default state
         hoverTl.pause();
         gsap.set(rLogo, { y: 0 });
@@ -245,8 +365,8 @@ import { Plus, Minus } from 'lucide-react';
         gsap.to(expandedContent, {
           height: 'auto',
           opacity: 1,
-          duration: MENU_DURATION,
-          ease: 'power2.out',
+          duration: MENU_DURATION * 1.2,
+          ease: 'power2.in',
           onStart: () => {
             expandedContent.style.pointerEvents = 'auto';
           },
@@ -256,7 +376,71 @@ import { Plus, Minus } from 'lucide-react';
 
     function closeMenuFunc() {
       if (collapsedBar && expandedContent && isExpanded) {
+        // Restore page scale, corners and hide black frame
+        const pageChildren = getPageChildren();
+        // Reset frame bars back to the viewport edges
+        const _topBar = pageFrame?.querySelector('[data-frame="top"]');
+        const _leftBar = pageFrame?.querySelector('[data-frame="left"]');
+        const _rightBar = pageFrame?.querySelector('[data-frame="right"]');
+        if (_topBar)
+          gsap.to(_topBar, {
+            top: 0,
+            left: 0,
+            right: 0,
+            duration: MENU_DURATION,
+            ease: 'power2.in',
+          });
+        if (_leftBar)
+          gsap.to(_leftBar, {
+            left: 0,
+            top: 0,
+            duration: MENU_DURATION,
+            ease: 'power2.in',
+          });
+        if (_rightBar)
+          gsap.to(_rightBar, {
+            right: 0,
+            top: 0,
+            duration: MENU_DURATION,
+            ease: 'power2.in',
+          });
+        gsap.to(pageChildren, {
+          scale: 1,
+          transformOrigin: '50% 100%',
+          duration: MENU_DURATION * 1.2,
+          ease: 'power2.in',
+        });
+        gsap.to(pageChildren, {
+          clipPath: 'inset(0 round 0 0 0 0)',
+          duration: MENU_DURATION * 1.2,
+          ease: 'power2.in',
+          onComplete: () =>
+            pageChildren.forEach((el) => {
+              if (!el || !(el instanceof HTMLElement)) return;
+              el.style.willChange = '';
+              el.style.clipPath = '';
+            }),
+        });
+        if (pageFrame) {
+          gsap.to(pageFrame, {
+            autoAlpha: 0,
+            duration: MENU_DURATION,
+            ease: 'power2.in',
+          });
+        }
         isExpanded = false;
+
+        // Hide overlay
+        if (overlay) {
+          gsap.to(overlay, {
+            autoAlpha: 0,
+            duration: MENU_DURATION * 1.3,
+            ease: 'power2.in',
+            onComplete: () => {
+              overlay.style.pointerEvents = 'none';
+            },
+          });
+        }
 
         // Animate icon transition (Minus to Plus)
         gsap.to(minusIcon, {
@@ -271,36 +455,48 @@ import { Plus, Minus } from 'lucide-react';
           duration: MENU_DURATION,
           ease: 'power2.inOut',
         });
-
+        gsap.to(leftGroup, {
+          autoAlpha: 1,
+          duration: MENU_DURATION,
+          ease: 'power2.in',
+          onComplete: () =>
+            leftGroup.forEach((el) =>
+              el ? (el.style.pointerEvents = 'none') : null
+            ),
+        });
         // Animate expanded content out
         gsap.to(expandedContent, {
           height: 0,
           opacity: 0,
-          duration: MENU_DURATION,
-          ease: 'power2.in',
+          duration: MENU_DURATION * 1.2,
+          ease: 'power2.out',
           onComplete: () => {
             expandedContent.style.pointerEvents = 'none';
           },
         });
 
         // Animate bar back to original size
-        gsap.to(collapsedBar, {
-          height: 'var(--navbar-height)',
-          duration: MENU_DURATION,
-          ease: 'power2.in',
-        });
+        // gsap.to(collapsedBar, {
+        //   height: 'var(--navbar-height)',
+        //   duration: MENU_DURATION,
+        //   ease: 'power2.in',
+        // });
       }
     }
 
     // Event listeners
     mainBarContent?.addEventListener('click', (e) => {
       // Prevent button click from bubbling to mainBarContent
-      if (e.target && e.target instanceof Element && e.target.closest('#menu-toggle-button')) {
+      if (
+        e.target &&
+        e.target instanceof Element &&
+        e.target.closest('#menu-toggle-button')
+      ) {
         return;
       }
       openMenu();
     });
-    
+
     // Button click handlers
     menuToggleButton?.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -310,7 +506,12 @@ import { Plus, Minus } from 'lucide-react';
         openMenu();
       }
     });
-    
+
+    // Clicking overlay closes the menu
+    overlay?.addEventListener('click', () => {
+      if (isExpanded) closeMenuFunc();
+    });
+
     closeMenu?.addEventListener('click', closeMenuFunc);
 
     // Close menu when clicking outside
@@ -325,6 +526,11 @@ import { Plus, Minus } from 'lucide-react';
         closeMenuFunc();
       }
     });
+
+    // Keep frame aligned on resize while menu is open
+    // window.addEventListener('resize', () => {
+    //   if (isExpanded) positionFrameBars(PAGE_SCALE);
+    // });
   }
 
   // Initialize on page load
