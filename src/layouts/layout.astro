@@ -3,6 +3,12 @@ import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 import Navigation from '../components/Navigation.astro';
 import BottomBar from '../components/BottomBar.astro';
+// Define props for this layout. Extend as needed.
+export interface Props {
+  name?: string; // page identifier / slug
+  title?: string; // optional <title> override
+}
+const { name = 'page', title } = Astro.props as Props;
 ---
 
 <html lang='en'>
@@ -12,22 +18,60 @@ import BottomBar from '../components/BottomBar.astro';
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='viewport' content='width=device-width' />
     <meta name='generator' content={Astro.generator} />
-    <title>Astro</title>
+    <title>{title ? title : name ? `${name} | Astro` : 'Astro'}</title>
 
-    <!-- Google Fonts -->
     <link rel='preconnect' href='https://fonts.googleapis.com' />
     <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
-
-    <script>
-      import { gsap } from 'gsap';
-    </script>
 
     <style is:global>
       /* Prevent horizontal scrolling during transitions */
       html {
         overflow-x: hidden;
       }
+      #page {
+        --blur-p: 0; /* 0..1 */
+        --blr-m: var(--grid-margin);
+        --blr-s-min: 0.0294; /* unitless */
+        --blr-s-max: 0.0474; /* unitless */
+        --blr-s: var(--blr-s-min); /* start at min */
+        will-change: transform;
+  /* Pivot scale animations around a dynamic point */
+  transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
+        /* transition-duration needs a time value, not a JS-like expr */
+        transition-duration: var(--MENU_DURATION, 0.2s);
+        transition-property: transform, opacity;
+        transition-timing-function: linear;
+      }
 
+      /* Your margin tweak stays */
+      @media (max-width: 743px) {
+        #page {
+          --blr-m: 10px;
+        }
+      }
+
+      /* Step up the unitless scale factor as the viewport shrinks */
+      @media (max-width: 1200px) {
+        #page {
+          --blr-s: 0.034;
+        }
+      }
+      @media (max-width: 900px) {
+        #page {
+          --blr-s: 0.04;
+        }
+      }
+      @media (max-width: 600px) {
+        #page {
+          --blr-s: var(--blr-s-max);
+        }
+      }
+
+      /* Use the unitless value safely in scale() */
+      #page[data-blurred='true'] {
+        transform: scale(calc(1 - (var(--blr-s) * var(--blur-p))));
+        opacity: calc(1 - 0.333 * var(--blur-p));
+      }
       /* CSS variables for consistent timing */
       :root {
         --transition-duration: 0.4s;
@@ -180,10 +224,21 @@ import BottomBar from '../components/BottomBar.astro';
   </head>
   <body class='bg-primary text-primary'>
     <!-- <Navigation /> -->
-    <div class='page-container bg-background h-full' transition:name='page'>
+    <div
+      data-slug={name}
+      class='page-container bg-background h-full'
+      transition:name='page'
+      id='page'
+    >
       <slot />
+      <div
+        data-blur-mask
+        inert
+        aria-hidden='true'
+        class='absolute w-full h-full top-0 left-0'
+      >
+      </div>
     </div>
-
     <!-- Bottom navigation component -->
     <BottomBar />
 
@@ -243,6 +298,111 @@ import BottomBar from '../components/BottomBar.astro';
         document.documentElement.classList.remove('view-transition-enabled');
         document.documentElement.classList.remove('animating');
       });
+
+      // ---- Dynamic transform-origin helpers ----
+      // Contract:
+      // - Uses #page as the element that scales.
+      // - Default origin is 50% X and Y derived from current viewport (baseline 8% from top).
+      // - Clicking a trigger can set the origin to the click position within #page.
+
+      function getPageEl() {
+        return document.getElementById('page');
+      }
+
+      // Compute an origin based on the current viewport window with a baseline offset
+      // of baselinePct (e.g., 8%) from the top of the viewport.
+      function computeOriginFromViewport(baselinePct = 8) {
+        const page = getPageEl();
+        if (!page) return;
+
+        // Absolute geometry of #page and viewport
+        const pageRect = page.getBoundingClientRect();
+        const pageTopAbs = pageRect.top + window.scrollY;
+        const pageHeight = Math.max(page.scrollHeight, page.clientHeight);
+        const viewportBottomAbs = window.scrollY + window.innerHeight;
+        const pageBottomAbs = pageTopAbs + pageHeight;
+
+        // If we're effectively at the bottom of the page, pin origin to the bottom
+        const nearBottomThreshold = 1; // px
+        let yPct;
+        if (viewportBottomAbs >= pageBottomAbs - nearBottomThreshold) {
+          yPct = 100;
+        } else {
+          // Otherwise, anchor baselinePct% from the top of the current viewport
+          const yAbs = window.scrollY + window.innerHeight * (baselinePct / 100);
+          const yWithinPage = Math.max(0, Math.min(yAbs - pageTopAbs, pageHeight));
+          yPct = (yWithinPage / pageHeight) * 100;
+        }
+
+        page.style.setProperty('--origin-x', '50%');
+        page.style.setProperty('--origin-y', `${yPct}%`);
+      }
+
+      // Set origin from a click/press event so the scale pivots around the interacted spot.
+  function setOriginFromEvent(e: MouseEvent) {
+        const page = getPageEl();
+        if (!page || !e) return;
+        const rect = page.getBoundingClientRect();
+        const xAbs = e.clientX + window.scrollX;
+        const yAbs = e.clientY + window.scrollY;
+        const pageLeftAbs = rect.left + window.scrollX;
+        const pageTopAbs = rect.top + window.scrollY;
+        const xWithin = xAbs - pageLeftAbs;
+        const yWithin = yAbs - pageTopAbs;
+        const xPct = (xWithin / rect.width) * 100;
+        const pageHeight = Math.max(page.scrollHeight, page.clientHeight);
+        const yPct = (yWithin / pageHeight) * 100;
+
+        page.style.setProperty('--origin-x', `${xPct}%`);
+        page.style.setProperty('--origin-y', `${yPct}%`);
+      }
+
+      // Public helper if you want to call manually from components
+  (window as any).__setScaleOrigin = function (xPct?: number, yPct?: number) {
+        const page = getPageEl();
+        if (!page) return;
+        if (typeof xPct === 'number') page.style.setProperty('--origin-x', `${xPct}%`);
+        if (typeof yPct === 'number') page.style.setProperty('--origin-y', `${yPct+8}%`);
+      };
+
+      // Keep origin tied to the current viewport as the user scrolls.
+      let rafId: number | null = null;
+      function onScroll() {
+        if (rafId !== null) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          computeOriginFromViewport(8);
+          rafId = null;
+        });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // Delegate clicks from elements that open/expand content to pivot around click point.
+      // Mark triggers with any of these attributes to opt-in.
+      document.addEventListener(
+        'click',
+        (e: MouseEvent) => {
+          let trigger: Element | null = null;
+          const t = e.target;
+          if (t instanceof Element) {
+            trigger = t.closest('[data-origin-anchor], [data-expand], [data-open]');
+          }
+          if (trigger) setOriginFromEvent(e);
+        },
+        { capture: true }
+      );
+
+      // Initialize once and also after Astro swaps content.
+      function initOrigin() {
+        computeOriginFromViewport(8);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initOrigin);
+      } else {
+        initOrigin();
+      }
+
+      document.addEventListener('astro:after-swap', initOrigin);
     </script>
   </body>
 </html>

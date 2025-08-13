@@ -7,7 +7,7 @@ import { Plus, Minus } from 'lucide-react';
 <!-- Overlay (dark + blur) -->
 <div
   id='bottom-bar-overlay'
-  class='fixed inset-0 opacity-0 pointer-events-none z-[9] bg-black/40 will-change-[opacity]'
+  class='fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur-[2px] bg-black/40 will-change-[opacity]'
 >
 </div>
 <!-- Persistent Bottom Bar -->
@@ -277,6 +277,25 @@ import { Plus, Minus } from 'lucide-react';
     function openMenu() {
       if (collapsedBar && expandedContent && !isExpanded) {
         isExpanded = true;
+        const pageEl = document.getElementById('page');
+        if (pageEl) {
+          // Start from 0 each open
+          pageEl.setAttribute('data-blurred', 'true');
+          pageEl.setAttribute('inert', '');
+          gsap.fromTo(
+            pageEl,
+            { '--blur-p': 0 },
+            {
+              '--blur-p': 1,
+              duration: MENU_DURATION,
+              ease: 'power2.out',
+              onUpdate: () => {
+                // Optional hook for midpoint logic
+                // const val = gsap.getProperty(pageEl, '--blur-p');
+              },
+            }
+          );
+        }
         // Show overlay
         if (overlay) {
           gsap.to(overlay, {
@@ -345,6 +364,16 @@ import { Plus, Minus } from 'lucide-react';
         document.body.classList.remove('menu-open');
         // (Legacy ENABLE_PAGE_SCALE restore logic removed)
         isExpanded = false;
+        const pageEl = document.getElementById('page');
+        if (pageEl) {
+          pageEl.removeAttribute('data-blurred');
+          pageEl.removeAttribute('inert');
+          gsap.to(pageEl, {
+            '--blur-p': 0,
+            duration: MENU_DURATION,
+            ease: 'power2.in',
+          });
+        }
 
         // Hide overlay
         if (overlay) {
