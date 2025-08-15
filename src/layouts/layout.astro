@@ -34,9 +34,11 @@ const { name = 'page', title } = Astro.props as Props;
         --blr-s-min: 0.0294; /* unitless */
         --blr-s-max: 0.0474; /* unitless */
         --blr-s: var(--blr-s-min); /* start at min */
+        position: relative; /* anchor stacking for overlays */
+        z-index: 1; /* keep content above fixed overlays */
         will-change: transform;
-  /* Pivot scale animations around a dynamic point */
-  transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
+        /* Pivot scale animations around a dynamic point */
+        transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
         /* transition-duration needs a time value, not a JS-like expr */
         transition-duration: var(--MENU_DURATION, 0.2s);
         transition-property: transform, opacity;
@@ -67,10 +69,64 @@ const { name = 'page', title } = Astro.props as Props;
         }
       }
 
-      /* Use the unitless value safely in scale() */
-      #page[data-blurred='true'] {
+      /* Only scale the page content, not overlays */
+      #page .page-content {
+        will-change: transform;
+        transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
+        transition-duration: var(--MENU_DURATION, 0.2s);
+        transition-property: transform, opacity;
+        transition-timing-function: linear;
+      }
+      #page[data-blurred='true'] .page-content {
         transform: scale(calc(1 - (var(--blr-s) * var(--blur-p))));
         opacity: calc(1 - 0.333 * var(--blur-p));
+      }
+      #page [data-blur-mask] > div {
+        position: sticky;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+      }
+      /* Fixed overlays that don't affect layout height */
+      /* #page[data-blurred='true']::before, */
+      #page[data-blurred='true']::after {
+        content: '';
+        position: fixed;
+        left: 0;
+        right: 0;
+        height: 20vh;
+        background-color: var(--primary-foreground); /* match #page bg */
+        pointer-events: none; /* don't block clicks */
+      }
+      /* #page[data-blurred='true']::before {
+        top: -20vh;
+      } */
+      #page[data-blurred='true']::after {
+        bottom: -20vh;
+      }
+
+      #page [data-blur-mask] > div > div:first-child:before {
+        left: 0;
+        transform-origin: left;
+      }
+      #page [data-blur-mask] > div > div:first-child:after {
+        right: 0;
+        transform-origin: right;
+      }
+      #page [data-blur-mask] > div > div:after,
+      #page [data-blur-mask] > div > div:before {
+        content: '';
+        position: absolute;
+        background-color: #000;
+        will-change: transform;
+      }
+      #page [data-blur-mask] > div > div:first-child:after,
+      #page [data-blur-mask] > div > div:first-child:before {
+        width: var(--blr-m);
+        height: 100%;x
+        top: 0;
+        transform: scaleX(var(--blur-p));
       }
       /* CSS variables for consistent timing */
       :root {
@@ -223,24 +279,31 @@ const { name = 'page', title } = Astro.props as Props;
     </style>
   </head>
   <body class='bg-primary text-primary'>
-    <!-- <Navigation /> -->
+    <BottomBar />
     <div
       data-slug={name}
-      class='page-container bg-background h-full'
+      class='page-container bg-background relative h-full'
       transition:name='page'
       id='page'
     >
-      <slot />
+      <div class='page-content'>
+        <slot />
+      </div>
       <div
         data-blur-mask
         inert
         aria-hidden='true'
-        class='absolute w-full h-full top-0 left-0'
+        class='absolute w-full h-full top-0 left-0 pointer-events-none'
       >
+        <div>
+          <div id='#overlay-left-right'></div>
+          <div id='#overlay-top'></div>
+          <div id='#overlay-corner'></div>
+        </div>
+        <span></span>
       </div>
     </div>
     <!-- Bottom navigation component -->
-    <BottomBar />
 
     <!-- Development indicator for View Transitions support (only in dev) -->
     <div id='dev-indicator' class='dev-indicator' style='display: none;'>
@@ -300,108 +363,122 @@ const { name = 'page', title } = Astro.props as Props;
       });
 
       // ---- Dynamic transform-origin helpers ----
-      // Contract:
-      // - Uses #page as the element that scales.
-      // - Default origin is 50% X and Y derived from current viewport (baseline 8% from top).
-      // - Clicking a trigger can set the origin to the click position within #page.
-
+      // Element we scale
       function getPageEl() {
         return document.getElementById('page');
       }
 
-      // Compute an origin based on the current viewport window with a baseline offset
-      // of baselinePct (e.g., 8%) from the top of the viewport.
-      function computeOriginFromViewport(baselinePct = 8) {
+      // tiny padding so the pivot isn't exactly on the edge (looks nicer)
+      const EDGE_PAD_PCT = 4; // e.g. 8% from top/bottom
+      const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+      const clamp = (v: number, lo: number, hi: number) =>
+        Math.min(hi, Math.max(lo, v));
+
+      /**
+       * Compute origin based on scroll progress:
+       * - at the very top → pivot near top (EDGE_PAD_PCT%)
+       * - at the very bottom → pivot near bottom (100 - EDGE_PAD_PCT%)
+       * - in between → linear interpolation
+       */
+      function computeOriginFromViewport(edgePadPct = EDGE_PAD_PCT) {
         const page = getPageEl();
         if (!page) return;
 
-        // Absolute geometry of #page and viewport
-        const pageRect = page.getBoundingClientRect();
-        const pageTopAbs = pageRect.top + window.scrollY;
-        const pageHeight = Math.max(page.scrollHeight, page.clientHeight);
-        const viewportBottomAbs = window.scrollY + window.innerHeight;
-        const pageBottomAbs = pageTopAbs + pageHeight;
+        const rect = page.getBoundingClientRect();
+        const pageTopAbs = rect.top + window.scrollY;
 
-        // If we're effectively at the bottom of the page, pin origin to the bottom
-        const nearBottomThreshold = 1; // px
-        let yPct;
-        if (viewportBottomAbs >= pageBottomAbs - nearBottomThreshold) {
-          yPct = 100;
-        } else {
-          // Otherwise, anchor baselinePct% from the top of the current viewport
-          const yAbs = window.scrollY + window.innerHeight * (baselinePct / 100);
-          const yWithinPage = Math.max(0, Math.min(yAbs - pageTopAbs, pageHeight));
-          yPct = (yWithinPage / pageHeight) * 100;
-        }
+        // total content height for the page element
+        const pageHeight = Math.max(page.scrollHeight, page.clientHeight);
+        const viewportH = window.innerHeight;
+
+        // how much we can actually scroll inside #page
+        const scrollable = Math.max(pageHeight - viewportH, 0);
+
+        // scrollTop measured relative to the top of #page
+        const scrollInPage = clamp(window.scrollY - pageTopAbs, 0, scrollable);
+
+        // progress (0 at top, 1 at bottom). If not scrollable, use 0.5 (center).
+        const p = scrollable > 0 ? scrollInPage / scrollable : 0.5;
+
+        // map progress to a % along the element height with padding at edges
+        const yPct = lerp(edgePadPct, 100 - edgePadPct, p);
 
         page.style.setProperty('--origin-x', '50%');
         page.style.setProperty('--origin-y', `${yPct}%`);
       }
 
-      // Set origin from a click/press event so the scale pivots around the interacted spot.
-  function setOriginFromEvent(e: MouseEvent) {
+      /** Pivot around the click point (keeps your API the same) */
+      function setOriginFromEvent(e: MouseEvent) {
         const page = getPageEl();
         if (!page || !e) return;
         const rect = page.getBoundingClientRect();
-        const xAbs = e.clientX + window.scrollX;
-        const yAbs = e.clientY + window.scrollY;
-        const pageLeftAbs = rect.left + window.scrollX;
-        const pageTopAbs = rect.top + window.scrollY;
-        const xWithin = xAbs - pageLeftAbs;
-        const yWithin = yAbs - pageTopAbs;
+        const xWithin = e.clientX - rect.left;
+        const yWithin = e.clientY - rect.top;
         const xPct = (xWithin / rect.width) * 100;
-        const pageHeight = Math.max(page.scrollHeight, page.clientHeight);
-        const yPct = (yWithin / pageHeight) * 100;
 
-        page.style.setProperty('--origin-x', `${xPct}%`);
-        page.style.setProperty('--origin-y', `${yPct}%`);
+        // Use full content height (scrollHeight) so long pages map correctly
+        const h = Math.max(page.scrollHeight, page.clientHeight);
+        const yPct =
+          ((yWithin + window.scrollY - (rect.top + window.scrollY)) / h) * 100;
+
+        page.style.setProperty('--origin-x', `${clamp(xPct, 0, 100)}%`);
+        page.style.setProperty('--origin-y', `${clamp(yPct, 0, 100)}%`);
       }
 
-      // Public helper if you want to call manually from components
-  (window as any).__setScaleOrigin = function (xPct?: number, yPct?: number) {
+      // Public helper (optional baseline bump on Y)
+      (window as any).__setScaleOrigin = function (
+        xPct?: number,
+        yPct?: number
+      ) {
         const page = getPageEl();
         if (!page) return;
-        if (typeof xPct === 'number') page.style.setProperty('--origin-x', `${xPct}%`);
-        if (typeof yPct === 'number') page.style.setProperty('--origin-y', `${yPct+8}%`);
+        if (typeof xPct === 'number')
+          page.style.setProperty('--origin-x', `${clamp(xPct, 0, 100)}%`);
+        if (typeof yPct === 'number')
+          page.style.setProperty('--origin-y', `${clamp(yPct, 0, 100)}%`);
       };
 
-      // Keep origin tied to the current viewport as the user scrolls.
+      // rAF'd listeners so we don’t thrash
       let rafId: number | null = null;
-      function onScroll() {
+      function scheduleCompute() {
         if (rafId !== null) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
-          computeOriginFromViewport(8);
+          computeOriginFromViewport();
           rafId = null;
         });
       }
-      window.addEventListener('scroll', onScroll, { passive: true });
 
-      // Delegate clicks from elements that open/expand content to pivot around click point.
-      // Mark triggers with any of these attributes to opt-in.
+      // Keep origin tied to viewport while scrolling/resizing
+      window.addEventListener('scroll', scheduleCompute, { passive: true });
+      window.addEventListener('resize', scheduleCompute, { passive: true });
+      window.addEventListener('orientationchange', scheduleCompute, {
+        passive: true,
+      });
+
+      // Delegate clicks that should pivot around the interacted point
       document.addEventListener(
         'click',
         (e: MouseEvent) => {
-          let trigger: Element | null = null;
           const t = e.target;
-          if (t instanceof Element) {
-            trigger = t.closest('[data-origin-anchor], [data-expand], [data-open]');
+          if (
+            t instanceof Element &&
+            t.closest('[data-origin-anchor],[data-expand],[data-open]')
+          ) {
+            setOriginFromEvent(e);
           }
-          if (trigger) setOriginFromEvent(e);
         },
         { capture: true }
       );
 
-      // Initialize once and also after Astro swaps content.
+      // Init + after Astro swaps
       function initOrigin() {
-        computeOriginFromViewport(8);
+        computeOriginFromViewport();
       }
-
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initOrigin);
       } else {
         initOrigin();
       }
-
       document.addEventListener('astro:after-swap', initOrigin);
     </script>
   </body>

@@ -7,7 +7,7 @@ import { Plus, Minus } from 'lucide-react';
 <!-- Overlay (dark + blur) -->
 <div
   id='bottom-bar-overlay'
-  class='fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur-[2px] bg-black/40 will-change-[opacity]'
+  class='fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur1px] bg-black/40 will-change-[opacity]'
 >
 </div>
 <!-- Persistent Bottom Bar -->
@@ -366,12 +366,14 @@ import { Plus, Minus } from 'lucide-react';
         isExpanded = false;
         const pageEl = document.getElementById('page');
         if (pageEl) {
-          pageEl.removeAttribute('data-blurred');
-          pageEl.removeAttribute('inert');
           gsap.to(pageEl, {
             '--blur-p': 0,
             duration: MENU_DURATION,
             ease: 'power2.in',
+            onComplete: () => {
+              pageEl.removeAttribute('data-blurred');
+              pageEl.removeAttribute('inert');
+            },
           });
         }
 
@@ -415,7 +417,7 @@ import { Plus, Minus } from 'lucide-react';
         // Animate expanded content out
         gsap.to(expandedContent, {
           height: 0,
-          opacity: 0,
+          opacity: 1,
           duration: MENU_DURATION * 1.2,
           ease: 'power2.out',
           onComplete: () => {
