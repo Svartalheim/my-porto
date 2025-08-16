@@ -7,7 +7,7 @@ import { Plus, Minus } from 'lucide-react';
 <!-- Overlay (dark + blur) -->
 <div
   id='bottom-bar-overlay'
-  class='fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur-[1px] bg-black/40 will-change-[opacity]'
+  class='fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur-[0px] bg-black/40 will-change-[opacity]'
 >
 </div>
 <!-- Persistent Bottom Bar -->
@@ -269,7 +269,6 @@ import { Plus, Minus } from 'lucide-react';
       }
     });
 
-    // (Legacy dynamic scale helpers removed)
     // helper to resolve a CSS var (even if it uses calc/clamp) into px
     function resolveVarPx(varName: string, fallback = '56px') {
       const probe = document.createElement('div');

@@ -47,7 +47,7 @@
 :root {
   --radius: 0.625rem;
   /* Dynamic viewport width minus scrollbar width (0 if no overflow) */
-  --scrollbar-width: calc(100vw - 100%);
+  --scrollbar-width: 15px;
   --100vw: calc(100vw - var(--scrollbar-width));
   --navbar-bottom: clamp(24px, 21.621px + var(--100vw) * 0.0061, 32px);
   --navbar-width-cols: 10;
