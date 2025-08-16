@@ -7,7 +7,7 @@ import { Plus, Minus } from 'lucide-react';
 <!-- Overlay (dark + blur) -->
 <div
   id='bottom-bar-overlay'
-  class='fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur1px] bg-black/40 will-change-[opacity]'
+  class='fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur-[1px] bg-black/40 will-change-[opacity]'
 >
 </div>
 <!-- Persistent Bottom Bar -->
@@ -18,7 +18,8 @@ import { Plus, Minus } from 'lucide-react';
   <!-- Collapsed Bar -->
   <div
     id='collapsed-bar'
-    class='bg-black cursor-pointer relative z-20 backdrop-blur-md text-white rounded-[20px] transition-all duration-300 hover:bg-black/95 flex flex-col'
+    class='bg-black cursor-pointer relative z-20 text-white rounded-[20px] flex flex-col'
+    style='--collapsed-bg-alpha: 1;'
   >
     <!-- Main Bar Content -->
     <div
@@ -112,7 +113,7 @@ import { Plus, Minus } from 'lucide-react';
   <div
     id='expanded-content'
     class='opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden z-10'
-    style='height: 0;'
+    style='height: var(--navbar-height);'
   >
     <div class='blurred-background h-full absolute w-full'></div>
     <div>
@@ -136,16 +137,7 @@ import { Plus, Minus } from 'lucide-react';
   .blurred-background {
     position: absolute;
     inset: 0;
-    /* GLASS BACKGROUND (lighter so backdrop shows through) */
-    background:
-      /* linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 45%, rgba(255, 255, 255, 0) 100%), */
-      /* tinted body */ linear-gradient(
-      0deg,
-      rgba(17, 25, 40, 0.8),
-      rgba(17, 25, 40, 0.8)
-    );
-
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: black;
     border-radius: inherit;
     background-clip: padding-box;
     box-shadow:
@@ -153,8 +145,7 @@ import { Plus, Minus } from 'lucide-react';
       0 0 0 1px rgba(255, 255, 255, 0.04) inset,
       0 1px 0 0 rgba(255, 255, 255, 0.1) inset;
     overflow: hidden;
-    isolation: isolate; /* allow noise blend inside */
-    /* improve blur performance by isolating only when expanded */
+    isolation: isolate;
     will-change: backdrop-filter, background-color;
   }
 
@@ -170,18 +161,9 @@ import { Plus, Minus } from 'lucide-react';
     opacity: 0.5; /* grain strength */
     mix-blend-mode: overlay; /* sits nicely on light/dark */
   }
-
-  /* Fallback when backdrop-filter unsupported */
-  @supports not ((backdrop-filter: blur(1px))) {
-    .blurred-background {
-      background: linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.06) 0%,
-          rgba(255, 255, 255, 0.02) 45%,
-          rgba(255, 255, 255, 0) 100%
-        ),
-        rgba(17, 25, 40, 0.9);
-    }
+  /* Control the collapsed bar's background alpha without affecting its children */
+  #collapsed-bar {
+    background-color: rgba(0, 0, 0, var(--collapsed-bg-alpha, 1));
   }
   #expanded-content {
     transform-origin: bottom;
@@ -203,15 +185,30 @@ import { Plus, Minus } from 'lucide-react';
   const leftGroup = [svgContainer, textContainer];
   // Bottom bar menu functionality
   function initBottomBar() {
+    // Guard against double-initialization on the same element (e.g., initial load + astro:page-load)
+    const bottomBar = document.getElementById('bottom-bar');
+    if (!bottomBar) return;
+    if (
+      bottomBar instanceof HTMLElement &&
+      bottomBar.dataset.initialized === 'true'
+    ) {
+      return; // already initialized; prevents duplicate listeners and double firing
+    }
+    if (bottomBar instanceof HTMLElement) {
+      bottomBar.dataset.initialized = 'true';
+    }
+
     const collapsedBar = document.getElementById('collapsed-bar');
     const expandedContent = document.getElementById('expanded-content');
+    const blurredBackground = document.querySelector(
+      '#expanded-content .blurred-background'
+    );
     const closeMenu = document.getElementById('close-menu');
     const mainBarContent = document.getElementById('main-bar-content');
     const menuToggleButton = document.getElementById('menu-toggle-button');
     const plusIcon = document.getElementById('plus-icon');
     const minusIcon = document.getElementById('minus-icon');
     const overlay = document.getElementById('bottom-bar-overlay');
-    const pageFrame = document.getElementById('page-frame');
 
     // GSAP Animation elements
     const rLogo = document.getElementById('r-logo');
@@ -273,6 +270,17 @@ import { Plus, Minus } from 'lucide-react';
     });
 
     // (Legacy dynamic scale helpers removed)
+    // helper to resolve a CSS var (even if it uses calc/clamp) into px
+    function resolveVarPx(varName: string, fallback = '56px') {
+      const probe = document.createElement('div');
+      probe.style.position = 'absolute';
+      probe.style.visibility = 'hidden';
+      probe.style.height = `var(${varName})`;
+      document.body.appendChild(probe);
+      const px = getComputedStyle(probe).height;
+      probe.remove();
+      return px && px !== '0px' ? px : fallback;
+    }
 
     function openMenu() {
       if (collapsedBar && expandedContent && !isExpanded) {
@@ -345,16 +353,36 @@ import { Plus, Minus } from 'lucide-react';
           ease: 'power2.out',
         });
 
-        // Animate expanded content in
-        gsap.to(expandedContent, {
-          height: 'auto',
-          opacity: 1,
-          duration: MENU_DURATION * 1.2,
-          ease: 'power2.in',
-          onStart: () => {
-            expandedContent.style.pointerEvents = 'auto';
-          },
+        // Make collapsed bar background transparent to avoid double-layer darkening
+        gsap.to(collapsedBar, {
+          '--collapsed-bg-alpha': 0,
+          duration: MENU_DURATION,
+          ease: 'power2.out',
         });
+        if (blurredBackground) {
+          gsap.to(blurredBackground, {
+            opacity: 0.87,
+            duration: MENU_DURATION,
+            ease: 'power2.out',
+          });
+        }
+
+        // Animate expanded content in
+        const startH = resolveVarPx('--navbar-height'); // e.g., "64px"
+
+        gsap.fromTo(
+          expandedContent,
+          { height: startH, opacity: 1 }, // force start height
+          {
+            height: 'auto', // grow to natural height
+            opacity: 1,
+            duration: MENU_DURATION * 1.2,
+            ease: 'power2.in',
+            onStart: () => {
+              expandedContent.style.pointerEvents = 'auto';
+            },
+          }
+        );
       }
     }
 
@@ -414,9 +442,24 @@ import { Plus, Minus } from 'lucide-react';
               el ? (el.style.pointerEvents = 'auto') : null
             ),
         });
+
+        // Restore collapsed bar background when closing
+        gsap.to(collapsedBar, {
+          '--collapsed-bg-alpha': 1,
+          duration: MENU_DURATION,
+          ease: 'power2.in',
+        });
+
+        if (blurredBackground) {
+          gsap.to(blurredBackground, {
+            opacity: 1,
+            duration: MENU_DURATION,
+            ease: 'power2.in',
+          });
+        }
         // Animate expanded content out
         gsap.to(expandedContent, {
-          height: 0,
+          height: 'var(--navbar-height)',
           opacity: 1,
           duration: MENU_DURATION * 1.2,
           ease: 'power2.out',
@@ -444,7 +487,11 @@ import { Plus, Minus } from 'lucide-react';
       ) {
         return;
       }
-      openMenu();
+      if (isExpanded) {
+        closeMenuFunc();
+      } else {
+        openMenu();
+      }
     });
 
     // Button click handlers

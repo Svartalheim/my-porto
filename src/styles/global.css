@@ -46,18 +46,21 @@
 }
 :root {
   --radius: 0.625rem;
-  --100vw: 100dvw;
-  --navbar-bottom: clamp(24px, 21.621px + 100vw * 0.0061, 32px);
+  /* Dynamic viewport width minus scrollbar width (0 if no overflow) */
+  --scrollbar-width: calc(100vw - 100%);
+  --100vw: calc(100vw - var(--scrollbar-width));
+  --navbar-bottom: clamp(24px, 21.621px + var(--100vw) * 0.0061, 32px);
   --navbar-width-cols: 10;
   --navbar-left: calc(0.5 * (var(--100vw) - var(--navbar-width)));
-  --grid-gap: clamp(4px, -0.758px + 100vw * 0.0122, 20px);
-  --grid-margin: clamp(8px, 4.412px + 100vw * 0.0092, 20px);
+  --grid-gap: clamp(4px, -0.758px + var(--100vw) * 0.0122, 20px);
+  --grid-margin: clamp(8px, 4.412px + var(--100vw) * 0.0092, 20px);
   --grid-padding: calc(var(--grid-margin) - 0.5 * var(--grid-gap));
   --grid-width: calc(var(--100vw) - 2 * var(--grid-margin));
   --navbar-width: calc(
     var(--navbar-width-cols) * (var(--100vw) - 2 * var(--grid-padding)) / 24 -
       var(--grid-gap)
   );
+  --page-border-radius: 13px;
   --navbar-height: 46px;
   --background: oklch(0.9582 0.0041 271.37);
   --foreground: oklch(0.145 0 0);
