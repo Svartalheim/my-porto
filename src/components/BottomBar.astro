@@ -1,536 +1,501 @@
 ---
-import { Plus, Minus } from 'lucide-react';
-
+import { Plus, Minus } from "lucide-react";
+import LogoR from "public/logo/main-logo/logo_r.svg";
 // BottomBar.astro - Persistent bottom navigation component
 ---
 
 <!-- Overlay (dark + blur) -->
 <div
-  id='bottom-bar-overlay'
-  class='fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur-[0px] bg-black/40 will-change-[opacity]'
+  id="bottom-bar-overlay"
+  class="fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur-[0px] bg-black/40 will-change-[opacity]"
 >
 </div>
 <!-- Persistent Bottom Bar -->
 <nav
-  id='bottom-bar'
-  class='fixed bottom-[var(--navbar-bottom)] transform h-[var(--navbar-height)] left-[var(--navbar-left)] z-10 w-navbar'
+  id="bottom-bar"
+  class="fixed bottom-[var(--navbar-bottom)] transform h-[var(--navbar-height)] left-[var(--navbar-left)] z-10 w-navbar"
 >
   <!-- Collapsed Bar -->
   <div
-    id='collapsed-bar'
-    class='bg-black cursor-pointer relative z-20 text-white rounded-[20px] flex flex-col'
-    style='--collapsed-bg-alpha: 1;'
+    id="collapsed-bar"
+    class="bg-black cursor-pointer relative z-20 text-white rounded-[20px] flex flex-col"
+    style="--collapsed-bg-alpha: 1;"
   >
     <!-- Main Bar Content -->
     <div
-      id='main-bar-content'
-      class='h-[var(--navbar-height)] flex items-center justify-between px-[12px] gap-1 lg:px-[24px]'
+      id="main-bar-content"
+      class="h-[var(--navbar-height)] flex items-center justify-between px-[12px] gap-1 lg:px-[24px]"
     >
       <!-- SVG Container with overflow hidden for slide animation -->
-      <div class='relative w-8 h-8 overflow-hidden' id='svg-container'>
+      <div class="relative w-8 h-8 overflow-hidden" id="svg-container">
         <!-- Original R logo -->
-        <div
-          id='r-logo'
-          class='w-8 h-8 absolute flex items-center justify-center'
-        >
+        <div id="r-logo" class="w-8 h-8 absolute flex items-center justify-center">
           <svg
-            width='24'
-            height='24'
-            viewBox='0 0 31 50'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-            data-letter='r'
-            preserveAspectRatio='xMidYMid meet'
+            width="24"
+            height="24"
+            viewBox="0 0 31 50"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            data-letter="r"
+            preserveAspectRatio="xMidYMid meet"
           >
             <path
-              fill-rule='evenodd'
-              clip-rule='evenodd'
-              d='M16.8815 49.1619V40L0 40V90C0 90 3.01762 70.6614 12 64C17.9391 59.5955 30 58.1272 30 58.1272V40C28.8737 40.107 27.7341 40.0644 26.6133 40.0225C22.6745 39.8753 18.967 42.7685 16.8815 49.1619Z'
-              fill='currentColor'
-              class='fill-white'
-              transform='translate(0, -40)'></path>
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M16.8815 49.1619V40L0 40V90C0 90 3.01762 70.6614 12 64C17.9391 59.5955 30 58.1272 30 58.1272V40C28.8737 40.107 27.7341 40.0644 26.6133 40.0225C22.6745 39.8753 18.967 42.7685 16.8815 49.1619Z"
+              fill="currentColor"
+              class="fill-white"
+              transform="translate(0, -40)"></path>
           </svg>
         </div>
 
         <!-- Arrow up icon (starts below view) -->
-        <div
-          id='arrow-icon'
-          class='w-8 h-8 absolute flex items-center justify-center'
-        >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='24'
-            height='24'
-            viewBox='0 0 22 22'
+        <div id="arrow-icon" class="w-8 h-8 absolute flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 22 22"
             ><path
-              fill='currentColor'
-              d='M10 3H8v1H7v1H6v1H5v1H4v2h2V8h1V7h1v4h1v2h1v1h2v1h7v-2h-6v-1h-2v-2h-1V7h1v1h1v1h2V7h-1V6h-1V5h-1V4h-1'
+              fill="currentColor"
+              d="M10 3H8v1H7v1H6v1H5v1H4v2h2V8h1V7h1v4h1v2h1v1h2v1h7v-2h-6v-1h-2v-2h-1V7h1v1h1v1h2V7h-1V6h-1V5h-1V4h-1"
             ></path>
           </svg>
         </div>
       </div>
 
       <!-- Text Container with overflow hidden for slide animation -->
-      <div
-        class='relative overflow-hidden h-6 flex-1 ml-0 text-sm font-light'
-        id='text-container'
-      >
+      <div class="relative overflow-hidden h-6 flex-1 ml-0 text-sm font-light" id="text-container">
         <!-- Default text -->
-        <div
-          class='absolute w-full h-full flex items-center'
-          id='default-text'
-          style='top: 0;'
-        >
+        <div class="absolute w-full h-full flex items-center" id="default-text" style="top: 0;">
           <span>Portfolio</span>
         </div>
 
         <!-- Hover text (starts below view) -->
-        <div class='absolute w-full h-full flex items-center' id='hover-text'>
+        <div class="absolute w-full h-full flex items-center" id="hover-text">
           <span>Open Menu</span>
         </div>
       </div>
-      <button class='relative z-[999]' id='menu-toggle-button'>
+      <button class="relative z-[999]" id="menu-toggle-button">
         <!-- Plus icon container -->
-        <div
-          id='plus-icon'
-          class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
-        >
-          <Plus size={24} className='cursor-pointer' />
+        <div id="plus-icon" class="absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2">
+          <Plus size={24} className="cursor-pointer" />
         </div>
         <!-- Minus icon container (hidden initially) -->
-        <div
-          id='minus-icon'
-          class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
-        >
-          <Minus size={24} className='cursor-pointer' />
+        <div id="minus-icon" class="absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2">
+          <Minus size={24} className="cursor-pointer" />
         </div>
-        <span class='span-menu'>Open / Close Menu</span>
+        <span class="span-menu">Open / Close Menu</span>
       </button>
     </div>
   </div>
 
   <!-- Expanded Menu Content (hidden by default) -->
   <div
-    id='expanded-content'
-    class='opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden z-10'
-    style='height: var(--navbar-height);'
+    id="expanded-content"
+    class="opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden z-10"
+    style="height: var(--navbar-height);"
   >
-    <div class='blurred-background h-full absolute w-full'></div>
-    <div>
-      <p class='h-[750px]'>gyattt</p>
+    <div class="blurred-background h-full absolute w-full"></div>
+    <div class="h-auto menu-container">
+      <header class="pt-[30px] p-5 relative flex justify-between">
+        <a href={"/"} title="home" class="inline-block">
+          <LogoR width={48} class="text-white" />
+        </a>
+        <div>s</div>
+      </header>
+      <div>asd</div>
     </div>
   </div>
-</nav>
 
-<style>
-  .span-menu {
-    position: absolute;
-    width: calc(var(--navbar-width) + 16px);
-    height: calc(100% + 32px);
-    right: -24px;
-    top: -16px;
-    overflow: hidden;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  .blurred-background {
-    position: absolute;
-    inset: 0;
-    background: black;
-    border-radius: inherit;
-    background-clip: padding-box;
-    box-shadow:
-      0 4px 24px -8px rgba(0, 0, 0, 0.6),
-      0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-      0 1px 0 0 rgba(255, 255, 255, 0.1) inset;
-    overflow: hidden;
-    isolation: isolate;
-    will-change: backdrop-filter, background-color;
-  }
-
-  /* subtle grain overlay */
-  .blurred-background::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    /* SVG fractal noise as data URI */
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.35'/></svg>");
-    background-size: 128px 128px;
-    opacity: 0.5; /* grain strength */
-    mix-blend-mode: overlay; /* sits nicely on light/dark */
-  }
-  /* Control the collapsed bar's background alpha without affecting its children */
-  #collapsed-bar {
-    background-color: rgba(0, 0, 0, var(--collapsed-bg-alpha, 1));
-  }
-  #expanded-content {
-    transform-origin: bottom;
-    backdrop-filter: blur(12px) saturate(100%);
-    -webkit-backdrop-filter: blur(12px) saturate(100%);
-    will-change: transform, opacity, filter;
-  }
-</style>
-
-<script>
-  import { gsap } from 'gsap';
-
-  // Animation constants
-  const ANIMATION_DISTANCE = 32;
-  const HOVER_DURATION = 1;
-  const MENU_DURATION = 0.3;
-  const svgContainer = document.getElementById('svg-container');
-  const textContainer = document.getElementById('text-container');
-  const leftGroup = [svgContainer, textContainer];
-  // Bottom bar menu functionality
-  function initBottomBar() {
-    // Guard against double-initialization on the same element (e.g., initial load + astro:page-load)
-    const bottomBar = document.getElementById('bottom-bar');
-    if (!bottomBar) return;
-    if (
-      bottomBar instanceof HTMLElement &&
-      bottomBar.dataset.initialized === 'true'
-    ) {
-      return; // already initialized; prevents duplicate listeners and double firing
-    }
-    if (bottomBar instanceof HTMLElement) {
-      bottomBar.dataset.initialized = 'true';
+  <style>
+    .span-menu {
+      position: absolute;
+      width: calc(var(--navbar-width) + 16px);
+      height: calc(100% + 32px);
+      right: -24px;
+      top: -16px;
+      overflow: hidden;
+      opacity: 0;
+      cursor: pointer;
     }
 
-    const collapsedBar = document.getElementById('collapsed-bar');
-    const expandedContent = document.getElementById('expanded-content');
-    const blurredBackground = document.querySelector(
-      '#expanded-content .blurred-background'
-    );
-    const closeMenu = document.getElementById('close-menu');
-    const mainBarContent = document.getElementById('main-bar-content');
-    const menuToggleButton = document.getElementById('menu-toggle-button');
-    const plusIcon = document.getElementById('plus-icon');
-    const minusIcon = document.getElementById('minus-icon');
-    const overlay = document.getElementById('bottom-bar-overlay');
+    .blurred-background {
+      position: absolute;
+      inset: 0;
+      background: black;
+      border-radius: inherit;
+      background-clip: padding-box;
+      box-shadow:
+        0 4px 24px -8px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+        0 1px 0 0 rgba(255, 255, 255, 0.1) inset;
+      overflow: hidden;
+      isolation: isolate;
+      will-change: backdrop-filter, background-color;
+    }
 
-    // GSAP Animation elements
-    const rLogo = document.getElementById('r-logo');
-    const arrowIcon = document.getElementById('arrow-icon');
-    const defaultText = document.getElementById('default-text');
-    const hoverText = document.getElementById('hover-text');
+    /* subtle grain overlay */
+    .blurred-background::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      /* SVG fractal noise as data URI */
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.35'/></svg>");
+      background-size: 128px 128px;
+      opacity: 0.5; /* grain strength */
+      mix-blend-mode: overlay; /* sits nicely on light/dark */
+    }
+    /* Control the collapsed bar's background alpha without affecting its children */
+    #collapsed-bar {
+      background-color: rgba(0, 0, 0, var(--collapsed-bg-alpha, 1));
+    }
+    #expanded-content {
+      transform-origin: bottom;
+      backdrop-filter: blur(12px) saturate(100%);
+      -webkit-backdrop-filter: blur(12px) saturate(100%);
+      will-change: transform, opacity, filter;
+    }
 
-    // Expanded state tracking
-    let isExpanded = false;
+    .menu-container {
+      max-height: calc(100svh - 2 * var(--navbar-bottom));
+      min-height: 80lvh;
+      color: var(--color-primary-foreground);
+    }
+  </style>
 
-    gsap.set(rLogo, { y: 0 }); // rLogo in view
-    gsap.set(defaultText, { y: 0 }); // defaultText in view
-    gsap.set(arrowIcon, { y: -ANIMATION_DISTANCE }); // arrowIcon hidden above
-    gsap.set(hoverText, { y: ANIMATION_DISTANCE }); // hoverText hidden below
+  <script>
+    import { gsap } from "gsap";
 
-    // Set initial icon states
-    gsap.set(plusIcon, { opacity: 1, rotation: 0 });
-    gsap.set(minusIcon, { opacity: 0, rotation: 90 });
-
-    let hoverTl = gsap.timeline({ paused: true });
-
-    hoverTl
-      .to(
-        rLogo,
-        {
-          y: -ANIMATION_DISTANCE,
-          duration: HOVER_DURATION,
-          ease: 'sine.inOut',
-        },
-        0
-      )
-      .to(arrowIcon, { y: 0, duration: HOVER_DURATION, ease: 'sine.inOut' }, 0)
-      .to(
-        defaultText,
-        { y: ANIMATION_DISTANCE, duration: HOVER_DURATION, ease: 'sine.inOut' },
-        0
-      )
-      .to(hoverText, { y: 0, duration: HOVER_DURATION, ease: 'sine.inOut' }, 0);
-
-    hoverTl.eventCallback('onReverseComplete', () => {
-      gsap.set(rLogo, { y: 0 });
-      gsap.set(defaultText, { y: 0 });
-      gsap.set(arrowIcon, { y: -ANIMATION_DISTANCE });
-      gsap.set(hoverText, { y: ANIMATION_DISTANCE });
-    });
-
-    // Mouse enter - play animation (only if not expanded)
-    mainBarContent?.addEventListener('mouseenter', () => {
-      if (!isExpanded) {
-        hoverTl.play();
+    // Animation constants
+    const ANIMATION_DISTANCE = 32;
+    const HOVER_DURATION = 1;
+    const MENU_DURATION = 0.3;
+    const svgContainer = document.getElementById("svg-container");
+    const textContainer = document.getElementById("text-container");
+    const leftGroup = [svgContainer, textContainer];
+    // Bottom bar menu functionality
+    function initBottomBar() {
+      // Guard against double-initialization on the same element (e.g., initial load + astro:page-load)
+      const bottomBar = document.getElementById("bottom-bar");
+      if (!bottomBar) return;
+      if (bottomBar instanceof HTMLElement && bottomBar.dataset.initialized === "true") {
+        return; // already initialized; prevents duplicate listeners and double firing
       }
-    });
-
-    // Mouse leave - reverse animation (only if not expanded)
-    mainBarContent?.addEventListener('mouseleave', () => {
-      if (!isExpanded) {
-        hoverTl.reverse();
+      if (bottomBar instanceof HTMLElement) {
+        bottomBar.dataset.initialized = "true";
       }
-    });
 
-    // helper to resolve a CSS var (even if it uses calc/clamp) into px
-    function resolveVarPx(varName: string, fallback = '56px') {
-      const probe = document.createElement('div');
-      probe.style.position = 'absolute';
-      probe.style.visibility = 'hidden';
-      probe.style.height = `var(${varName})`;
-      document.body.appendChild(probe);
-      const px = getComputedStyle(probe).height;
-      probe.remove();
-      return px && px !== '0px' ? px : fallback;
-    }
+      const collapsedBar = document.getElementById("collapsed-bar");
+      const expandedContent = document.getElementById("expanded-content");
+      const blurredBackground = document.querySelector("#expanded-content .blurred-background");
+      const closeMenu = document.getElementById("close-menu");
+      const mainBarContent = document.getElementById("main-bar-content");
+      const menuToggleButton = document.getElementById("menu-toggle-button");
+      const plusIcon = document.getElementById("plus-icon");
+      const minusIcon = document.getElementById("minus-icon");
+      const overlay = document.getElementById("bottom-bar-overlay");
 
-    function openMenu() {
-      if (collapsedBar && expandedContent && !isExpanded) {
-        isExpanded = true;
-        const pageEl = document.getElementById('page');
-        if (pageEl) {
-          // Start from 0 each open
-          pageEl.setAttribute('data-blurred', 'true');
-          pageEl.setAttribute('inert', '');
-          gsap.fromTo(
-            pageEl,
-            { '--blur-p': 0 },
-            {
-              '--blur-p': 1,
-              duration: MENU_DURATION,
-              ease: 'power2.out',
-              onUpdate: () => {
-                // Optional hook for midpoint logic
-                // const val = gsap.getProperty(pageEl, '--blur-p');
-              },
-            }
-          );
-        }
-        // Show overlay
-        if (overlay) {
-          gsap.to(overlay, {
-            autoAlpha: 1,
-            duration: MENU_DURATION * 1.3,
-            ease: 'power2.out',
-            onStart: () => {
-              overlay.style.pointerEvents = 'auto';
-            },
-          });
-        }
-        // (Legacy ENABLE_PAGE_SCALE logic removed)
-        gsap.to(leftGroup, {
-          opacity: 0, // fade only; don't affect layout/visibility to avoid reflow quirks
-          duration: MENU_DURATION,
-          ease: 'power2.out',
-          onStart: () =>
-            leftGroup.forEach((el) =>
-              el ? (el.style.pointerEvents = 'none') : null
-            ),
-        });
-        // Stop hover animation and reset to default state
-        hoverTl.pause();
+      // GSAP Animation elements
+      const rLogo = document.getElementById("r-logo");
+      const arrowIcon = document.getElementById("arrow-icon");
+      const defaultText = document.getElementById("default-text");
+      const hoverText = document.getElementById("hover-text");
+
+      // Expanded state tracking
+      let isExpanded = false;
+
+      gsap.set(rLogo, { y: 0 }); // rLogo in view
+      gsap.set(defaultText, { y: 0 }); // defaultText in view
+      gsap.set(arrowIcon, { y: -ANIMATION_DISTANCE }); // arrowIcon hidden above
+      gsap.set(hoverText, { y: ANIMATION_DISTANCE }); // hoverText hidden below
+
+      // Set initial icon states
+      gsap.set(plusIcon, { opacity: 1, rotation: 0 });
+      gsap.set(minusIcon, { opacity: 0, rotation: 90 });
+
+      let hoverTl = gsap.timeline({ paused: true });
+
+      hoverTl
+        .to(
+          rLogo,
+          {
+            y: -ANIMATION_DISTANCE,
+            duration: HOVER_DURATION,
+            ease: "sine.inOut",
+          },
+          0
+        )
+        .to(arrowIcon, { y: 0, duration: HOVER_DURATION, ease: "sine.inOut" }, 0)
+        .to(defaultText, { y: ANIMATION_DISTANCE, duration: HOVER_DURATION, ease: "sine.inOut" }, 0)
+        .to(hoverText, { y: 0, duration: HOVER_DURATION, ease: "sine.inOut" }, 0);
+
+      hoverTl.eventCallback("onReverseComplete", () => {
         gsap.set(rLogo, { y: 0 });
         gsap.set(defaultText, { y: 0 });
         gsap.set(arrowIcon, { y: -ANIMATION_DISTANCE });
         gsap.set(hoverText, { y: ANIMATION_DISTANCE });
+      });
 
-        // Animate icon transition (Plus to Minus)
-        gsap.to(plusIcon, {
-          opacity: 0,
-          rotation: 90,
-          duration: MENU_DURATION,
-          ease: 'power2.inOut',
-        });
-        gsap.to(minusIcon, {
-          opacity: 1,
-          rotation: 0,
-          duration: MENU_DURATION,
-          ease: 'power2.inOut',
-        });
-
-        // Animate bar expansion upward
-        gsap.to(collapsedBar, {
-          height: 'auto',
-          duration: MENU_DURATION,
-          ease: 'power2.out',
-        });
-
-        // Make collapsed bar background transparent to avoid double-layer darkening
-        gsap.to(collapsedBar, {
-          '--collapsed-bg-alpha': 0,
-          duration: MENU_DURATION,
-          ease: 'power2.out',
-        });
-        if (blurredBackground) {
-          gsap.to(blurredBackground, {
-            opacity: 0.87,
-            duration: MENU_DURATION,
-            ease: 'power2.out',
-          });
+      // Mouse enter - play animation (only if not expanded)
+      mainBarContent?.addEventListener("mouseenter", () => {
+        if (!isExpanded) {
+          hoverTl.play();
         }
+      });
 
-        // Animate expanded content in
-        const startH = resolveVarPx('--navbar-height'); // e.g., "64px"
+      // Mouse leave - reverse animation (only if not expanded)
+      mainBarContent?.addEventListener("mouseleave", () => {
+        if (!isExpanded) {
+          hoverTl.reverse();
+        }
+      });
 
-        gsap.fromTo(
-          expandedContent,
-          { height: startH, opacity: 1 }, // force start height
-          {
-            height: 'auto', // grow to natural height
+      // helper to resolve a CSS var (even if it uses calc/clamp) into px
+      function resolveVarPx(varName: string, fallback = "56px") {
+        const probe = document.createElement("div");
+        probe.style.position = "absolute";
+        probe.style.visibility = "hidden";
+        probe.style.height = `var(${varName})`;
+        document.body.appendChild(probe);
+        const px = getComputedStyle(probe).height;
+        probe.remove();
+        return px && px !== "0px" ? px : fallback;
+      }
+
+      function openMenu() {
+        if (collapsedBar && expandedContent && !isExpanded) {
+          isExpanded = true;
+          const pageEl = document.getElementById("page");
+          if (pageEl) {
+            // Start from 0 each open
+            pageEl.setAttribute("data-blurred", "true");
+            pageEl.setAttribute("inert", "");
+            gsap.fromTo(
+              pageEl,
+              { "--blur-p": 0 },
+              {
+                "--blur-p": 1,
+                duration: MENU_DURATION,
+                ease: "power2.out",
+                onUpdate: () => {
+                  // Optional hook for midpoint logic
+                  // const val = gsap.getProperty(pageEl, '--blur-p');
+                },
+              }
+            );
+          }
+          // Show overlay
+          if (overlay) {
+            gsap.to(overlay, {
+              autoAlpha: 1,
+              duration: MENU_DURATION * 1.3,
+              ease: "power2.out",
+              onStart: () => {
+                overlay.style.pointerEvents = "auto";
+              },
+            });
+          }
+          // (Legacy ENABLE_PAGE_SCALE logic removed)
+          gsap.to(leftGroup, {
+            opacity: 0, // fade only; don't affect layout/visibility to avoid reflow quirks
+            duration: MENU_DURATION,
+            ease: "power2.out",
+            onStart: () => leftGroup.forEach((el) => (el ? (el.style.pointerEvents = "none") : null)),
+          });
+          // Stop hover animation and reset to default state
+          hoverTl.pause();
+          gsap.set(rLogo, { y: 0 });
+          gsap.set(defaultText, { y: 0 });
+          gsap.set(arrowIcon, { y: -ANIMATION_DISTANCE });
+          gsap.set(hoverText, { y: ANIMATION_DISTANCE });
+
+          // Animate icon transition (Plus to Minus)
+          gsap.to(plusIcon, {
+            opacity: 0,
+            rotation: 90,
+            duration: MENU_DURATION,
+            ease: "power2.inOut",
+          });
+          gsap.to(minusIcon, {
+            opacity: 1,
+            rotation: 0,
+            duration: MENU_DURATION,
+            ease: "power2.inOut",
+          });
+
+          // Animate bar expansion upward
+          gsap.to(collapsedBar, {
+            height: "auto",
+            duration: MENU_DURATION,
+            ease: "power2.out",
+          });
+
+          // Make collapsed bar background transparent to avoid double-layer darkening
+          gsap.to(collapsedBar, {
+            "--collapsed-bg-alpha": 0,
+            duration: MENU_DURATION,
+            ease: "power2.out",
+          });
+          if (blurredBackground) {
+            gsap.to(blurredBackground, {
+              opacity: 0.87,
+              duration: MENU_DURATION,
+              ease: "power2.out",
+            });
+          }
+
+          // Animate expanded content in
+          const startH = resolveVarPx("--navbar-height"); // e.g., "64px"
+
+          gsap.fromTo(
+            expandedContent,
+            { height: startH, opacity: 1 }, // force start height
+            {
+              height: "auto", // grow to natural height
+              opacity: 1,
+              duration: MENU_DURATION * 1.2,
+              ease: "power2.in",
+              onStart: () => {
+                expandedContent.style.pointerEvents = "auto";
+              },
+            }
+          );
+        }
+      }
+
+      function closeMenuFunc() {
+        if (collapsedBar && expandedContent && isExpanded) {
+          // Remove global scaling class
+          document.body.classList.remove("menu-open");
+          // (Legacy ENABLE_PAGE_SCALE restore logic removed)
+          isExpanded = false;
+          const pageEl = document.getElementById("page");
+          if (pageEl) {
+            gsap.to(pageEl, {
+              "--blur-p": 0,
+              duration: MENU_DURATION,
+              ease: "power2.in",
+              onComplete: () => {
+                pageEl.removeAttribute("data-blurred");
+                pageEl.removeAttribute("inert");
+              },
+            });
+          }
+
+          // Hide overlay
+          if (overlay) {
+            gsap.to(overlay, {
+              autoAlpha: 0,
+              duration: MENU_DURATION * 1.3,
+              ease: "power2.in",
+              onComplete: () => {
+                // overlay.style.pointerEvents = 'none';
+                // overlay.style.backgroundColor = '';
+                // overlay.style.backdropFilter = '';
+                // overlay.style.webkitBackdropFilter = '';
+              },
+            });
+          }
+
+          // Animate icon transition (Minus to Plus)
+          gsap.to(minusIcon, {
+            opacity: 0,
+            rotation: 90,
+            duration: MENU_DURATION,
+            ease: "power2.inOut",
+          });
+          gsap.to(plusIcon, {
+            opacity: 1,
+            rotation: 0,
+            duration: MENU_DURATION,
+            ease: "power2.inOut",
+          });
+          gsap.to(leftGroup, {
+            opacity: 1,
+            duration: MENU_DURATION,
+            ease: "power2.in",
+            onComplete: () => leftGroup.forEach((el) => (el ? (el.style.pointerEvents = "auto") : null)),
+          });
+
+          // Restore collapsed bar background when closing
+          gsap.to(collapsedBar, {
+            "--collapsed-bg-alpha": 1,
+            duration: MENU_DURATION,
+            ease: "power2.in",
+          });
+
+          if (blurredBackground) {
+            gsap.to(blurredBackground, {
+              opacity: 1,
+              duration: MENU_DURATION,
+              ease: "power2.in",
+            });
+          }
+          // Animate expanded content out
+          gsap.to(expandedContent, {
+            height: "var(--navbar-height)",
             opacity: 1,
             duration: MENU_DURATION * 1.2,
-            ease: 'power2.in',
-            onStart: () => {
-              expandedContent.style.pointerEvents = 'auto';
+            ease: "power2.out",
+            onComplete: () => {
+              expandedContent.style.pointerEvents = "none";
             },
-          }
-        );
+          });
+
+          // Animate bar back to original size
+          // gsap.to(collapsedBar, {
+          //   height: 'var(--navbar-height)',
+          //   duration: MENU_DURATION,
+          //   ease: 'power2.in',
+          // });
+        }
       }
+
+      // Event listeners
+      mainBarContent?.addEventListener("click", (e) => {
+        // Prevent button click from bubbling to mainBarContent
+        if (e.target && e.target instanceof Element && e.target.closest("#menu-toggle-button")) {
+          return;
+        }
+        if (isExpanded) {
+          closeMenuFunc();
+        } else {
+          openMenu();
+        }
+      });
+
+      // Button click handlers
+      menuToggleButton?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (isExpanded) {
+          closeMenuFunc();
+        } else {
+          openMenu();
+        }
+      });
+
+      // Clicking overlay closes the menu
+      overlay?.addEventListener("click", () => {
+        if (isExpanded) closeMenuFunc();
+      });
+
+      closeMenu?.addEventListener("click", closeMenuFunc);
+
+      // Close menu when clicking outside
+      document.addEventListener("click", (e) => {
+        const bottomBar = document.getElementById("bottom-bar");
+        if (bottomBar && e.target instanceof Node && !bottomBar.contains(e.target) && isExpanded) {
+          closeMenuFunc();
+        }
+      });
     }
 
-    function closeMenuFunc() {
-      if (collapsedBar && expandedContent && isExpanded) {
-        // Remove global scaling class
-        document.body.classList.remove('menu-open');
-        // (Legacy ENABLE_PAGE_SCALE restore logic removed)
-        isExpanded = false;
-        const pageEl = document.getElementById('page');
-        if (pageEl) {
-          gsap.to(pageEl, {
-            '--blur-p': 0,
-            duration: MENU_DURATION,
-            ease: 'power2.in',
-            onComplete: () => {
-              pageEl.removeAttribute('data-blurred');
-              pageEl.removeAttribute('inert');
-            },
-          });
-        }
-
-        // Hide overlay
-        if (overlay) {
-          gsap.to(overlay, {
-            autoAlpha: 0,
-            duration: MENU_DURATION * 1.3,
-            ease: 'power2.in',
-            onComplete: () => {
-              // overlay.style.pointerEvents = 'none';
-              // overlay.style.backgroundColor = '';
-              // overlay.style.backdropFilter = '';
-              // overlay.style.webkitBackdropFilter = '';
-            },
-          });
-        }
-
-        // Animate icon transition (Minus to Plus)
-        gsap.to(minusIcon, {
-          opacity: 0,
-          rotation: 90,
-          duration: MENU_DURATION,
-          ease: 'power2.inOut',
-        });
-        gsap.to(plusIcon, {
-          opacity: 1,
-          rotation: 0,
-          duration: MENU_DURATION,
-          ease: 'power2.inOut',
-        });
-        gsap.to(leftGroup, {
-          opacity: 1,
-          duration: MENU_DURATION,
-          ease: 'power2.in',
-          onComplete: () =>
-            leftGroup.forEach((el) =>
-              el ? (el.style.pointerEvents = 'auto') : null
-            ),
-        });
-
-        // Restore collapsed bar background when closing
-        gsap.to(collapsedBar, {
-          '--collapsed-bg-alpha': 1,
-          duration: MENU_DURATION,
-          ease: 'power2.in',
-        });
-
-        if (blurredBackground) {
-          gsap.to(blurredBackground, {
-            opacity: 1,
-            duration: MENU_DURATION,
-            ease: 'power2.in',
-          });
-        }
-        // Animate expanded content out
-        gsap.to(expandedContent, {
-          height: 'var(--navbar-height)',
-          opacity: 1,
-          duration: MENU_DURATION * 1.2,
-          ease: 'power2.out',
-          onComplete: () => {
-            expandedContent.style.pointerEvents = 'none';
-          },
-        });
-
-        // Animate bar back to original size
-        // gsap.to(collapsedBar, {
-        //   height: 'var(--navbar-height)',
-        //   duration: MENU_DURATION,
-        //   ease: 'power2.in',
-        // });
-      }
+    // Initialize on page load
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initBottomBar);
+    } else {
+      initBottomBar();
     }
 
-    // Event listeners
-    mainBarContent?.addEventListener('click', (e) => {
-      // Prevent button click from bubbling to mainBarContent
-      if (
-        e.target &&
-        e.target instanceof Element &&
-        e.target.closest('#menu-toggle-button')
-      ) {
-        return;
-      }
-      if (isExpanded) {
-        closeMenuFunc();
-      } else {
-        openMenu();
-      }
-    });
-
-    // Button click handlers
-    menuToggleButton?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (isExpanded) {
-        closeMenuFunc();
-      } else {
-        openMenu();
-      }
-    });
-
-    // Clicking overlay closes the menu
-    overlay?.addEventListener('click', () => {
-      if (isExpanded) closeMenuFunc();
-    });
-
-    closeMenu?.addEventListener('click', closeMenuFunc);
-
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      const bottomBar = document.getElementById('bottom-bar');
-      if (
-        bottomBar &&
-        e.target instanceof Node &&
-        !bottomBar.contains(e.target) &&
-        isExpanded
-      ) {
-        closeMenuFunc();
-      }
-    });
-  }
-
-  // Initialize on page load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initBottomBar);
-  } else {
-    initBottomBar();
-  }
-
-  // Re-initialize after page transitions
-  document.addEventListener('astro:page-load', initBottomBar);
-</script>
+    // Re-initialize after page transitions
+    document.addEventListener("astro:page-load", initBottomBar);
+  </script>
+</nav>

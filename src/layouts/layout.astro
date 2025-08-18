@@ -1,28 +1,28 @@
 ---
-import '../styles/global.css';
-import { ClientRouter } from 'astro:transitions';
-import Navigation from '../components/Navigation.astro';
-import BottomBar from '../components/BottomBar.astro';
-import Footer from '../layouts/Footer.astro';
+import "../styles/global.css";
+import { ViewTransitions } from "astro:transitions";
+import Navigation from "../components/Navigation.astro";
+import BottomBar from "../components/BottomBar.astro";
+import Footer from "../layouts/Footer.astro";
 // Define props for this layout. Extend as needed.
 export interface Props {
   name?: string; // page identifier / slug
   title?: string; // optional <title> override
 }
-const { name = 'page', title } = Astro.props as Props;
+const { name = "page", title } = Astro.props as Props;
 ---
 
-<html lang='en'>
+<html lang="en">
   <head>
-    <ClientRouter />
-    <meta charset='utf-8' />
-    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
-    <meta name='viewport' content='width=device-width' />
-    <meta name='generator' content={Astro.generator} />
-    <title>{title ? title : name ? `${name} | Astro` : 'Astro'}</title>
+    <ViewTransitions />
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title ? title : name ? `${name} | Astro` : "Astro"}</title>
 
-    <link rel='preconnect' href='https://fonts.googleapis.com' />
-    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <style>
       /* Prevent horizontal scrolling during transitions */
@@ -78,7 +78,7 @@ const { name = 'page', title } = Astro.props as Props;
         transition-property: transform, opacity;
         transition-timing-function: linear;
       }
-      #page[data-blurred='true'] .page-content {
+      #page[data-blurred="true"] .page-content {
         transform: scale(calc(1 - (var(--blr-s) * var(--blur-p))));
         /* opacity: calc(1 - 0.2333 * var(--blur-p)); */
       }
@@ -90,18 +90,16 @@ const { name = 'page', title } = Astro.props as Props;
         height: 100vh;
       }
 
-      #page[data-blurred='true']::after {
-        content: '';
-        position: fixed;
+      #page[data-blurred="true"]::after {
+        content: "";
+        position: absolute;
         left: 0;
-        right: 0;
+        /* right: 0; */
         height: 20vh;
-        background-color: var(--primary-foreground); /* match #page bg */
+        overflow: hidden;
+        background-color: red; /* match #page bg */
         pointer-events: none; /* don't block clicks */
-      }
-
-      #page[data-blurred='true']::after {
-        bottom: -20vh;
+        bottom: -10vh;
       }
 
       #page [data-blur-mask] > div > div:first-child:before {
@@ -114,7 +112,7 @@ const { name = 'page', title } = Astro.props as Props;
       }
       #page [data-blur-mask] > div > div:after,
       #page [data-blur-mask] > div > div:before {
-        content: '';
+        content: "";
         position: absolute;
         background-color: #000;
         will-change: transform;
@@ -143,10 +141,7 @@ const { name = 'page', title } = Astro.props as Props;
         left: var(--blr-m);
         border-top-left-radius: 20px;
         transform-origin: 0% 0%;
-        transform: translate(
-            calc((var(--blur-p) - 1) * var(--blr-m)),
-            calc((var(--blur-p) - 1) * var(--blr-m))
-          )
+        transform: translate(calc((var(--blur-p) - 1) * var(--blr-m)), calc((var(--blur-p) - 1) * var(--blr-m)))
           scale(var(--blur-p));
       }
 
@@ -154,10 +149,7 @@ const { name = 'page', title } = Astro.props as Props;
         right: var(--blr-m);
         border-top-right-radius: 20px;
         transform-origin: 100% 0%;
-        transform: translate(
-            calc(-1 * (var(--blur-p) - 1) * var(--blr-m)),
-            calc((var(--blur-p) - 1) * var(--blr-m))
-          )
+        transform: translate(calc(-1 * (var(--blur-p) - 1) * var(--blr-m)), calc((var(--blur-p) - 1) * var(--blr-m)))
           scale(var(--blur-p));
       }
 
@@ -195,15 +187,13 @@ const { name = 'page', title } = Astro.props as Props;
 
       /* Control the animations with strict timing */
       ::view-transition-old(page) {
-        animation: slide-out-down var(--transition-duration)
-          var(--transition-timing) var(--transition-delay) both;
+        animation: slide-out-down var(--transition-duration) var(--transition-timing) var(--transition-delay) both;
         z-index: -100;
         transform-origin: top left;
       }
 
       ::view-transition-new(page) {
-        animation: slide-in-bottom var(--transition-duration)
-          var(--transition-timing) var(--transition-delay) both;
+        animation: slide-in-bottom var(--transition-duration) var(--transition-timing) var(--transition-delay) both;
         z-index: 100;
       }
 
@@ -234,7 +224,7 @@ const { name = 'page', title } = Astro.props as Props;
       ::view-transition-group(root),
       ::view-transition-old(root),
       ::view-transition-new(root) {
-        animation-duration: var(--transition-duration);
+        animation-duration: 5s;
       }
 
       /* Ensure content inside the transition is visible */
@@ -291,10 +281,13 @@ const { name = 'page', title } = Astro.props as Props;
         transition-timing-function: var(--transition-timing);
       }
 
-      /* Disable transitions during page load */
+      /* While view transitions run, disable ad-hoc transitions to prevent flashing */
+      .animating *,
       .page-loading * {
         transition: none !important;
       }
+
+      /* Disable transitions during page load is handled above */
 
       /* Development indicator styles */
       .dev-indicator {
@@ -319,28 +312,23 @@ const { name = 'page', title } = Astro.props as Props;
       }
     </style>
   </head>
-  <body class='bg-primary text-primary'>
+  <body class="bg-primary text-primary">
     <BottomBar />
     <div
       data-slug={name}
-      class='page-container bg-background relative h-full max-w-[var(--100vw)]'
-      transition:name='page'
-      id='page'
+      class="page-container bg-background relative h-full max-w-[var(--100vw)]"
+      transition:name="page"
+      id="page"
     >
-      <div class='page-content'>
+      <div class="page-content">
         <slot />
         <Footer />
       </div>
-      <div
-        data-blur-mask
-        inert
-        aria-hidden='true'
-        class='absolute w-full h-full top-0 left-0 pointer-events-none'
-      >
+      <div data-blur-mask inert aria-hidden="true" class="absolute w-full h-full top-0 left-0 pointer-events-none">
         <div>
-          <div id='#overlay-left-right'></div>
-          <div id='#overlay-top'></div>
-          <div id='#overlay-corner'></div>
+          <div id="#overlay-left-right"></div>
+          <div id="#overlay-top"></div>
+          <div id="#overlay-corner"></div>
         </div>
         <span></span>
       </div>
@@ -348,73 +336,86 @@ const { name = 'page', title } = Astro.props as Props;
     <!-- Bottom navigation component -->
 
     <!-- Development indicator for View Transitions support (only in dev) -->
-    <div id='dev-indicator' class='dev-indicator' style='display: none;'>
-      View Transitions: <span id='transition-status'>Checking...</span>
+    <div id="dev-indicator" class="dev-indicator">
+      View Transitions: <span id="transition-status">Checking...</span>
     </div>
+
+    <script>
+      import Lenis from "lenis";
+
+      const lenis = new Lenis({
+        autoRaf: true,
+      });
+      // expose for transition handlers
+      (window as any).__lenis = lenis;
+    </script>
 
     <script>
       // Check for View Transitions API support and enable features
       function initViewTransitions() {
-        const hasViewTransition = 'startViewTransition' in document;
-        const devIndicator = document.getElementById('dev-indicator');
-        const statusSpan = document.getElementById('transition-status');
-
+        const hasViewTransition = "startViewTransition" in document;
+        const devIndicator = document.getElementById("dev-indicator");
+        const statusSpan = document.getElementById("transition-status");
+        document.documentElement.classList.add("view-transition-enabled");
         if (hasViewTransition) {
-          document.documentElement.classList.add('view-transition-enabled');
+          document.documentElement.classList.add("view-transition-enabled");
+
+          // Add animating class during transitions to prevent scrolling
+          document.addEventListener("astro:before-preparation", () => {
+            document.documentElement.classList.add("animating");
+            // pause Lenis during the transition to avoid jank or premature commits
+            const lenis = (window as any).__lenis;
+            if (lenis && typeof lenis.stop === "function") lenis.stop();
+          });
+
+          document.addEventListener("astro:after-swap", () => {
+            document.documentElement.classList.remove("animating");
+            // resume Lenis after transition completes
+            const lenis = (window as any).__lenis;
+            if (lenis && typeof lenis.start === "function") lenis.start();
+          });
 
           if (devIndicator && statusSpan) {
-            devIndicator.classList.add('supported');
-            statusSpan.textContent = 'Enabled';
+            devIndicator.classList.add("supported");
+            statusSpan.textContent = "Enabled";
           }
         } else {
-          console.warn('View Transitions API is NOT supported in this browser');
+          console.warn("View Transitions API is NOT supported in this browser");
 
           if (devIndicator && statusSpan) {
-            devIndicator.classList.add('not-supported');
-            statusSpan.textContent = 'Not Supported';
+            devIndicator.classList.add("not-supported");
+            statusSpan.textContent = "Not Supported";
           }
 
           // Show dev indicator only in development
           if (devIndicator && import.meta.env.DEV) {
-            devIndicator.style.display = 'block';
-          }
-
-          // Add animating class during transitions to prevent scrolling
-          if (hasViewTransition) {
-            document.addEventListener('astro:before-preparation', () => {
-              document.documentElement.classList.add('animating');
-            });
-
-            document.addEventListener('astro:after-swap', () => {
-              document.documentElement.classList.remove('animating');
-            });
+            devIndicator.style.display = "block";
           }
         }
       }
       // Initialize on page load
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initViewTransitions);
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initViewTransitions);
       } else {
         initViewTransitions();
       }
 
       // Cleanup on page unload
-      window.addEventListener('beforeunload', () => {
-        document.documentElement.classList.remove('view-transition-enabled');
-        document.documentElement.classList.remove('animating');
+      window.addEventListener("beforeunload", () => {
+        document.documentElement.classList.remove("view-transition-enabled");
+        document.documentElement.classList.remove("animating");
       });
 
       // ---- Dynamic transform-origin helpers ----
       // Element we scale
       function getPageEl() {
-        return document.getElementById('page');
+        return document.getElementById("page");
       }
 
       // tiny padding so the pivot isn't exactly on the edge (looks nicer)
       const EDGE_PAD_PCT = 4; // e.g. 8% from top/bottom
       const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-      const clamp = (v: number, lo: number, hi: number) =>
-        Math.min(hi, Math.max(lo, v));
+      const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
       /**
        * Compute origin based on scroll progress:
@@ -445,8 +446,8 @@ const { name = 'page', title } = Astro.props as Props;
         // map progress to a % along the element height with padding at edges
         const yPct = lerp(edgePadPct, 100 - edgePadPct, p);
 
-        page.style.setProperty('--origin-x', '50%');
-        page.style.setProperty('--origin-y', `${yPct}%`);
+        page.style.setProperty("--origin-x", "50%");
+        page.style.setProperty("--origin-y", `${yPct}%`);
       }
 
       /** Pivot around the click point (keeps your API the same) */
@@ -460,24 +461,18 @@ const { name = 'page', title } = Astro.props as Props;
 
         // Use full content height (scrollHeight) so long pages map correctly
         const h = Math.max(page.scrollHeight, page.clientHeight);
-        const yPct =
-          ((yWithin + window.scrollY - (rect.top + window.scrollY)) / h) * 100;
+        const yPct = ((yWithin + window.scrollY - (rect.top + window.scrollY)) / h) * 100;
 
-        page.style.setProperty('--origin-x', `${clamp(xPct, 0, 100)}%`);
-        page.style.setProperty('--origin-y', `${clamp(yPct, 0, 100)}%`);
+        page.style.setProperty("--origin-x", `${clamp(xPct, 0, 100)}%`);
+        page.style.setProperty("--origin-y", `${clamp(yPct, 0, 100)}%`);
       }
 
       // Public helper (optional baseline bump on Y)
-      (window as any).__setScaleOrigin = function (
-        xPct?: number,
-        yPct?: number
-      ) {
+      (window as any).__setScaleOrigin = function (xPct?: number, yPct?: number) {
         const page = getPageEl();
         if (!page) return;
-        if (typeof xPct === 'number')
-          page.style.setProperty('--origin-x', `${clamp(xPct, 0, 100)}%`);
-        if (typeof yPct === 'number')
-          page.style.setProperty('--origin-y', `${clamp(yPct, 0, 100)}%`);
+        if (typeof xPct === "number") page.style.setProperty("--origin-x", `${clamp(xPct, 0, 100)}%`);
+        if (typeof yPct === "number") page.style.setProperty("--origin-y", `${clamp(yPct, 0, 100)}%`);
       };
 
       // rAF'd listeners so we don’t thrash
@@ -491,21 +486,18 @@ const { name = 'page', title } = Astro.props as Props;
       }
 
       // Keep origin tied to viewport while scrolling/resizing
-      window.addEventListener('scroll', scheduleCompute, { passive: true });
-      window.addEventListener('resize', scheduleCompute, { passive: true });
-      window.addEventListener('orientationchange', scheduleCompute, {
+      window.addEventListener("scroll", scheduleCompute, { passive: true });
+      window.addEventListener("resize", scheduleCompute, { passive: true });
+      window.addEventListener("orientationchange", scheduleCompute, {
         passive: true,
       });
 
       // Delegate clicks that should pivot around the interacted point
       document.addEventListener(
-        'click',
+        "click",
         (e: MouseEvent) => {
           const t = e.target;
-          if (
-            t instanceof Element &&
-            t.closest('[data-origin-anchor],[data-expand],[data-open]')
-          ) {
+          if (t instanceof Element && t.closest("[data-origin-anchor],[data-expand],[data-open]")) {
             setOriginFromEvent(e);
           }
         },
@@ -516,12 +508,12 @@ const { name = 'page', title } = Astro.props as Props;
       function initOrigin() {
         computeOriginFromViewport();
       }
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initOrigin);
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initOrigin);
       } else {
         initOrigin();
       }
-      document.addEventListener('astro:after-swap', initOrigin);
+      document.addEventListener("astro:after-swap", initOrigin);
     </script>
   </body>
 </html>
