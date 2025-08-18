@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import Navigation from "../components/Navigation.astro";
 import BottomBar from "../components/BottomBar.astro";
 import Footer from "../layouts/Footer.astro";
@@ -14,7 +14,7 @@ const { name = "page", title } = Astro.props as Props;
 
 <html lang="en">
   <head>
-    <ViewTransitions />
+    <ClientRouter />
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
@@ -24,7 +24,7 @@ const { name = "page", title } = Astro.props as Props;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <style>
+    <style is:global>
       /* Prevent horizontal scrolling during transitions */
       html {
         overflow-x: hidden;
@@ -169,9 +169,9 @@ const { name = "page", title } = Astro.props as Props;
       }
 
       /* Only apply transitions when View Transitions API is supported */
-      .view-transition-enabled {
+      /* .view-transition-enabled {
         view-transition-name: none;
-      }
+      } */
 
       .view-transition-enabled .page-container {
         view-transition-name: page;
