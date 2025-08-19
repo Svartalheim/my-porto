@@ -49,6 +49,8 @@
   --transition-duration: 0.4s;
   --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
   --transition-delay: 0s;
+    --bar-safe: calc(var(--navbar-height) + var(--navbar-bottom) + 12px);
+
   /* Dynamic viewport width minus scrollbar width (0 if no overflow) */
   --scrollbar-width: 0px;
   --100vw: calc(100vw - var(--scrollbar-width));
