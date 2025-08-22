@@ -1,125 +1,102 @@
 ---
-import { Plus, Minus } from 'lucide-react';
-import LogoR from 'public/logo/main-logo/logo_r.svg';
+import { Plus, Minus } from "lucide-react";
+import LogoR from "public/logo/main-logo/logo_r.svg";
 ---
 
 <!-- Overlay (dark + blur) -->
 <div
-  id='bottom-bar-overlay'
-  class='fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur-[0px] bg-black/40 will-change-[opacity]'
+  id="bottom-bar-overlay"
+  class="fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur-[0px] bg-black/40 will-change-[opacity]"
 >
 </div>
 <!-- Persistent Bottom Bar -->
 <nav
-  id='bottom-bar'
+  id="bottom-bar"
   transition:persist
-  class='fixed bottom-[var(--navbar-bottom)] transform h-[var(--navbar-height)] left-[var(--navbar-left)] z-10 w-navbar'
+  class="fixed bottom-[var(--navbar-bottom)] transform h-[var(--navbar-height)] left-[var(--navbar-left)] z-10 w-navbar"
 >
   <!-- Collapsed Bar -->
   <div
-    id='collapsed-bar'
-    class='bg-black cursor-pointer relative z-20 text-white rounded-[20px] flex flex-col'
-    style='--collapsed-bg-alpha: 1;'
+    id="collapsed-bar"
+    class="bg-black cursor-pointer relative z-20 text-white rounded-[20px] flex flex-col"
+    style="--collapsed-bg-alpha: 1;"
   >
     <!-- Main Bar Content -->
     <div
-      id='main-bar-content'
-      class='h-[var(--navbar-height)] flex items-center justify-between px-[12px] gap-1 lg:px-[24px]'
+      id="main-bar-content"
+      class="h-[var(--navbar-height)] flex items-center justify-between px-[12px] gap-1 lg:px-[24px]"
     >
       <!-- SVG Container with overflow hidden for slide animation -->
-      <div class='relative w-8 h-8 overflow-hidden' id='svg-container'>
+      <div class="relative w-8 h-8 overflow-hidden" id="svg-container">
         <!-- Original R logo -->
-        <div
-          id='r-logo'
-          class='w-8 h-8 absolute flex items-center justify-center'
-        >
+        <div id="r-logo" class="w-8 h-8 absolute flex items-center justify-center">
           <svg
-            width='24'
-            height='24'
-            viewBox='0 0 31 50'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-            data-letter='r'
-            preserveAspectRatio='xMidYMid meet'
+            width="24"
+            height="24"
+            viewBox="0 0 31 50"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            data-letter="r"
+            preserveAspectRatio="xMidYMid meet"
           >
             <path
-              fill-rule='evenodd'
-              clip-rule='evenodd'
-              d='M16.8815 49.1619V40L0 40V90C0 90 3.01762 70.6614 12 64C17.9391 59.5955 30 58.1272 30 58.1272V40C28.8737 40.107 27.7341 40.0644 26.6133 40.0225C22.6745 39.8753 18.967 42.7685 16.8815 49.1619Z'
-              fill='currentColor'
-              class='fill-white'
-              transform='translate(0, -40)'></path>
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M16.8815 49.1619V40L0 40V90C0 90 3.01762 70.6614 12 64C17.9391 59.5955 30 58.1272 30 58.1272V40C28.8737 40.107 27.7341 40.0644 26.6133 40.0225C22.6745 39.8753 18.967 42.7685 16.8815 49.1619Z"
+              fill="currentColor"
+              class="fill-white"
+              transform="translate(0, -40)"></path>
           </svg>
         </div>
 
         <!-- Arrow up icon (starts below view) -->
-        <div
-          id='arrow-icon'
-          class='w-8 h-8 absolute flex items-center justify-center'
-        >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='24'
-            height='24'
-            viewBox='0 0 22 22'
+        <div id="arrow-icon" class="w-8 h-8 absolute flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 22 22"
             ><path
-              fill='currentColor'
-              d='M10 3H8v1H7v1H6v1H5v1H4v2h2V8h1V7h1v4h1v2h1v1h2v1h7v-2h-6v-1h-2v-2h-1V7h1v1h1v1h2V7h-1V6h-1V5h-1V4h-1'
+              fill="currentColor"
+              d="M10 3H8v1H7v1H6v1H5v1H4v2h2V8h1V7h1v4h1v2h1v1h2v1h7v-2h-6v-1h-2v-2h-1V7h1v1h1v1h2V7h-1V6h-1V5h-1V4h-1"
             ></path>
           </svg>
         </div>
       </div>
 
       <!-- Text Container with overflow hidden for slide animation -->
-      <div
-        class='relative overflow-hidden h-6 flex-1 ml-0 text-sm font-light'
-        id='text-container'
-      >
+      <div class="relative overflow-hidden h-6 flex-1 ml-0 text-sm font-light" id="text-container">
         <!-- Default text -->
-        <div
-          class='absolute w-full h-full flex items-center'
-          id='default-text'
-          style='top: 0;'
-        >
+        <div class="absolute w-full h-full flex items-center" id="default-text" style="top: 0;">
           <span>Portfolio</span>
         </div>
 
         <!-- Hover text (starts below view) -->
-        <div class='absolute w-full h-full flex items-center' id='hover-text'>
+        <div class="absolute w-full h-full flex items-center" id="hover-text">
           <span>Open Menu</span>
         </div>
       </div>
-      <button class='relative z-[999]' id='menu-toggle-button'>
+      <button class="relative z-[999]" id="menu-toggle-button">
         <!-- Plus icon container -->
-        <div
-          id='plus-icon'
-          class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
-        >
-          <Plus size={24} className='cursor-pointer' />
+        <div id="plus-icon" class="absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2">
+          <Plus size={24} className="cursor-pointer" />
         </div>
         <!-- Minus icon container (hidden initially) -->
-        <div
-          id='minus-icon'
-          class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
-        >
-          <Minus size={24} className='cursor-pointer' />
+        <div id="minus-icon" class="absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2">
+          <Minus size={24} className="cursor-pointer" />
         </div>
-        <span class='span-menu'>Open / Close Menu</span>
+        <span class="span-menu">Open / Close Menu</span>
       </button>
     </div>
   </div>
 
   <!-- Expanded Menu Content (hidden by default) -->
   <div
-    id='expanded-content'
-    class='opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden z-10'
-    style='height: var(--navbar-height);'
+    id="expanded-content"
+    class="opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden z-10"
+    style="height: var(--navbar-height);"
   >
-    <div class='blurred-background h-full absolute w-full'></div>
-    <div class='h-auto menu-container'>
-      <header class='pt-[30px] p-5 relative flex justify-between'>
-        <a href={'/'} title='home' class='inline-block'>
-          <LogoR width={48} class='text-white' />
+    <div class="blurred-background h-full absolute w-full"></div>
+    <div class="h-auto menu-container">
+      <header class="pt-[30px] p-5 relative flex justify-between">
+        <a href={"/"} title="home" class="inline-block">
+          <LogoR width={48} class="text-white" />
         </a>
         <div>s</div>
       </header>
@@ -156,10 +133,11 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
 
   /* subtle grain overlay */
   .blurred-background::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
+
     /* SVG fractal noise as data URI */
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.35'/></svg>");
     background-size: 128px 128px;
@@ -185,50 +163,59 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
 </style>
 
 <script>
-  import { gsap } from 'gsap';
+  import { gsap } from "gsap";
+
+  // Global type declarations
+  declare global {
+    interface Window {
+      __bottomBarExpanded?: boolean;
+      __lenis?: {
+        stop?: () => void;
+        start?: () => void;
+      };
+    }
+  }
 
   // Animation constants
   const ANIMATION_DISTANCE = 32;
   const HOVER_DURATION = 1;
   const MENU_DURATION = 0.3;
-  const svgContainer = document.getElementById('svg-container');
-  const textContainer = document.getElementById('text-container');
+  const svgContainer = document.getElementById("svg-container");
+  const textContainer = document.getElementById("text-container");
   const leftGroup = [svgContainer, textContainer];
   // Bottom bar menu functionality
-  function initBottomBar() {
+  function initBottomBar(): void {
     // Guard against double-initialization on the same element (e.g., initial load + astro:page-load)
-    const bottomBar = document.getElementById('bottom-bar');
+    const bottomBar = document.getElementById("bottom-bar");
     if (!bottomBar) return;
-    if (
-      bottomBar instanceof HTMLElement &&
-      bottomBar.dataset.initialized === 'true'
-    ) {
+    if (bottomBar instanceof HTMLElement && bottomBar.dataset.initialized === "true") {
       return; // already initialized; prevents duplicate listeners and double firing
     }
     if (bottomBar instanceof HTMLElement) {
-      bottomBar.dataset.initialized = 'true';
+      bottomBar.dataset.initialized = "true";
     }
 
-    const collapsedBar = document.getElementById('collapsed-bar');
-    const expandedContent = document.getElementById('expanded-content');
-    const blurredBackground = document.querySelector(
-      '#expanded-content .blurred-background'
-    );
-    const closeMenu = document.getElementById('close-menu');
-    const mainBarContent = document.getElementById('main-bar-content');
-    const menuToggleButton = document.getElementById('menu-toggle-button');
-    const plusIcon = document.getElementById('plus-icon');
-    const minusIcon = document.getElementById('minus-icon');
-    const overlay = document.getElementById('bottom-bar-overlay');
+    const collapsedBar = document.getElementById("collapsed-bar");
+    const expandedContent = document.getElementById("expanded-content");
+    const blurredBackground = document.querySelector("#expanded-content .blurred-background");
+    const closeMenu = document.getElementById("close-menu");
+    const mainBarContent = document.getElementById("main-bar-content");
+    const menuToggleButton = document.getElementById("menu-toggle-button");
+    const plusIcon = document.getElementById("plus-icon");
+    const minusIcon = document.getElementById("minus-icon");
+    const overlay = document.getElementById("bottom-bar-overlay");
 
     // GSAP Animation elements
-    const rLogo = document.getElementById('r-logo');
-    const arrowIcon = document.getElementById('arrow-icon');
-    const defaultText = document.getElementById('default-text');
-    const hoverText = document.getElementById('hover-text');
+    const rLogo = document.getElementById("r-logo");
+    const arrowIcon = document.getElementById("arrow-icon");
+    const defaultText = document.getElementById("default-text");
+    const hoverText = document.getElementById("hover-text");
 
     // Expanded state tracking
     let isExpanded = false;
+
+    // Expose expanded state globally for other scripts to access
+    window.__bottomBarExpanded = false;
 
     gsap.set(rLogo, { y: 0 }); // rLogo in view
     gsap.set(defaultText, { y: 0 }); // defaultText in view
@@ -247,23 +234,23 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
         {
           y: -ANIMATION_DISTANCE,
           duration: HOVER_DURATION,
-          ease: 'sine.inOut',
+          ease: "sine.inOut",
         },
         0
       )
-      .to(arrowIcon, { y: 0, duration: HOVER_DURATION, ease: 'sine.inOut' }, 0)
+      .to(arrowIcon, { y: 0, duration: HOVER_DURATION, ease: "sine.inOut" }, 0)
       .to(
         defaultText,
         {
           y: ANIMATION_DISTANCE,
           duration: HOVER_DURATION,
-          ease: 'sine.inOut',
+          ease: "sine.inOut",
         },
         0
       )
-      .to(hoverText, { y: 0, duration: HOVER_DURATION, ease: 'sine.inOut' }, 0);
+      .to(hoverText, { y: 0, duration: HOVER_DURATION, ease: "sine.inOut" }, 0);
 
-    hoverTl.eventCallback('onReverseComplete', () => {
+    hoverTl.eventCallback("onReverseComplete", () => {
       gsap.set(rLogo, { y: 0 });
       gsap.set(defaultText, { y: 0 });
       gsap.set(arrowIcon, { y: -ANIMATION_DISTANCE });
@@ -271,46 +258,48 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
     });
 
     // Mouse enter - play animation (only if not expanded)
-    mainBarContent?.addEventListener('mouseenter', () => {
+    mainBarContent?.addEventListener("mouseenter", () => {
       if (!isExpanded) {
         hoverTl.play();
       }
     });
 
     // Mouse leave - reverse animation (only if not expanded)
-    mainBarContent?.addEventListener('mouseleave', () => {
+    mainBarContent?.addEventListener("mouseleave", () => {
       if (!isExpanded) {
         hoverTl.reverse();
       }
     });
 
     // helper to resolve a CSS var (even if it uses calc/clamp) into px
-    function resolveVarPx(varName: string, fallback = '56px') {
-      const probe = document.createElement('div');
-      probe.style.position = 'absolute';
-      probe.style.visibility = 'hidden';
+    function resolveVarPx(varName: string, fallback: string = "56px"): string {
+      const probe = document.createElement("div");
+      probe.style.position = "absolute";
+      probe.style.visibility = "hidden";
       probe.style.height = `var(${varName})`;
       document.body.appendChild(probe);
       const px = getComputedStyle(probe).height;
       probe.remove();
-      return px && px !== '0px' ? px : fallback;
+      return px && px !== "0px" ? px : fallback;
     }
 
-    function openMenu() {
+    function openMenu(): void {
       if (collapsedBar && expandedContent && !isExpanded) {
         isExpanded = true;
-        const pageEl = document.getElementById('page');
+        window.__bottomBarExpanded = true;
+        const pageEl = document.getElementById("page");
+        window.__lenis?.stop?.();
         if (pageEl) {
           // Start from 0 each open
-          pageEl.setAttribute('data-blurred', 'true');
-          pageEl.setAttribute('inert', '');
+          pageEl.setAttribute("data-blurred", "true");
+          pageEl.setAttribute("inert", "");
           gsap.fromTo(
             pageEl,
-            { '--blur-p': 0 },
+            { "--blur-p": 0 },
             {
-              '--blur-p': 1,
+              "--blur-p": 1,
               duration: MENU_DURATION,
-              ease: 'power2.out',
+              // ease: 'power2.out',
               onUpdate: () => {
                 // Optional hook for midpoint logic
                 // const val = gsap.getProperty(pageEl, '--blur-p');
@@ -325,9 +314,9 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
             autoAlpha: 1,
             opacity: 1,
             duration: MENU_DURATION * 1.3,
-            ease: 'power2.out',
+            ease: "power2.out",
             onStart: () => {
-              overlay.style.pointerEvents = 'auto';
+              overlay.style.pointerEvents = "auto";
             },
           });
         }
@@ -335,11 +324,8 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
         gsap.to(leftGroup, {
           opacity: 0, // fade only; don't affect layout/visibility to avoid reflow quirks
           duration: MENU_DURATION,
-          ease: 'power2.out',
-          onStart: () =>
-            leftGroup.forEach((el) =>
-              el ? (el.style.pointerEvents = 'none') : null
-            ),
+          ease: "power2.out",
+          onStart: () => leftGroup.forEach((el) => (el ? (el.style.pointerEvents = "none") : null)),
         });
         // Stop hover animation and reset to default state
         hoverTl.pause();
@@ -353,70 +339,73 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
           opacity: 0,
           rotation: 90,
           duration: MENU_DURATION,
-          ease: 'power2.inOut',
+          ease: "power2.inOut",
         });
         gsap.to(minusIcon, {
           opacity: 1,
           rotation: 0,
           duration: MENU_DURATION,
-          ease: 'power2.inOut',
+          ease: "power2.inOut",
         });
 
         // Animate bar expansion upward
         gsap.to(collapsedBar, {
-          height: 'auto',
+          height: "auto",
           duration: MENU_DURATION,
-          ease: 'power2.out',
+          ease: "power2.out",
         });
 
         // Make collapsed bar background transparent to avoid double-layer darkening
         gsap.to(collapsedBar, {
-          '--collapsed-bg-alpha': 0,
+          "--collapsed-bg-alpha": 0,
           duration: MENU_DURATION,
-          ease: 'power2.out',
+          ease: "power2.out",
         });
         if (blurredBackground) {
           gsap.to(blurredBackground, {
             opacity: 0.87,
             duration: MENU_DURATION,
-            ease: 'power2.out',
+            ease: "power2.out",
           });
         }
 
         // Animate expanded content in
-        const startH = resolveVarPx('--navbar-height'); // e.g., "64px"
+        const startH = resolveVarPx("--navbar-height"); // e.g., "64px"
 
         gsap.fromTo(
           expandedContent,
           { height: startH, opacity: 1 }, // force start height
           {
-            height: 'auto', // grow to natural height
+            height: "auto", // grow to natural height
             opacity: 1,
             duration: MENU_DURATION * 1.2,
-            ease: 'power2.in',
+            ease: "power2.in",
             onStart: () => {
-              expandedContent.style.pointerEvents = 'auto';
+              expandedContent.style.pointerEvents = "auto";
             },
           }
         );
       }
     }
 
-    function closeMenuFunc() {
+    function closeMenuFunc(): void {
       if (collapsedBar && expandedContent && isExpanded) {
         // Remove global scaling class
-        document.body.classList.remove('menu-open');
+        document.body.classList.remove("menu-open");
+        window.__lenis?.start?.();
+
         // (Legacy ENABLE_PAGE_SCALE restore logic removed)
         isExpanded = false;
-        const pageEl = document.getElementById('page');
+        window.__bottomBarExpanded = false;
+        const pageEl = document.getElementById("page");
         if (pageEl) {
           gsap.to(pageEl, {
-            '--blur-p': 0,
+            "--blur-p": 0,
             duration: MENU_DURATION,
-            ease: 'power2.in',
+            ease: "power2.in",
             onComplete: () => {
-              pageEl.removeAttribute('data-blurred');
-              pageEl.removeAttribute('inert');
+              pageEl.removeAttribute("data-blurred");
+              pageEl.removeAttribute("inert");
             },
           });
         }
@@ -426,7 +415,7 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
           gsap.to(overlay, {
             autoAlpha: 0,
             duration: MENU_DURATION * 1.3,
-            ease: 'power2.in',
+            ease: "power2.in",
             onComplete: () => {
               // overlay.style.pointerEvents = 'none';
               // overlay.style.backgroundColor = '';
@@ -441,46 +430,43 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
           opacity: 0,
           rotation: 90,
           duration: MENU_DURATION,
-          ease: 'power2.inOut',
+          ease: "power2.inOut",
         });
         gsap.to(plusIcon, {
           opacity: 1,
           rotation: 0,
           duration: MENU_DURATION,
-          ease: 'power2.inOut',
+          ease: "power2.inOut",
         });
         gsap.to(leftGroup, {
           opacity: 1,
           duration: MENU_DURATION,
-          ease: 'power2.in',
-          onComplete: () =>
-            leftGroup.forEach((el) =>
-              el ? (el.style.pointerEvents = 'auto') : null
-            ),
+          ease: "power2.in",
+          onComplete: () => leftGroup.forEach((el) => (el ? (el.style.pointerEvents = "auto") : null)),
         });
 
         // Restore collapsed bar background when closing
         gsap.to(collapsedBar, {
-          '--collapsed-bg-alpha': 1,
+          "--collapsed-bg-alpha": 1,
           duration: MENU_DURATION,
-          ease: 'power2.in',
+          ease: "power2.in",
         });
 
         if (blurredBackground) {
           gsap.to(blurredBackground, {
             opacity: 1,
             duration: MENU_DURATION,
-            ease: 'power2.in',
+            ease: "power2.in",
           });
         }
         // Animate expanded content out
         gsap.to(expandedContent, {
-          height: 'var(--navbar-height)',
+          height: "var(--navbar-height)",
           opacity: 1,
           duration: MENU_DURATION * 1.2,
-          ease: 'power2.out',
+          ease: "power2.out",
           onComplete: () => {
-            expandedContent.style.pointerEvents = 'none';
+            expandedContent.style.pointerEvents = "none";
           },
         });
 
@@ -494,13 +480,9 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
     }
 
     // Event listeners
-    mainBarContent?.addEventListener('click', (e) => {
+    mainBarContent?.addEventListener("click", (e) => {
       // Prevent button click from bubbling to mainBarContent
-      if (
-        e.target &&
-        e.target instanceof Element &&
-        e.target.closest('#menu-toggle-button')
-      ) {
+      if (e.target && e.target instanceof Element && e.target.closest("#menu-toggle-button")) {
         return;
       }
       if (isExpanded) {
@@ -511,7 +493,7 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
     });
 
     // Button click handlers
-    menuToggleButton?.addEventListener('click', (e) => {
+    menuToggleButton?.addEventListener("click", (e) => {
       e.stopPropagation();
       if (isExpanded) {
         closeMenuFunc();
@@ -521,33 +503,28 @@ import LogoR from 'public/logo/main-logo/logo_r.svg';
     });
 
     // Clicking overlay closes the menu
-    overlay?.addEventListener('click', () => {
+    overlay?.addEventListener("click", () => {
       if (isExpanded) closeMenuFunc();
     });
 
-    closeMenu?.addEventListener('click', closeMenuFunc);
+    closeMenu?.addEventListener("click", closeMenuFunc);
 
     // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      const bottomBar = document.getElementById('bottom-bar');
-      if (
-        bottomBar &&
-        e.target instanceof Node &&
-        !bottomBar.contains(e.target) &&
-        isExpanded
-      ) {
+    document.addEventListener("click", (e) => {
+      const bottomBar = document.getElementById("bottom-bar");
+      if (bottomBar && e.target instanceof Node && !bottomBar.contains(e.target) && isExpanded) {
         closeMenuFunc();
       }
     });
   }
 
   // Initialize on page load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initBottomBar);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initBottomBar);
   } else {
     initBottomBar();
   }
 
   // Re-initialize after page transitions
-  document.addEventListener('astro:page-load', initBottomBar);
+  document.addEventListener("astro:page-load", initBottomBar);
 </script>
