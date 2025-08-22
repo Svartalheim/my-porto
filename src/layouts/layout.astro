@@ -54,7 +54,7 @@ const { name, title } = Astro.props as Props;
         min-height: 100vh;
       }
 
-      #page {
+      .page-container {
         --blur-p: 0;
         --blr-m: var(--grid-margin);
         --blr-s-min: 0.032;
@@ -70,27 +70,27 @@ const { name, title } = Astro.props as Props;
       }
 
       @media (max-width: 743px) {
-        #page {
+        .page-container {
           --blr-m: 10px;
         }
       }
       @media (max-width: 1200px) {
-        #page {
+        .page-container {
           --blr-s: 0.037;
         }
       }
       @media (max-width: 900px) {
-        #page {
+        .page-container {
           --blr-s: 0.0594;
         }
       }
       @media (max-width: 600px) {
-        #page {
+        .page-container {
           --blr-s: var(--blr-s-max);
         }
       }
 
-      #page .page-content {
+      .page-container .page-content {
         will-change: transform;
         transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
         transition-duration: var(--MENU_DURATION, 0.2s);
@@ -103,7 +103,6 @@ const { name, title } = Astro.props as Props;
       /* Ghost (old page snapshot) is appended directly to <body> */
 
       #ghost-layer {
-        z-index: 20;
       }
 
       .ghost-page {
@@ -111,7 +110,6 @@ const { name, title } = Astro.props as Props;
         overflow: clip;
         pointer-events: none;
         will-change: transform, opacity;
-        z-index: 20; /* above #page (z-1), below persistent chrome if needed */
         background: var(--background);
       }
 
@@ -131,7 +129,7 @@ const { name, title } = Astro.props as Props;
 
       /* NEW page enter — your slide-in-bottom */
       .page-enter {
-        transform: translateY(75%);
+        transform: translateY(115%);
         opacity: 1;
       }
       .page-enter-active {
@@ -158,11 +156,15 @@ const { name, title } = Astro.props as Props;
         transition-timing-function: var(--transition-timing);
       }
 
-      #page[data-blurred='true'] .page-content {
+      .page-container[data-blurred='true'] .page-content {
         transform: scale(calc(1 - (var(--blr-s) * var(--blur-p))));
         /* opacity: calc(1 - 0.2333 * var(--blur-p)); */
       }
-      #page [data-blur-mask] > div {
+      .page-container[data-blurred='true'] .page-content {
+        transform: scale(calc(1 - (var(--blr-s) * var(--blur-p))));
+        /* opacity: calc(1 - 0.2333 * var(--blur-p)); */
+      }
+      .page-container [data-blur-mask] > div {
         position: sticky;
         top: 0;
         left: 0;
@@ -170,54 +172,54 @@ const { name, title } = Astro.props as Props;
         height: 100vh;
       }
 
-      #page[data-blurred='true']::after {
+      .page-container[data-blurred='true']::after {
         content: '';
         position: absolute;
         left: 0;
         /* right: 0; */
         height: 20vh;
         overflow: hidden;
-        background-color: red; /* match #page bg */
+        background-color: red; /* match .page-container bg */
         pointer-events: none; /* don't block clicks */
         bottom: -10vh;
       }
 
-      #page [data-blur-mask] > div > div:first-child:before {
+      .page-container [data-blur-mask] > div > div:first-child:before {
         left: 0;
         transform-origin: left;
       }
-      #page [data-blur-mask] > div > div:first-child:after {
+      .page-container [data-blur-mask] > div > div:first-child:after {
         right: 0;
         transform-origin: right;
       }
-      #page [data-blur-mask] > div > div:after,
-      #page [data-blur-mask] > div > div:before {
+      .page-container [data-blur-mask] > div > div:after,
+      .page-container [data-blur-mask] > div > div:before {
         content: '';
         position: absolute;
         background-color: #000;
         will-change: transform;
       }
-      #page [data-blur-mask] > div > div:first-child:after,
-      #page [data-blur-mask] > div > div:first-child:before {
+      .page-container [data-blur-mask] > div > div:first-child:after,
+      .page-container [data-blur-mask] > div > div:first-child:before {
         width: var(--blr-m);
         height: 100%;
         top: 0;
         transform: scaleX(var(--blur-p));
       }
-      #page [data-blur-mask] > div > div:nth-child(2):before {
+      .page-container [data-blur-mask] > div > div:nth-child(2):before {
         top: 0;
         transform-origin: top;
       }
 
-      /* #page [data-blur-mask]>div>div:nth-child(2):after, */
-      #page [data-blur-mask] > div > div:nth-child(2):before {
+      /* .page-container [data-blur-mask]>div>div:nth-child(2):after, */
+      .page-container [data-blur-mask] > div > div:nth-child(2):before {
         width: 100%;
         height: var(--blr-m);
         left: 0;
         transform: scaleY(var(--blur-p));
       }
 
-      #page [data-blur-mask] > div > div:nth-child(3):before {
+      .page-container [data-blur-mask] > div > div:nth-child(3):before {
         left: var(--blr-m);
         border-top-left-radius: 20px;
         transform-origin: 0% 0%;
@@ -228,7 +230,7 @@ const { name, title } = Astro.props as Props;
           scale(var(--blur-p));
       }
 
-      #page [data-blur-mask] > div > div:nth-child(3):after {
+      .page-container [data-blur-mask] > div > div:nth-child(3):after {
         right: var(--blr-m);
         border-top-right-radius: 20px;
         transform-origin: 100% 0%;
@@ -239,8 +241,8 @@ const { name, title } = Astro.props as Props;
           scale(var(--blur-p));
       }
 
-      #page [data-blur-mask] > div > div:nth-child(3):after,
-      #page [data-blur-mask] > div > div:nth-child(3):before {
+      .page-container [data-blur-mask] > div > div:nth-child(3):after,
+      .page-container [data-blur-mask] > div > div:nth-child(3):before {
         top: var(--blr-m);
         width: var(--page-border-radius);
         height: calc(2 * var(--page-border-radius));
@@ -250,7 +252,7 @@ const { name, title } = Astro.props as Props;
     </style>
   </head>
 
-  <body class=''>
+  <body class='bg-black'>
     <!-- Persistent chrome -->
     <BottomBar transition:persist transition:animate='none' />
     <div
@@ -263,7 +265,6 @@ const { name, title } = Astro.props as Props;
       data-slug={name}
       class='page-container bg-background relative h-full max-w-[var(--100vw)]'
       id='page'
-      transition:name='ssss'
     >
       <div class='page-content'>
         <slot />
@@ -285,11 +286,10 @@ const { name, title } = Astro.props as Props;
       </div>
     </div>
 
-    <!-- Manual transition controller (GSAP-powered) -->
     <script>
       import { gsap } from 'gsap';
 
-      const DURATION = 5,
+      const DURATION = 0.5,
         EASE = 'power2.out';
       const prefersReduced = matchMedia(
         '(prefers-reduced-motion: reduce)'
@@ -298,6 +298,7 @@ const { name, title } = Astro.props as Props;
 
       function stageOldPageLeave(pageEl) {
         if (!pageEl || !ghostLayer) return;
+        pageEl.id = 'old-page';
         const rect = pageEl.getBoundingClientRect();
         const ghost = pageEl.cloneNode(true);
 
@@ -326,11 +327,16 @@ const { name, title } = Astro.props as Props;
           gsap.to(ghost, {
             duration: DURATION,
             ease: EASE,
-            yPercent: 10,
+            yPercent: 2,
             xPercent: 1,
-            rotate: 1,
-            scale: 0.95,
+            rotate: 0.3,
+            scale: 0.99,
             autoAlpha: 0,
+            delay: 0.4,
+            transformOrigin: (i, el) =>
+              getComputedStyle(el).getPropertyValue('--origin-x') +
+              ' ' +
+              getComputedStyle(el).getPropertyValue('--origin-y'),
             onComplete: () => ghost.remove(),
           });
         });
@@ -340,17 +346,26 @@ const { name, title } = Astro.props as Props;
         if (prefersReduced) return;
         const page = document.getElementById('page');
         if (!page) return;
+
         gsap.killTweensOf(page);
-        gsap.fromTo(
-          page,
-          { yPercent: 75 },
-          {
+
+        const prevTransition = page.style.transition;
+        page.style.transition = 'none';
+
+        page.offsetHeight;
+
+        gsap.set(page, { yPercent: 115 });
+
+        // 4) Next frame: restore CSS transition (optional) and run the GSAP tween
+        requestAnimationFrame(() => {
+          page.style.transition = prevTransition; // or '' to clear
+          gsap.to(page, {
             yPercent: 0,
             duration: DURATION,
             ease: EASE,
             clearProps: 'transform',
-          }
-        );
+          });
+        });
       }
 
       // Hook the Astro lifecycle
