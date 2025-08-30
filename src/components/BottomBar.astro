@@ -1,13 +1,26 @@
 ---
 import { Plus, Minus } from 'lucide-react';
-import LogoR from 'public/logo/main-logo/logo_r.svg';
+import LogoR from 'public/logo/etc-logo/logo_r_compact.svg';
 import { Button } from './ui/button';
+import LogorRepeat from '../images/logo_r_repeat.png';
+import Image from 'astro/components/Image.astro';
+// Compute current path and helpers for active/exact link states
+const currentPath = Astro.url.pathname;
+const normalizePath = (p: string) => (p === '/' ? '/' : p.replace(/\/+$/, ''));
+
+type NavItem = { href: string; label: string };
+const NAV_ITEMS: NavItem[] = [
+  { href: '/', label: 'Homepage' },
+  { href: '/work', label: 'Work' },
+  { href: '/about', label: 'About' },
+  { href: '/services', label: 'Services' },
+];
 ---
 
 <!-- Overlay (dark + blur) -->
 <div
   id='bottom-bar-overlay'
-  class='fixed inset-0 opacity-0 pointer-events-none z-[9] backdrop-blur-[0px] bg-black/40 will-change-[opacity]'
+  class='fixed inset-0 opacity-0 pointer-events-none backdrop-blur-[0px] bg-black/40 will-change-[opacity]'
 >
 </div>
 <!-- Persistent Bottom Bar -->
@@ -17,9 +30,11 @@ import { Button } from './ui/button';
   class='fixed bottom-[var(--navbar-bottom)] transform h-[var(--navbar-height)] left-[var(--navbar-left)] z-10 w-navbar'
 >
   <!-- Collapsed Bar -->
+  <!-- TODO: hell nah z-index -->
+
   <div
     id='collapsed-bar'
-    class='bg-black cursor-pointer relative z-20 text-white rounded-[20px] flex flex-col'
+    class='bg-black cursor-pointer z-[1] relative text-white rounded-[20px] flex flex-col'
     style='--collapsed-bg-alpha: 1;'
   >
     <!-- Main Bar Content -->
@@ -90,7 +105,7 @@ import { Button } from './ui/button';
           <span>Open Menu</span>
         </div>
       </div>
-      <button class='relative z-[999]' id='menu-toggle-button'>
+      <button class='relative z-[1]' id='menu-toggle-button'>
         <!-- Plus icon container -->
         <div
           id='plus-icon'
@@ -113,36 +128,184 @@ import { Button } from './ui/button';
   <!-- Expanded Menu Content (hidden by default) -->
   <div
     id='expanded-content'
-    class='opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden z-10'
+    class='opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden'
     style='height: var(--navbar-height);'
   >
-    <div class='blurred-background h-full absolute w-full'></div>
-    <div id='menu-container' class='h-auto menu-container opacity-0'>
+    <div class='blurred-background h-full absolute w-full pointer-events-none'>
+    </div>
+    <div id='menu-container' class='h-auto menu-container opacity-0 relative'>
       <header class='pt-[30px] p-5 relative flex justify-between items-end'>
         <div class='relative'>
           <a
             href={'/'}
             title='home'
-            class='relative h-[48px] w-[48px] inline-block'
+            class='relative inline-block'
             id='logo-close-menu'
           >
-            <LogoR
-              width={48}
-              height={96}
-              class='text-white -top-6 -left-2 absolute'
-            />
+            <LogoR height={36} class='text-white' />
           </a>
           <p class='text-white mt-2 p-large whitespace-pre-line'>
-            My Portfolio
+            <span class='whitespace-pre-line'> My</span><span> Portfolio </span>
           </p>
         </div>
         <Button type='button' variant={'secondary'}> Hello </Button>
       </header>
-      <div class='bg-background/90 w-full h-[1px]'></div>
+      <div class='!bg-background/10 !opacity-100 w-full h-[1px]'></div>
+      <ul class='menu-pages relative flex flex-col p-large'>
+        {
+          NAV_ITEMS.map(({ href, label }) => {
+            const nHref = normalizePath(href);
+            const nCurrent = normalizePath(currentPath);
+            const isExact = nCurrent === nHref;
+            const isActive =
+              nHref === '/'
+                ? isExact
+                : nCurrent === nHref || nCurrent.startsWith(nHref + '/');
+            return (
+              <li class='relative'>
+                <div class='page-navigator'>
+                  <a
+                    href={href}
+                    class:list={{
+                      page: true,
+                      '-active': isActive,
+                      '-exact': isExact,
+                    }}
+                  >
+                    <figure class='relative'>
+                      <Image
+                        src={LogorRepeat}
+                        width={180}
+                        height={140}
+                        alt={`${label} preview image`}
+                      />
+                    </figure>
+                    <span>{label}</span>
+                  </a>
+                </div>
+              </li>
+            );
+          })
+        }
+      </ul>
+      <ul class='p-5 relative socials w-fit p-tiny'>
+        <li>
+          <a target='_blank' href='https://www.linkedin.com/in/jamilss1437/'
+            >Linkedin</a
+          >
+        </li>
+        <li>
+          <a target='_blank' href='https://discord.com/users/572704110999240704'
+            >Discord</a
+          >
+        </li>
+        <li>
+          <a target='_blank' href='https://github.com/Svartalheim'>Github</a>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>
+
 <style>
+  .socials {
+    pointer-events: all;
+  }
+  .socials a {
+    position: relative;
+    z-index: 3;
+  }
+  .socials a:hover {
+    filter: brightness(0.5);
+    transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+    will-change: transform;
+  }
+  .page-navigator .-active.-exact:before {
+    transform: translateX(0);
+    opacity: 0.05;
+  }
+  .page-navigator > a:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    display: block;
+    background: linear-gradient(90deg, #fff 0, transparent 90%);
+    opacity: 0.025;
+    transform: translateX(-100%);
+    transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+    will-change: transform;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .page-navigator > a:hover:before {
+      transform: translateX(0);
+    }
+  }
+  .page-navigator a.-active.-exact {
+    filter: brightness(0.5);
+    pointer-events: none;
+  }
+  .page-navigator {
+    position: relative;
+    display: flex;
+    /* Adjustable transparent border using background color */
+    border-bottom: 1px solid
+      color-mix(
+        in oklab,
+        var(--background) var(--page-nav-border-opacity, 12%),
+        transparent
+      );
+  }
+  .page-navigator a {
+    padding: 12px 20px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-weight: 300;
+    /* anchor remains clean; add border to this if desired */
+    /* padding: var(--y-padding) var(--x-padding); */
+    padding-right: 8px;
+    transition: filter 0.2s ease;
+    /* cursor: none; */
+    position: relative;
+  }
+  .menu-pages figure img {
+    width: clamp(77px, 73.139px + 100vw * 0.0099, 90px);
+    height: clamp(60px, 57.036px + 100vw * 0.0076, 70px);
+    object-fit: cover;
+  }
+  /* Ensure figure has an explicit base width so hover width can animate from a number, not 'auto' */
+  .page-navigator a > figure {
+    width: clamp(77px, 73.139px + 100vw * 0.0099, 90px);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .page-navigator a > span {
+      transition: transform 0.2s cubic-bezier(0.77, 0, 0.175, 1);
+      transition-property: transform, opacity;
+      will-change: transform, opacity;
+    }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .page-navigator a:hover > span {
+      transform: translateX(8px);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .page-navigator a > figure,
+    .page-navigator a > figure img {
+      transition: width 0.3s cubic-bezier(0.2, 0, 0, 1);
+      will-change: width;
+    }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .page-navigator a:hover > figure,
+    .page-navigator a:hover > figure img {
+      width: clamp(90px, 86.412px + 100vw * 0.0092, 102px);
+    }
+  }
   .span-menu {
     position: absolute;
     width: calc(var(--navbar-width) + 16px);
@@ -153,6 +316,11 @@ import { Button } from './ui/button';
     opacity: 0;
     cursor: pointer;
   }
+  /* When menu is open, don't let the big invisible button overlay intercept clicks */
+  /* #bottom-bar[data-open='true'] #menu-toggle-button,
+  #bottom-bar[data-open='true'] #menu-toggle-button .span-menu {
+    pointer-events: none;
+  } */
 
   .blurred-background {
     position: absolute;
@@ -434,7 +602,7 @@ import { Button } from './ui/button';
         });
         if (blurredBackground) {
           gsap.to(blurredBackground, {
-            opacity: 0.87,
+            opacity: 0.85,
             duration: MENU_DURATION,
             ease: 'power2.out',
           });
@@ -459,8 +627,8 @@ import { Button } from './ui/button';
 
         gsap.to(menuContainer, {
           opacity: 1,
-          duration: MENU_DURATION * 2,
-          ease: 'power2.out',
+          duration: MENU_DURATION * 1.8,
+          ease: 'power2.in',
         });
       }
     }
@@ -553,7 +721,7 @@ import { Button } from './ui/button';
         gsap.to(menuContainer, {
           opacity: 0,
           duration: MENU_DURATION * 0.8,
-          ease: 'power2.in',
+          ease: 'power2.out',
         });
 
         // Animate bar back to original size

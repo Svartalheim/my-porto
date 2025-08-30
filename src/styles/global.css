@@ -217,3 +217,10 @@ body::-webkit-scrollbar {
   letter-spacing: -0.05em;
   ---letter-spacing: -0.05em;
 }
+
+.p-tiny {
+  font-size: /*lrs=16*/ clamp(13px, 12.103px + 100vw * 0.0023, 16px);
+  line-height: 1.3;
+  letter-spacing: -0.04em;
+  ---letter-spacing: -0.04em;
+}
