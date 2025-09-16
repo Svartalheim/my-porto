@@ -214,8 +214,22 @@ body::-webkit-scrollbar {
 .p-large {
   font-size: clamp(24px, 22.206px + 100vw * 0.0046, 30px);
   line-height: 1.1;
-  letter-spacing: -0.05em;
-  ---letter-spacing: -0.05em;
+  letter-spacing: -0.03em;
+  ---letter-spacing: -0.03em;
+}
+
+.p-medium {
+  font-size: /*lrs=24*/ clamp(20px, 18.791px + 100vw * 0.0031, 24px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  ---letter-spacing: -0.02em;
+}
+
+.p-small {
+  font-size: /*lrs=18*/ clamp(16px, 15.415px + 100vw * 0.0015, 18px);
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  ---letter-spacing: -0.04em;
 }
 
 .p-tiny {

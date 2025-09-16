@@ -2,18 +2,20 @@
 import { Plus, Minus } from 'lucide-react';
 import LogoR from 'public/logo/etc-logo/logo_r_compact.svg';
 import { Button } from './ui/button';
-import LogorRepeat from '../images/logo_r_repeat.png';
-import Image from 'astro/components/Image.astro';
-// Compute current path and helpers for active/exact link states
+import LogorRepeat from '@assets/images/logo_r_repeat.png';
+import ImageWorkNavbar from '@assets/images/work-navbar.png';
+import ImageAboutNavbar from '@assets/images/about.png';
+
+import { Image } from 'astro:assets';
 const currentPath = Astro.url.pathname;
 const normalizePath = (p: string) => (p === '/' ? '/' : p.replace(/\/+$/, ''));
 
-type NavItem = { href: string; label: string };
+type NavItem = { href: string; label: string; image?: ImageMetadata };
 const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Homepage' },
-  { href: '/work', label: 'Work' },
-  { href: '/about', label: 'About' },
+  { href: '/about', label: 'About', image: ImageAboutNavbar },
   { href: '/services', label: 'Services' },
+  { href: '/work', label: 'Work', image: ImageWorkNavbar },
 ];
 ---
 
@@ -27,7 +29,7 @@ const NAV_ITEMS: NavItem[] = [
 <nav
   id='bottom-bar'
   transition:persist
-  class='fixed bottom-[var(--navbar-bottom)] transform h-[var(--navbar-height)] left-[var(--navbar-left)] z-10 w-navbar'
+  class='fixed bottom-[var(--navbar-bottom)] transform h-[var(--navbar-height)] left-[var(--navbar-left)] w-navbar'
 >
   <!-- Collapsed Bar -->
   <!-- TODO: hell nah z-index -->
@@ -153,7 +155,7 @@ const NAV_ITEMS: NavItem[] = [
       <div class='!bg-background/10 !opacity-100 w-full h-[1px]'></div>
       <ul class='menu-pages relative flex flex-col p-large'>
         {
-          NAV_ITEMS.map(({ href, label }) => {
+          NAV_ITEMS.map(({ href, label, image }) => {
             const nHref = normalizePath(href);
             const nCurrent = normalizePath(currentPath);
             const isExact = nCurrent === nHref;
@@ -171,10 +173,11 @@ const NAV_ITEMS: NavItem[] = [
                       '-active': isActive,
                       '-exact': isExact,
                     }}
+                    onclick='closeMenuFunc()'
                   >
                     <figure class='relative'>
                       <Image
-                        src={LogorRepeat}
+                        src={image ?? LogorRepeat}
                         width={180}
                         height={140}
                         alt={`${label} preview image`}
@@ -208,6 +211,9 @@ const NAV_ITEMS: NavItem[] = [
 </nav>
 
 <style>
+  #bottom-bar {
+    z-index: 10;
+  }
   .socials {
     pointer-events: all;
   }
@@ -792,15 +798,52 @@ const NAV_ITEMS: NavItem[] = [
     });
   }
 
+  // Function to update active states after navigation
+  function updateActiveStates(): void {
+    const currentPath = window.location.pathname;
+    const normalizePath = (p: string) =>
+      p === '/' ? '/' : p.replace(/\/+$/, '');
+    // Get all navigation links
+    const navLinks = document.querySelectorAll('.page-navigator a');
+    closeMenuFunc?.();
+
+    navLinks.forEach((link) => {
+      if (link instanceof HTMLAnchorElement) {
+        const href = link.getAttribute('href');
+        if (!href) return;
+
+        const nHref = normalizePath(href);
+        const nCurrent = normalizePath(currentPath);
+        const isExact = nCurrent === nHref;
+        const isActive =
+          nHref === '/'
+            ? isExact
+            : nCurrent === nHref || nCurrent.startsWith(nHref + '/');
+
+        // Update classes
+        link.classList.toggle('-active', isActive);
+        link.classList.toggle('-exact', isExact);
+      }
+    });
+  }
+
   // Initialize on page load
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initBottomBar);
+    document.addEventListener('DOMContentLoaded', () => {
+      initBottomBar();
+      updateActiveStates();
+    });
   } else {
     initBottomBar();
+    updateActiveStates();
   }
 
   // Re-initialize after page transitions
   document.addEventListener('astro:page-load', () => {
     initBottomBar();
+    setTimeout(() => {
+      // Delay to ensure DOM is updated
+      updateActiveStates();
+    }, 100);
   });
 </script>

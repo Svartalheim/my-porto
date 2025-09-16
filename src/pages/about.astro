@@ -1,35 +1,124 @@
 ---
-import Layout from "../layouts/layout.astro";
+import Layout from '../layouts/layout.astro';
+import AboutTitle from '@assets/svg/about-title.svg';
+import Arrow from '@assets/svg/arrow.svg';
+import Flare from '@assets/svg/flare.svg';
+import ImageAboutNavbar from '@assets/images/about.png';
+import { Image } from 'astro:assets';
+import { Separator } from '@components/ui/separator';
+
+type SpecialitiesItem = { header: string; title: string };
+const SPECIALITIES: SpecialitiesItem[] = [
+  { header: '3 years of experience', title: 'Web Development' },
+  { header: 'Innovation Aligned', title: 'UI/UX Design' },
+  { header: 'Full custom approach', title: 'Performance Optimization' },
+];
 ---
 
-<Layout title="about" name="about">
-  <div class="min-h-screen pt-16">
-    <div class="max-w-4xl mx-auto px-4 py-12">
-      <h1 class="text-4xl font-bold mb-8">About Me</h1>
-      <a href={"/"} title="home" class="inline-block"> awawaa </a>
-
-      <div class="grid md:grid-cols-2 gap-8 items-center">
-        <div>
-          <p class="text-lg text-gray-600 mb-6">
-            Welcome to my portfolio! I'm a passionate developer who loves creating amazing digital experiences.
-          </p>
-
-          <div class="space-y-4">
-            <h2 class="text-2xl font-semibold">Skills</h2>
-            <div class="flex flex-wrap gap-2">
-              <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">JavaScript</span>
-              <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">TypeScript</span>
-              <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">React</span>
-              <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Astro</span>
-              <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">GSAP</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
-          <span class="text-gray-500">Your Photo Here</span>
-        </div>
+<Layout title='about' name='about'>
+  <div class='lg:p-[8.333vw] p-[2.333vw]'>
+    <div
+      class='flex justify-center lg:block px-4 mb-20 [&>*]:w-full [&>*]:h-auto'
+      id='about-title'
+    >
+      <AboutTitle />
+    </div>
+    <div id='about-header' class='flex justify-center flex-col'>
+      <div class='bg-black rounded-[5px] w-[80%] mx-auto overflow-hidden'>
+        <Image src={ImageAboutNavbar} alt='about' class='scale-[101%]' />
       </div>
+      <Arrow class={'my-12 mx-auto'} />
+      <header id='about-hero' class='space-y-5 text-center w-[80%] mx-auto'>
+        <p class='p-large'>An Indie Web Developer</p>
+        <p class='p-medium font-light'>
+          Web Developer based in Indonesia. Presently engaged as a front-end web
+          engineer operating on a fulltime basis. Open for a remote position
+          anywhere.
+        </p>
+        <p class='p-medium font-light'>
+          I’ve always believed the best websites don’t just look good — they
+          make an impact.
+        </p>
+      </header>
     </div>
   </div>
+  <section
+    id='whats-different'
+    class='mt-[100px] bg-primary text-background py-[50px] px-[7vw] lg:p-[8.333vw] p-[2.333vw] -mx-[5vw]'
+  >
+    <div
+      class='flex justify-center lg:block px-4 mb-20 [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
+      id='about-title'
+    >
+      <AboutTitle />
+    </div>
+    <div class='pb-[4.333vw] flex gap-4 p-medium font-light mx-auto'>
+      <Flare height={40} width={40} class={'min-w-[40px] h-auto'} />
+      <span>
+        Whether it’s a small project or a large-scale build for established
+        brands, I create digital experiences that stand out and give businesses
+        a competitive edge.
+      </span>
+    </div>
+    <Separator className={'bg-background'} />
+    <div class='p-medium gap-4 font-light flex flex-col '>
+      {
+        SPECIALITIES.map((item, index) => (
+          <>
+            <div class=' pb-[2.333vw] pt-5 space-y-6'>
+              <h3 class='p-large font-medium'>{item.header}</h3>
+              <p class='p-small font-light'>{item.title}</p>
+            </div>
+            <div class='pb-[4.333vw]'>
+              <Separator className={'bg-background '} />
+            </div>
+          </>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- <h1 class='text-4xl font-bold mb-8'>About Me</h1> -->
+  <!-- <div class='max-w-4xl mx-auto px-4 py-12'>
+    <a href={'/'} title='home' class='inline-block'> awawaa </a>
+
+    <div class='grid md:grid-cols-2 gap-8 items-center'>
+      <div>
+        <p class='text-lg text-gray-600 mb-6'>
+          Welcome to my portfolio! I'm a passionate developer who loves creating
+          amazing digital experiences.
+        </p>
+
+        <div class='space-y-4'>
+          <h2 class='text-2xl font-semibold'>Skills</h2>
+          <div class='flex flex-wrap gap-2'>
+            <span
+              class='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
+              >JavaScript</span
+            >
+            <span
+              class='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
+              >TypeScript</span
+            >
+            <span
+              class='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
+              >React</span
+            >
+            <span
+              class='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
+              >Astro</span
+            >
+            <span
+              class='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
+              >GSAP</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class='bg-gray-200 h-64 rounded-lg flex items-center justify-center'>
+        <span class='text-gray-500'>Your Photo Here</span>
+      </div>
+    </div>
+  </div> -->
 </Layout>
