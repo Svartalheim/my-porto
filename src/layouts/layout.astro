@@ -1,8 +1,8 @@
 ---
-import { ClientRouter } from "astro:transitions";
-import BottomBar from "../components/BottomBar.astro";
-import Footer from "../layouts/Footer.astro";
-import "../styles/global.css";
+import { ClientRouter } from 'astro:transitions';
+import BottomBar from '../components/BottomBar.astro';
+import Footer from '../layouts/Footer.astro';
+import '../styles/global.css';
 
 export interface Props {
   name?: string;
@@ -11,18 +11,18 @@ export interface Props {
 const { name, title } = Astro.props as Props;
 ---
 
-<html lang="en">
+<html lang='en'>
   <head>
-    <ClientRouter fallback={"none"} transition:animate={"none"} />
+    <ClientRouter fallback={'none'} transition:animate={'none'} />
 
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title ? title : name ? `${name} | Astro` : "Astro"}</title>
+    <meta charset='utf-8' />
+    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <meta name='viewport' content='width=device-width' />
+    <meta name='generator' content={Astro.generator} />
+    <title>{title ? title : name ? `${name} | Astro` : 'Astro'}</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel='preconnect' href='https://fonts.googleapis.com' />
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
 
     <!-- <script is:inline>
       if ('startViewTransition' in document) {
@@ -45,6 +45,8 @@ const { name, title } = Astro.props as Props;
 
     <style is:global>
       html {
+        overflow: auto;
+
         overflow-x: hidden;
       }
       html.no-scroll {
@@ -55,6 +57,10 @@ const { name, title } = Astro.props as Props;
         position: relative;
         width: 100%;
         min-height: 100vh;
+        max-width: var(--100vw);
+        margin: 0 auto;
+        overflow: auto;
+        overflow-x: hidden;
       }
 
       .page-container {
@@ -119,7 +125,8 @@ const { name, title } = Astro.props as Props;
       }
       .ghost-leave-active {
         transition:
-          transform var(--transition-duration, 400ms) var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1)),
+          transform var(--transition-duration, 400ms)
+            var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1)),
           opacity var(--transition-duration, 400ms) linear;
         transform: translate(--origin-x, --origin-y) rotate(1deg) scale(0.95);
         opacity: 0.3;
@@ -127,11 +134,19 @@ const { name, title } = Astro.props as Props;
 
       /* NEW page enter — your slide-in-bottom */
       .page-enter {
-        transform: translateY(115%);
+        transform: translateY(50%);
         opacity: 1;
       }
+
+      @media (min-width: 769px) {
+        .page-enter {
+          transform: translateY(115%);
+        }
+      }
+
       .page-enter-active {
-        transition: transform var(--transition-duration, 400ms) var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
+        transition: transform var(--transition-duration, 400ms)
+          var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
         transform: translateY(0%);
       }
 
@@ -153,7 +168,7 @@ const { name, title } = Astro.props as Props;
         transition-timing-function: var(--transition-timing);
       }
 
-      .page-container[data-blurred="true"] .page-content {
+      .page-container[data-blurred='true'] .page-content {
         transform: scale(calc(1 - (var(--blr-s) * var(--blur-p))));
         transition: none !important;
       }
@@ -175,7 +190,7 @@ const { name, title } = Astro.props as Props;
       }
       .page-container [data-blur-mask] > div > div:after,
       .page-container [data-blur-mask] > div > div:before {
-        content: "";
+        content: '';
         position: absolute;
         background-color: #000;
         will-change: transform;
@@ -212,7 +227,10 @@ const { name, title } = Astro.props as Props;
         left: var(--blr-m);
         border-top-left-radius: 20px;
         transform-origin: 0% 0%;
-        transform: translate(calc((var(--blur-p) - 1) * var(--blr-m)), calc((var(--blur-p) - 1) * var(--blr-m)))
+        transform: translate(
+            calc((var(--blur-p) - 1) * var(--blr-m)),
+            calc((var(--blur-p) - 1) * var(--blr-m))
+          )
           scale(var(--blur-p));
       }
 
@@ -220,7 +238,10 @@ const { name, title } = Astro.props as Props;
         right: var(--blr-m);
         border-top-right-radius: 20px;
         transform-origin: 100% 0%;
-        transform: translate(calc(-1 * (var(--blur-p) - 1) * var(--blr-m)), calc((var(--blur-p) - 1) * var(--blr-m)))
+        transform: translate(
+            calc(-1 * (var(--blur-p) - 1) * var(--blr-m)),
+            calc((var(--blur-p) - 1) * var(--blr-m))
+          )
           scale(var(--blur-p));
       }
 
@@ -235,54 +256,70 @@ const { name, title } = Astro.props as Props;
     </style>
   </head>
 
-  <body class="bg-black">
+  <body class='bg-black'>
     <!-- Persistent chrome -->
-    <BottomBar transition:persist transition:animate="none" />
-    <div id="ghost-layer" transition:persist style="position:fixed; inset:0; pointer-events:none; "></div>
-    <div data-slug={name} class="page-container bg-background relative h-full max-w-[var(--100vw)]" id="page">
-      <div class="page-content">
+    <BottomBar transition:persist transition:animate='none' />
+    <div
+      id='ghost-layer'
+      transition:persist
+      style='position:fixed; inset:0; pointer-events:none; '
+    >
+    </div>
+    <div
+      data-slug={name}
+      class='page-container bg-background relative h-full w-full'
+      id='page'
+    >
+      <div class='page-content'>
         <slot />
         <Footer />
       </div>
 
-      <div data-blur-mask inert aria-hidden="true" class="absolute w-full h-full top-0 left-0 pointer-events-none">
+      <div
+        data-blur-mask
+        inert
+        aria-hidden='true'
+        class='absolute w-full h-full top-0 left-0 pointer-events-none'
+      >
         <div>
-          <div id="#overlay-left-right"></div>
-          <div id="#overlay-top"></div>
-          <div id="#overlay-corner"></div>
+          <div id='#overlay-left-right'></div>
+          <div id='#overlay-top'></div>
+          <div id='#overlay-corner'></div>
         </div>
         <span></span>
       </div>
     </div>
 
     <script>
-      import { gsap } from "gsap";
+      import { gsap } from 'gsap';
 
       const DURATION = 0.5,
-        EASE = "power2.out";
-      const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const ghostLayer = document.getElementById("ghost-layer");
+        EASE = 'power2.out';
+      const prefersReduced = matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+      const ghostLayer = document.getElementById('ghost-layer');
 
       function stageOldPageLeave(pageEl: HTMLElement | null): void {
         if (!pageEl || !ghostLayer) return;
-        pageEl.id = "old-page";
+        pageEl.id = 'old-page';
         const rect = pageEl.getBoundingClientRect();
         const ghost = pageEl.cloneNode(true) as HTMLElement;
 
-        ghost.classList.add("ghost-page");
+        ghost.classList.add('ghost-page');
         Object.assign(ghost.style, {
-          position: "fixed",
-          top: rect.top + "px",
-          left: rect.left + "px",
-          width: rect.width + "px",
-          height: rect.height + "px",
-          transform: "none",
-          opacity: "1",
-          pointerEvents: "none",
+          position: 'fixed',
+          top: rect.top + 'px',
+          left: rect.left + 'px',
+          width: rect.width + 'px',
+          height: rect.height + 'px',
+          transform: 'none',
+          opacity: '1',
+          pointerEvents: 'none',
         });
 
         // clear previous ghosts
-        ghostLayer.querySelectorAll(".ghost-page").forEach((el) => {
+        ghostLayer.querySelectorAll('.ghost-page').forEach((el) => {
           gsap.killTweensOf(el);
           el.remove();
         });
@@ -301,9 +338,9 @@ const { name, title } = Astro.props as Props;
             autoAlpha: 0,
             delay: 0.4,
             transformOrigin: (i, el) =>
-              getComputedStyle(el).getPropertyValue("--origin-x") +
-              " " +
-              getComputedStyle(el).getPropertyValue("--origin-y"),
+              getComputedStyle(el).getPropertyValue('--origin-x') +
+              ' ' +
+              getComputedStyle(el).getPropertyValue('--origin-y'),
             onComplete: () => ghost.remove(),
           });
         });
@@ -311,17 +348,21 @@ const { name, title } = Astro.props as Props;
 
       function animateNewPageEnter(): void {
         if (prefersReduced) return;
-        const page = document.getElementById("page");
+        const page = document.getElementById('page');
         if (!page) return;
 
         gsap.killTweensOf(page);
 
         const prevTransition = page.style.transition;
-        page.style.transition = "none";
+        page.style.transition = 'none';
 
         page.offsetHeight;
 
-        gsap.set(page, { yPercent: 115 });
+        // Responsive yPercent based on screen size
+        const isMobile = window.innerWidth <= 768;
+        const yPercentValue = isMobile ? 50 : 115; // Smaller value for mobile
+
+        gsap.set(page, { yPercent: yPercentValue });
 
         // 4) Next frame: restore CSS transition (optional) and run the GSAP tween
         requestAnimationFrame(() => {
@@ -330,18 +371,18 @@ const { name, title } = Astro.props as Props;
             yPercent: 0,
             duration: DURATION,
             ease: EASE,
-            clearProps: "transform",
+            clearProps: 'transform',
           });
         });
       }
 
       // Hook the Astro lifecycle
-      document.addEventListener("astro:before-preparation", () => {
-        const current = document.getElementById("page");
+      document.addEventListener('astro:before-preparation', () => {
+        const current = document.getElementById('page');
         stageOldPageLeave(current);
       });
 
-      document.addEventListener("astro:after-swap", () => {
+      document.addEventListener('astro:after-swap', () => {
         animateNewPageEnter();
       });
     </script>
@@ -349,22 +390,53 @@ const { name, title } = Astro.props as Props;
 </html>
 
 <script>
-  const sbw = () => window.innerWidth - document.documentElement.clientWidth;
-  document.documentElement.style.setProperty("--sbw", sbw() + "px");
-  addEventListener("resize", () => document.documentElement.style.setProperty("--sbw", sbw() + "px"));
+  const sbw = () => {
+    // On mobile devices, scrollbars are typically overlay and don't take up space
+    const isMobile =
+      window.innerWidth <= 768 ||
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+
+    if (isMobile) {
+      return 0; // No scrollbar width on mobile
+    }
+
+    return window.innerWidth - document.documentElement.clientWidth;
+  };
+
+  const scrollbarWidth = sbw();
+  document.documentElement.style.setProperty('--sbw', scrollbarWidth + 'px');
+  document.documentElement.style.setProperty(
+    '--scrollbar-width',
+    scrollbarWidth + 'px'
+  );
+
+  addEventListener('resize', () => {
+    const newScrollbarWidth = sbw();
+    document.documentElement.style.setProperty(
+      '--sbw',
+      newScrollbarWidth + 'px'
+    );
+    document.documentElement.style.setProperty(
+      '--scrollbar-width',
+      newScrollbarWidth + 'px'
+    );
+  });
 </script>
 
 <script>
-  import Lenis from "lenis";
+  import Lenis from 'lenis';
   (function () {
-    if (!(window as any).__lenis) (window as any).__lenis = new Lenis({ autoRaf: true });
+    if (!(window as any).__lenis)
+      (window as any).__lenis = new Lenis({ autoRaf: true });
     const lenis = (window as any).__lenis;
 
-    document.addEventListener("astro:before-preparation", () => {
-      if (lenis && typeof lenis.stop === "function") lenis.stop();
+    document.addEventListener('astro:before-preparation', () => {
+      if (lenis && typeof lenis.stop === 'function') lenis.stop();
     });
-    document.addEventListener("astro:after-swap", () => {
-      if (lenis && typeof lenis.start === "function") lenis.start();
+    document.addEventListener('astro:after-swap', () => {
+      if (lenis && typeof lenis.start === 'function') lenis.start();
     });
   })();
 </script>
@@ -385,11 +457,12 @@ const { name, title } = Astro.props as Props;
   }
 
   function getPageEl(): HTMLElement | null {
-    return document.getElementById("page");
+    return document.getElementById('page');
   }
   const EDGE_PAD_PCT = 4;
   const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
-  const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v));
+  const clamp = (v: number, lo: number, hi: number): number =>
+    Math.min(hi, Math.max(lo, v));
   function computeOriginFromViewport(edgePadPct: number = EDGE_PAD_PCT): void {
     // Don't update origin if expanded content is appearing
     if (window.__bottomBarExpanded) return;
@@ -401,11 +474,14 @@ const { name, title } = Astro.props as Props;
     const pageHeight = Math.max(page.scrollHeight, page.clientHeight);
     const viewportH = window.innerHeight;
     const scrollable = Math.max(pageHeight - viewportH, 0);
-    const scrollInPage = Math.min(scrollable, Math.max(0, window.scrollY - pageTopAbs));
+    const scrollInPage = Math.min(
+      scrollable,
+      Math.max(0, window.scrollY - pageTopAbs)
+    );
     const p = scrollable > 0 ? scrollInPage / scrollable : 0.5;
     const yPct = lerp(edgePadPct, 100 - edgePadPct, p);
-    page.style.setProperty("--origin-x", "50%");
-    page.style.setProperty("--origin-y", `${yPct}%`);
+    page.style.setProperty('--origin-x', '50%');
+    page.style.setProperty('--origin-y', `${yPct}%`);
   }
 
   function setOriginFromEvent(e: MouseEvent): void {
@@ -419,16 +495,31 @@ const { name, title } = Astro.props as Props;
     const yWithin = e.clientY - rect.top;
     const xPct = (xWithin / rect.width) * 100;
     const h = Math.max(page.scrollHeight, page.clientHeight);
-    const yPct = ((yWithin + window.scrollY - (rect.top + window.scrollY)) / h) * 100;
-    page.style.setProperty("--origin-x", `${Math.min(100, Math.max(0, xPct))}%`);
-    page.style.setProperty("--origin-y", `${Math.min(100, Math.max(0, yPct))}%`);
+    const yPct =
+      ((yWithin + window.scrollY - (rect.top + window.scrollY)) / h) * 100;
+    page.style.setProperty(
+      '--origin-x',
+      `${Math.min(100, Math.max(0, xPct))}%`
+    );
+    page.style.setProperty(
+      '--origin-y',
+      `${Math.min(100, Math.max(0, yPct))}%`
+    );
   }
 
   window.__setScaleOrigin = function (xPct?: number, yPct?: number): void {
     const page = getPageEl();
     if (!page) return;
-    if (typeof xPct === "number") page.style.setProperty("--origin-x", `${Math.min(100, Math.max(0, xPct))}%`);
-    if (typeof yPct === "number") page.style.setProperty("--origin-y", `${Math.min(100, Math.max(0, yPct))}%`);
+    if (typeof xPct === 'number')
+      page.style.setProperty(
+        '--origin-x',
+        `${Math.min(100, Math.max(0, xPct))}%`
+      );
+    if (typeof yPct === 'number')
+      page.style.setProperty(
+        '--origin-y',
+        `${Math.min(100, Math.max(0, yPct))}%`
+      );
   };
 
   let rafId: number | null = null;
@@ -439,17 +530,20 @@ const { name, title } = Astro.props as Props;
       rafId = null;
     });
   }
-  window.addEventListener("scroll", scheduleCompute, { passive: true });
-  window.addEventListener("resize", scheduleCompute, { passive: true });
-  window.addEventListener("orientationchange", scheduleCompute, {
+  window.addEventListener('scroll', scheduleCompute, { passive: true });
+  window.addEventListener('resize', scheduleCompute, { passive: true });
+  window.addEventListener('orientationchange', scheduleCompute, {
     passive: true,
   });
 
   document.addEventListener(
-    "click",
+    'click',
     (e) => {
       const t = e.target;
-      if (t instanceof Element && t.closest("[data-origin-anchor],[data-expand],[data-open]")) {
+      if (
+        t instanceof Element &&
+        t.closest('[data-origin-anchor],[data-expand],[data-open]')
+      ) {
         setOriginFromEvent(e);
       }
     },
@@ -459,10 +553,10 @@ const { name, title } = Astro.props as Props;
   function initOrigin(): void {
     computeOriginFromViewport();
   }
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initOrigin);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initOrigin);
   } else {
     initOrigin();
   }
-  document.addEventListener("astro:after-swap", initOrigin);
+  document.addEventListener('astro:after-swap', initOrigin);
 </script>

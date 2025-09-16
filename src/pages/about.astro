@@ -7,11 +7,20 @@ import ImageAboutNavbar from '@assets/images/about.png';
 import { Image } from 'astro:assets';
 import { Separator } from '@components/ui/separator';
 
-type SpecialitiesItem = { header: string; title: string };
+type SpecialitiesItem = { header: string; desc: string };
 const SPECIALITIES: SpecialitiesItem[] = [
-  { header: '3 years of experience', title: 'Web Development' },
-  { header: 'Innovation Aligned', title: 'UI/UX Design' },
-  { header: 'Full custom approach', title: 'Performance Optimization' },
+  {
+    header: '3 years of experience',
+    desc: 'Production UIs shipped with React/Next.js, Astro, and TypeScript. I target fast loads, solid a11y (WCAG 2.1), and clean component architecture—comfortable collaborating across time zones.',
+  },
+  {
+    header: 'Innovation Aligned',
+    desc: 'I use modern tools only when they move metrics: View Transitions API, TanStack Router/Query, GSAP/Lenis, edge rendering. Outcomes first—faster pages, smoother flows, higher conversion.',
+  },
+  {
+    header: 'Full custom approach',
+    desc: 'No templates. I design brand-matched components, type-safe data flows, and scalable structure. You get maintainable code, clear docs, and a smooth handover—no theme lock-in.',
+  },
 ];
 ---
 
@@ -61,13 +70,15 @@ const SPECIALITIES: SpecialitiesItem[] = [
       </span>
     </div>
     <Separator className={'bg-background'} />
-    <div class='p-medium gap-4 font-light flex flex-col '>
+    <div class='p-medium gap-4 font-light flex flex-col'>
       {
         SPECIALITIES.map((item, index) => (
           <>
-            <div class=' pb-[2.333vw] pt-5 space-y-6'>
+            <div class='pb-[2.333vw] pt-5 space-y-6' id={`speciality-${index}`}>
               <h3 class='p-large font-medium'>{item.header}</h3>
-              <p class='p-small font-light'>{item.title}</p>
+              <p class='p-small font-light speciality-desc -mt-[2vw]' data-index={index}>
+                {item.desc}
+              </p>
             </div>
             <div class='pb-[4.333vw]'>
               <Separator className={'bg-background '} />
@@ -122,3 +133,60 @@ const SPECIALITIES: SpecialitiesItem[] = [
     </div>
   </div> -->
 </Layout>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  // Register ScrollTrigger plugin
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initSpecialitiesAnimation() {
+    // Get all description elements
+    const descriptions = document.querySelectorAll('.speciality-desc');
+
+    if (descriptions.length === 0) return;
+
+    // Set initial state - hide all descriptions
+    gsap.set(descriptions, {
+      opacity: 0,
+      y: 'auto',
+      height: 0,
+      overflow: 'hidden',
+    });
+
+    // Create scroll trigger for each description
+    descriptions.forEach((desc, index) => {
+      const container = document.getElementById(`speciality-${index}`);
+      if (!container) return;
+
+      gsap.to(desc, {
+        opacity: 1,
+        y: 0,
+        height: 'auto',
+        duration: 0.6,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: container,
+          start: 'top 50%',
+          end: 'bottom 30%',
+          toggleActions: 'play none none reverse',
+          markers: true, // Uncomment for debugging
+        },
+      });
+    });
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSpecialitiesAnimation);
+  } else {
+    initSpecialitiesAnimation();
+  }
+
+  // Re-initialize after page transitions (for Astro view transitions)
+  document.addEventListener('astro:page-load', () => {
+    // Small delay to ensure DOM is ready
+    setTimeout(initSpecialitiesAnimation, 100);
+  });
+</script>
