@@ -139,6 +139,7 @@ const NAV_ITEMS: NavItem[] = [
       <header class='pt-[30px] p-5 relative flex justify-between items-end'>
         <div class='relative'>
           <a
+            data-astro-prefetch
             href={'/'}
             title='home'
             class='relative inline-block'
@@ -167,6 +168,7 @@ const NAV_ITEMS: NavItem[] = [
               <li class='relative'>
                 <div class='page-navigator'>
                   <a
+                    data-astro-prefetch
                     href={href}
                     class:list={{
                       page: true,
