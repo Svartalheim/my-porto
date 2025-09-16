@@ -45,8 +45,7 @@ const { name, title } = Astro.props as Props;
 
     <style is:global>
       html {
-        overflow: auto;
-
+        /* overflow: auto; */
         overflow-x: hidden;
       }
       html.no-scroll {
@@ -59,8 +58,8 @@ const { name, title } = Astro.props as Props;
         min-height: 100vh;
         max-width: var(--100vw);
         margin: 0 auto;
-        overflow: auto;
-        overflow-x: hidden;
+        /* overflow: auto;
+        overflow-x: hidden; */
       }
 
       .page-container {
@@ -71,6 +70,7 @@ const { name, title } = Astro.props as Props;
         --blr-s: var(--blr-s-min);
         position: relative;
         z-index: 1;
+        overflow-x: hidden;
         will-change: transform;
         transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
         transition-duration: var(--MENU_DURATION);
