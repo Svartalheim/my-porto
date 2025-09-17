@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import LogorRepeat from '@assets/images/logo_r_repeat.png';
 import ImageWorkNavbar from '@assets/images/work-navbar.png';
 import ImageAboutNavbar from '@assets/images/about.png';
+import ImageServiceNavbar from '@assets/images/service.png';
 
 import { Image } from 'astro:assets';
 const currentPath = Astro.url.pathname;
@@ -14,39 +15,31 @@ type NavItem = { href: string; label: string; image?: ImageMetadata };
 const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Homepage' },
   { href: '/about', label: 'About', image: ImageAboutNavbar },
-  { href: '/services', label: 'Services' },
+  { href: '/services', label: 'Services', image: ImageServiceNavbar },
   { href: '/work', label: 'Work', image: ImageWorkNavbar },
 ];
 ---
 
-<!-- Overlay (dark + blur) -->
 <div
   id='bottom-bar-overlay'
   class='fixed inset-0 opacity-0 pointer-events-none backdrop-blur-[0px] bg-black/40 will-change-[opacity]'
 >
 </div>
-<!-- Persistent Bottom Bar -->
 <nav
   id='bottom-bar'
   transition:persist
   class='fixed bottom-[var(--navbar-bottom)] transform h-[var(--navbar-height)] left-[var(--navbar-left)] w-navbar'
 >
-  <!-- Collapsed Bar -->
-  <!-- TODO: hell nah z-index -->
-
   <div
     id='collapsed-bar'
     class='bg-black cursor-pointer z-[1] relative text-white rounded-[20px] flex flex-col'
     style='--collapsed-bg-alpha: 1;'
   >
-    <!-- Main Bar Content -->
     <div
       id='main-bar-content'
       class='h-[var(--navbar-height)] flex items-center justify-between px-[12px] gap-1 lg:px-[24px]'
     >
-      <!-- SVG Container with overflow hidden for slide animation -->
       <div class='relative w-8 h-8 overflow-hidden' id='svg-container'>
-        <!-- Original R logo -->
         <div
           id='r-logo'
           class='w-8 h-8 absolute flex items-center justify-center'
@@ -70,7 +63,6 @@ const NAV_ITEMS: NavItem[] = [
           </svg>
         </div>
 
-        <!-- Arrow up icon (starts below view) -->
         <div
           id='arrow-icon'
           class='w-8 h-8 absolute flex items-center justify-center'
@@ -88,12 +80,10 @@ const NAV_ITEMS: NavItem[] = [
         </div>
       </div>
 
-      <!-- Text Container with overflow hidden for slide animation -->
       <div
         class='relative overflow-hidden h-6 flex-1 ml-0 text-sm font-light'
         id='text-container'
       >
-        <!-- Default text -->
         <div
           class='absolute w-full h-full flex items-center'
           id='default-text'
@@ -102,20 +92,17 @@ const NAV_ITEMS: NavItem[] = [
           <span>Portfolio</span>
         </div>
 
-        <!-- Hover text (starts below view) -->
         <div class='absolute w-full h-full flex items-center' id='hover-text'>
           <span>Open Menu</span>
         </div>
       </div>
       <button class='relative z-[1]' id='menu-toggle-button'>
-        <!-- Plus icon container -->
         <div
           id='plus-icon'
           class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
         >
           <Plus size={24} className='cursor-pointer' />
         </div>
-        <!-- Minus icon container (hidden initially) -->
         <div
           id='minus-icon'
           class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
@@ -127,7 +114,6 @@ const NAV_ITEMS: NavItem[] = [
     </div>
   </div>
 
-  <!-- Expanded Menu Content (hidden by default) -->
   <div
     id='expanded-content'
     class='opacity-0 absolute bottom-0 w-full rounded-[20px] pointer-events-none overflow-hidden'
@@ -175,7 +161,6 @@ const NAV_ITEMS: NavItem[] = [
                       '-active': isActive,
                       '-exact': isExact,
                     }}
-                    onclick='closeMenuFunc()'
                   >
                     <figure class='relative'>
                       <Image
@@ -398,19 +383,17 @@ const NAV_ITEMS: NavItem[] = [
   const textContainer = document.getElementById('text-container');
   const leftGroup = [svgContainer, textContainer];
 
-  // Store overlay reference globally so it can be updated
   let currentOverlay: HTMLElement | null = null;
   let isExpanded = false; // Move this to global scope
   let closeMenuFunc: (() => void) | null = null; // Store reference to close function
 
   function refreshOverlayReference(): void {
     currentOverlay = document.getElementById('bottom-bar-overlay');
-    console.log('Overlay refreshed:', currentOverlay);
 
     // Re-attach event listener for overlay click
     if (currentOverlay && closeMenuFunc) {
       currentOverlay.addEventListener('click', () => {
-        if (isExpanded) closeMenuFunc!();
+        if (isExpanded) closeMenuFunc?.();
       });
     }
   }
@@ -450,8 +433,6 @@ const NAV_ITEMS: NavItem[] = [
 
     // Initialize overlay reference
     refreshOverlayReference();
-
-    console.log('Bottom bar initialized, overlay:', currentOverlay);
     // GSAP Animation elements
     const rLogo = document.getElementById('r-logo');
     const arrowIcon = document.getElementById('arrow-icon');

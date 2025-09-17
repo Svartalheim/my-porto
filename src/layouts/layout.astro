@@ -45,8 +45,7 @@ const { name, title } = Astro.props as Props;
 
     <style is:global>
       html {
-        /* overflow: auto; */
-        overflow-x: hidden;
+        /* overflow-x: hidden; */
       }
       html.no-scroll {
         padding-right: var(--sbw, 0px);
@@ -58,8 +57,12 @@ const { name, title } = Astro.props as Props;
         min-height: 100vh;
         max-width: var(--100vw);
         margin: 0 auto;
-        /* overflow: auto;
-        overflow-x: hidden; */
+      }
+
+      @media only screen and (max-width: 768px) {
+        .page-container {
+          /* overflow: auto; */
+        }
       }
 
       .page-container {
@@ -70,7 +73,6 @@ const { name, title } = Astro.props as Props;
         --blr-s: var(--blr-s-min);
         position: relative;
         z-index: 1;
-        overflow-x: hidden;
         will-change: transform;
         transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
         transition-duration: var(--MENU_DURATION);
@@ -253,6 +255,11 @@ const { name, title } = Astro.props as Props;
         box-shadow: 0 calc(-1 * var(--page-border-radius)) 0 0 #000;
         background-color: rgba(0, 0, 0, 0);
       }
+
+      .page-container[data-blurred='true'] #footer .container {
+        transform: scale(calc(1 - (var(--blr-s) * var(--blur-p))));
+        transition: none !important;
+      }
     </style>
   </head>
 
@@ -272,8 +279,8 @@ const { name, title } = Astro.props as Props;
     >
       <div class='page-content'>
         <slot />
-        <Footer />
       </div>
+      <Footer />
 
       <div
         data-blur-mask

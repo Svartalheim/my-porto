@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/layout.astro';
 import AboutTitle from '@assets/svg/about-title.svg';
+import FacetTitle from '@assets/svg/facet-title.svg';
+
 import Arrow from '@assets/svg/arrow.svg';
 import Flare from '@assets/svg/flare.svg';
 import ImageAboutNavbar from '@assets/images/about.png';
@@ -51,44 +53,142 @@ const SPECIALITIES: SpecialitiesItem[] = [
       </header>
     </div>
   </div>
-  <section
-    id='whats-different'
-    class='mt-[100px] bg-primary  text-background py-[50px] px-[7vw] lg:p-[8.333vw] p-[2.333vw] -mx-[5vw]'
-  >
-    <div
-      class='flex justify-center lg:block px-4 mb-20 [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
-      id='about-title'
+  <div class='bg-primary text-background -mx-[5vw] px-[7vw]'>
+    <section
+      id='whats-different'
+      class='mt-[100px] pb-[100px] py-[50px] lg:p-[8.333vw] p-[2.333vw] px-0'
     >
-      <AboutTitle />
-    </div>
-    <div class='pb-[4.333vw] flex gap-4 p-medium font-light mx-auto'>
-      <Flare height={40} width={40} class={'min-w-[40px] h-auto'} />
-      <span>
-        Whether it’s a small project or a large-scale build for established
-        brands, I create digital experiences that stand out and give businesses
-        a competitive edge.
-      </span>
-    </div>
-    <Separator className={'bg-background'} />
-    <div class='p-medium gap-4 font-light flex flex-col'>
-      {
-        SPECIALITIES.map((item, index) => (
-          <>
-            <div class='pb-[2.333vw] pt-5 space-y-6' id={`speciality-${index}`}>
-              <h3 class='p-large font-medium'>{item.header}</h3>
-              <p class='p-small font-light speciality-desc -mt-[2vw]' data-index={index}>
-                {item.desc}
-              </p>
+      <div
+        class='flex justify-center lg:block px-4 mb-20 [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
+        id='about-title'
+      >
+        <FacetTitle />
+      </div>
+      <div class='pb-[4.333vw] flex gap-4 p-medium font-light mx-auto'>
+        <Flare height={40} width={40} class={'min-w-[40px] h-auto'} />
+        <span>
+          Whether it’s a small project or a large-scale build for established
+          brands, I create digital experiences that stand out and give
+          businesses a competitive edge.
+        </span>
+      </div>
+      <Separator className={'bg-background'} />
+      <div class='p-medium gap-4 font-light flex flex-col'>
+        {
+          SPECIALITIES.map((item, index) => (
+            <>
+              <div
+                class='pb-[2.333vw] pt-5 space-y-6'
+                id={`speciality-${index}`}
+              >
+                <h3 class='p-large font-medium'>{item.header}</h3>
+                <p
+                  class='p-small font-light speciality-desc -mt-[2vw]'
+                  data-index={index}
+                >
+                  {item.desc}
+                </p>
+              </div>
+              <div class='pb-[4.333vw]'>
+                <Separator className={'bg-background '} />
+              </div>
+            </>
+          ))
+        }
+      </div>
+    </section>
+    <section id='why-us'>
+      <div
+        class='lg:pr-[var(--size-20)] lg:w-[calc(100%-31.458333333333332vw)] lg:flex flex-col justify-between'
+      >
+        <div class='lg:pt-[0.20833333333333334vw]'>
+          <div class='section-indent'>
+            <div
+              class='inline-flex absolute left-0 section_name invisible opacity-0 width-view-indent'
+            >
+              Why atoll
             </div>
-            <div class='pb-[4.333vw]'>
-              <Separator className={'bg-background '} />
+            <div
+              class='section_name -mb-4 lg:mb-[-1.5277777777777777vw] pointer-events-none'
+            >
+              Why atoll
             </div>
-          </>
-        ))
-      }
-    </div>
-  </section>
-
+            <div>
+              <h2
+                class='p-large'
+                data-anim-splitting-scroll=''
+                data-splitting-lines-overflow=''
+                data-splitting=''
+                style='opacity: 1; visibility: inherit;'
+              >
+                <div class='wrapper_line'>
+                  <div
+                    class='line'
+                    style='display: block; text-align: start; position: relative; translate: none; rotate: none; scale: none; transform: translate(0px, 0px);'
+                  >
+                    <span
+                      class='mr-[8.472222222222223vw] indent-margin-right'
+                      style='margin-right: 89.3907px;'></span> Atoll Digital is born
+                    from the
+                  </div>
+                </div>
+                <div class='wrapper_line'>
+                  <div
+                    class='line'
+                    style='display: block; text-align: start; position: relative; translate: none; rotate: none; scale: none; transform: translate(0px, 0px);'
+                  >
+                    dynamic fusion of design, technology,
+                  </div>
+                </div><div class='wrapper_line'>
+                  <div
+                    class='line'
+                    style='display: block; text-align: start; position: relative; translate: none; rotate: none; scale: none; transform: translate(0px, 0px);'
+                  >
+                    and business development, crafting
+                  </div>
+                </div><div class='wrapper_line'>
+                  <div
+                    class='line'
+                    style='display: block; text-align: start; position: relative; translate: none; rotate: none; scale: none; transform: translate(0px, 0px);'
+                  >
+                    captivating, functional solutions for
+                  </div>
+                </div><div class='wrapper_line'>
+                  <div
+                    class='line'
+                    style='display: block; text-align: start; position: relative; translate: none; rotate: none; scale: none; transform: translate(0px, 0px);'
+                  >
+                    businesses.
+                  </div>
+                </div>
+              </h2>
+            </div>
+          </div>
+        </div>
+        <div class='lg:hidden mt-[13px] mb-[38px]'>
+          <div class='overflow-hidden rounded-[var(--rounded-base)]'>
+            <img
+              src='https://atolldigital.com/wp-content/uploads/2025/02/Atoll_Fusion_Des_Dev_Mobile.webp'
+              class='w-full h-auto'
+            />
+          </div>
+        </div>
+        <div
+          class='lg:max-w-[31.458333333333332vw] lg:ml-auto lg:mt-[5.555555555555555vw]'
+        >
+          <div class='description'>
+            With us, you tap into a vibrant mix of functional<br />
+            creativity, innovation, and business-centric goals.<br />
+            We pack a punch with tailored website solutions<br />
+            that resonate with top brands' objectives.<br />
+            With Our close-knit team, you receive personalized<br />
+            attention and effortless integration with your<br />
+            team’s goals.
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
   <!-- <h1 class='text-4xl font-bold mb-8'>About Me</h1> -->
   <!-- <div class='max-w-4xl mx-auto px-4 py-12'>
     <a href={'/'} title='home' class='inline-block'> awawaa </a>
@@ -133,19 +233,24 @@ const SPECIALITIES: SpecialitiesItem[] = [
     </div>
   </div> -->
 </Layout>
-
 <script>
   import { gsap } from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-  // Register ScrollTrigger plugin
   gsap.registerPlugin(ScrollTrigger);
 
-  function initSpecialitiesAnimation() {
-    // Get all description elements
-    const descriptions = document.querySelectorAll('.speciality-desc');
+  // keep track of just our triggers
+  let specialityTriggers = new Set();
 
-    if (descriptions.length === 0) return;
+  function killSpecialities() {
+    specialityTriggers.forEach((t: any) => t.kill());
+    specialityTriggers.clear();
+  }
+
+  function initSpecialitiesAnimation() {
+    killSpecialities(); // prevent duplicates
+    console.log('initSpecialitiesAnimation');
+    const descriptions = document.querySelectorAll('.speciality-desc');
+    if (!descriptions.length) return;
 
     // Set initial state - hide all descriptions
     gsap.set(descriptions, {
@@ -155,38 +260,62 @@ const SPECIALITIES: SpecialitiesItem[] = [
       overflow: 'hidden',
     });
 
-    // Create scroll trigger for each description
     descriptions.forEach((desc, index) => {
       const container = document.getElementById(`speciality-${index}`);
       if (!container) return;
 
-      gsap.to(desc, {
+      const id = `speciality-${index}`;
+      // extra safety if something slipped through:
+      const existing = ScrollTrigger.getById(id);
+      if (existing) existing.kill();
+
+      const tween = gsap.to(desc, {
         opacity: 1,
         y: 0,
         height: 'auto',
         duration: 0.6,
         ease: 'power2.out',
         scrollTrigger: {
+          id,
           trigger: container,
-          start: 'top 50%',
-          end: 'bottom 30%',
+          start: 'top 70%',
+          end: 'bottom 50%',
           toggleActions: 'play none none reverse',
-          markers: true, // Uncomment for debugging
+          markers: true, // Disabled for production
         },
       });
+
+      // store the created ScrollTrigger instance
+      specialityTriggers.add(tween.scrollTrigger);
     });
+
+    // Force ScrollTrigger refresh after setup
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
   }
 
-  // Initialize on page load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSpecialitiesAnimation);
-  } else {
-    initSpecialitiesAnimation();
-  }
+  // Astro View Transitions lifecycle
+  document.addEventListener('astro:before-swap', killSpecialities);
 
-  // Re-initialize after page transitions (for Astro view transitions)
   document.addEventListener('astro:page-load', () => {
-    // Small delay to ensure DOM is ready
-    setTimeout(initSpecialitiesAnimation, 100);
+    // Multiple timing strategies to ensure proper initialization
+    requestAnimationFrame(() => {
+      initSpecialitiesAnimation();
+    });
+
+    // Backup initialization with longer delay for complex layouts
+    setTimeout(() => {
+      initSpecialitiesAnimation();
+    }, 200);
   });
+
+  // Also handle the initial page load (non-transition)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initSpecialitiesAnimation, 100);
+    });
+  } else {
+    setTimeout(initSpecialitiesAnimation, 100);
+  }
 </script>

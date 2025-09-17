@@ -121,8 +121,11 @@
 html,
 body {
   scroll-behavior: auto !important;
-  scrollbar-width: 0px;
+  scrollbar-width: 2px;
   -ms-overflow-style: 0px;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  min-height: 100%;
 }
 
 /* Chromium/WebKit */
