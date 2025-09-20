@@ -820,11 +820,11 @@ const NAV_ITEMS: NavItem[] = [
             link.removeAttribute('data-close-menu');
             (link as HTMLAnchorElement).click();
             // Restore the attribute after navigation
-            setTimeout(() => {
+            // setTimeout(() => {
               link.setAttribute('data-close-menu', 'true');
               isNavigatingAfterMenuClose = false;
               keepBlurForNavigation = false; // Reset flag
-            }, 100);
+            // }, 100);
           }, MENU_DURATION * 1000);
         }
       });
