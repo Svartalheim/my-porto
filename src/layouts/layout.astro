@@ -72,9 +72,7 @@ const { name, title } = Astro.props as Props;
       .page-container {
         --blur-p: 0;
         --blr-m: var(--grid-margin);
-        --blr-s-min: 0.032;
-        --blr-s-max: 0.0474;
-        --blr-s: var(--blr-s-min);
+        --blr-s: 0.032; /* fallback, will be calculated via JS */
         position: relative;
         z-index: 1;
         will-change: transform;
@@ -88,21 +86,6 @@ const { name, title } = Astro.props as Props;
       @media (max-width: 743px) {
         .page-container {
           --blr-m: 10px;
-        }
-      }
-      @media (max-width: 1200px) {
-        .page-container {
-          --blr-s: 0.037;
-        }
-      }
-      @media (max-width: 900px) {
-        .page-container {
-          --blr-s: 0.0594;
-        }
-      }
-      @media (max-width: 600px) {
-        .page-container {
-          --blr-s: var(--blr-s-max);
         }
       }
 
@@ -253,6 +236,8 @@ const { name, title } = Astro.props as Props;
         box-shadow: 0 calc(-1 * var(--page-border-radius)) 0 0 #000;
         background-color: rgba(0, 0, 0, 0);
       }
+
+      
     </style>
   </head>
 
@@ -337,7 +322,7 @@ const { name, title } = Astro.props as Props;
 
         requestAnimationFrame(() => {
           gsap.to(ghost, {
-            duration: DURATION,
+            duration: DURATION * 1.2,
             ease: EASE,
             yPercent: 6,
             xPercent: -3,
@@ -535,4 +520,61 @@ const { name, title } = Astro.props as Props;
     initOrigin();
   }
   document.addEventListener('astro:after-swap', initOrigin);
+
+  // Calculate perfect blur scale based on viewport and margin
+  function updateBlurScale(): void {
+    const page = getPageEl();
+    if (!page) return;
+    
+    // Calculate scrollbar width
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const vw100 = window.innerWidth - scrollbarWidth;
+    
+    // Calculate grid margin using the same formula from global.css
+    // --grid-margin: clamp(8px, 4.412px + var(--100vw) * 0.0092, 20px);
+    const gridMarginMin = 8;
+    const gridMarginMax = 16;
+    const gridMarginCalculated = 4.412 + vw100 * 0.0092;
+    const gridMargin = Math.max(gridMarginMin, Math.min(gridMarginMax, gridMarginCalculated));
+    
+    // For small screens, use 10px as per the media query
+    const finalBlrM = vw100 <= 743 ? 10 : gridMargin;
+    
+    // Calculate the scale factor: (viewport - 2*margin) / viewport
+    // This gives us the exact scale needed to fit content within the unmasked area
+    const blrS = vw100 > 0 && finalBlrM > 0 ? (2 * finalBlrM) / vw100 : 0;
+    
+    page.style.setProperty('--blr-s', blrS.toString());
+    
+    // Enhanced debug log to verify calculation
+    console.log('Blur scale calculation:', {
+      scrollbarWidth,
+      vw100,
+      gridMarginCalculated,
+      gridMargin,
+      finalBlrM,
+      blrS,
+      resultingScale: 1 - blrS,
+      windowInnerWidth: window.innerWidth
+    });
+  }
+
+  // Update blur scale on resize
+  window.addEventListener('resize', updateBlurScale, { passive: true });
+  window.addEventListener('orientationchange', updateBlurScale, { passive: true });
+  
+  // Initialize blur scale
+  function initBlurScale(): void {
+    // Use requestAnimationFrame for immediate but deferred execution
+    requestAnimationFrame(() => {
+      updateBlurScale();
+    });
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBlurScale);
+  } else {
+    initBlurScale();
+  }
+  document.addEventListener('astro:after-swap', initBlurScale);
 </script>

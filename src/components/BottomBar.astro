@@ -392,7 +392,7 @@ const NAV_ITEMS: NavItem[] = [
     if (currentOverlay && overlayClickHandler) {
       currentOverlay.removeEventListener('click', overlayClickHandler);
     }
-    
+
     // Get fresh element reference
     currentOverlay = document.getElementById('bottom-bar-overlay');
 
@@ -633,11 +633,9 @@ const NAV_ITEMS: NavItem[] = [
 
     function closeMenuFuncLocal(): void {
       if (collapsedBar && expandedContent && isExpanded) {
-        // Remove global scaling class
         document.body.classList.remove('menu-open');
         window.__lenis?.start?.();
 
-        // (Legacy ENABLE_PAGE_SCALE restore logic removed)
         isExpanded = false;
         window.__bottomBarExpanded = false;
         const pageEl = document.getElementById('page');
@@ -647,12 +645,13 @@ const NAV_ITEMS: NavItem[] = [
             // Just remove inert to allow interaction, but keep data-blurred
             pageEl.removeAttribute('inert');
           } else {
-            // Normal menu close - reset blur
+            // Normal menu close - reset blur with coordinated timing
             gsap.to(pageEl, {
               '--blur-p': 0,
               duration: MENU_DURATION,
-              ease: 'power2.in',
+              ease: 'power2.out',
               onComplete: () => {
+                // Remove blur attributes only after scaling is complete
                 pageEl.removeAttribute('data-blurred');
                 pageEl.removeAttribute('inert');
               },
@@ -662,24 +661,18 @@ const NAV_ITEMS: NavItem[] = [
 
         // Hide overlay - refresh reference first to ensure we have the current DOM element
         refreshOverlayReference();
-        
+
         if (currentOverlay) {
-          console.log(keepBlurForNavigation, 'kb');
           if (keepBlurForNavigation) {
-            // Keep overlay visible for navigation - maintain blur backdrop
-            // Just ensure it doesn't intercept clicks
             currentOverlay.style.pointerEvents = 'none';
           } else {
-            // Normal menu close - hide overlay
             gsap.to(currentOverlay, {
               autoAlpha: 0,
-              duration: MENU_DURATION * 1.3,
-              ease: 'power2.in',
+              opacity: 0,
+              duration: MENU_DURATION * 0.9, // Slightly faster than blur removal
+              ease: 'power2.out',
               onComplete: () => {
-                // overlay.style.pointerEvents = 'none';
-                // overlay.style.backgroundColor = '';
-                // overlay.style.backdropFilter = '';
-                // overlay.style.webkitBackdropFilter = '';
+                currentOverlay!.style.pointerEvents = 'none';
               },
             });
           }
@@ -819,12 +812,9 @@ const NAV_ITEMS: NavItem[] = [
             // Temporarily remove the data attribute to allow normal navigation
             link.removeAttribute('data-close-menu');
             (link as HTMLAnchorElement).click();
-            // Restore the attribute after navigation
-            // setTimeout(() => {
-              link.setAttribute('data-close-menu', 'true');
-              isNavigatingAfterMenuClose = false;
-              keepBlurForNavigation = false; // Reset flag
-            // }, 100);
+            link.setAttribute('data-close-menu', 'true');
+            isNavigatingAfterMenuClose = false;
+            keepBlurForNavigation = false;
           }, MENU_DURATION * 100);
         }
       });
