@@ -120,9 +120,9 @@ const { name, title } = Astro.props as Props;
       }
       .ghost-leave-active {
         transition:
-          transform var(--transition-duration, 400ms)
+          transform var(--transition-duration, 800ms)
             var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1)),
-          opacity var(--transition-duration, 400ms) linear;
+          opacity var(--transition-duration, 800ms) linear;
         transform: translate(--origin-x, --origin-y) rotate(1deg) scale(0.95);
         opacity: 0.3;
       }
@@ -133,7 +133,7 @@ const { name, title } = Astro.props as Props;
         opacity: 1;
       }
       .page-enter-active {
-        transition: transform var(--transition-duration, 400ms)
+        transition: transform var(--transition-duration, 800ms)
           var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
         transform: translateY(0%);
       }
@@ -281,7 +281,7 @@ const { name, title } = Astro.props as Props;
     <script>
       import { gsap } from 'gsap';
 
-      const DURATION = 0.5,
+      const DURATION = 1,
         EASE = 'power2.out';
       const prefersReduced = matchMedia(
         '(prefers-reduced-motion: reduce)'
