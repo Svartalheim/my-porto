@@ -22,7 +22,7 @@ const NAV_ITEMS: NavItem[] = [
 
 <div
   id='bottom-bar-overlay'
-  class='fixed inset-0 opacity-0 pointer-events-none backdrop-blur-[0px] bg-black/40 will-change-[opacity]'
+  class='fixed inset-0 opacity-0 pointer-events-none backdrop-blur-[0px] bg-black/40 will-change-[opacity] z-[2]'
 >
 </div>
 <nav
@@ -389,6 +389,7 @@ const NAV_ITEMS: NavItem[] = [
   let isExpanded = false; // Move this to global scope
   let closeMenuFunc: (() => void) | null = null; // Store reference to close function
   let isNavigatingAfterMenuClose = false; // Flag to prevent recursion
+  let keepBlurForNavigation = false; // Flag to keep blur during navigation
 
   function refreshOverlayReference(): void {
     currentOverlay = document.getElementById('bottom-bar-overlay');
@@ -636,15 +637,22 @@ const NAV_ITEMS: NavItem[] = [
         window.__bottomBarExpanded = false;
         const pageEl = document.getElementById('page');
         if (pageEl) {
-          gsap.to(pageEl, {
-            '--blur-p': 0,
-            duration: MENU_DURATION,
-            ease: 'power2.in',
-            onComplete: () => {
-              pageEl.removeAttribute('data-blurred');
-              pageEl.removeAttribute('inert');
-            },
-          });
+          if (keepBlurForNavigation) {
+            // Keep blur state for navigation - don't animate blur-p to 0
+            // Just remove inert to allow interaction, but keep data-blurred
+            pageEl.removeAttribute('inert');
+          } else {
+            // Normal menu close - reset blur
+            gsap.to(pageEl, {
+              '--blur-p': 0,
+              duration: MENU_DURATION,
+              ease: 'power2.in',
+              onComplete: () => {
+                pageEl.removeAttribute('data-blurred');
+                pageEl.removeAttribute('inert');
+              },
+            });
+          }
         }
 
         // Hide overlay
@@ -761,17 +769,19 @@ const NAV_ITEMS: NavItem[] = [
       if (isExpanded && !isNavigatingAfterMenuClose) {
         e.preventDefault(); // Prevent immediate navigation
         const href = logoCloseMenu.getAttribute('href') || '/';
+        keepBlurForNavigation = true; // Keep blur for navigation
         closeMenuFuncLocal();
         // Navigate after menu closes
         setTimeout(() => {
           isNavigatingAfterMenuClose = true;
           // Temporarily remove the data attribute to allow normal navigation
           logoCloseMenu.removeAttribute('data-close-menu');
-          logoCloseMenu.click();
+          (logoCloseMenu as HTMLAnchorElement).click();
           // Restore the attribute after navigation
           setTimeout(() => {
             logoCloseMenu.setAttribute('data-close-menu', 'true');
             isNavigatingAfterMenuClose = false;
+            keepBlurForNavigation = false; // Reset flag
           }, 100);
         }, MENU_DURATION * 1000);
       }
@@ -783,17 +793,19 @@ const NAV_ITEMS: NavItem[] = [
       link.addEventListener('click', (e) => {
         if (isExpanded && !isNavigatingAfterMenuClose) {
           e.preventDefault(); // Prevent immediate navigation
+          keepBlurForNavigation = true; // Keep blur for navigation
           closeMenuFuncLocal();
           // Navigate after menu closes
           setTimeout(() => {
             isNavigatingAfterMenuClose = true;
             // Temporarily remove the data attribute to allow normal navigation
             link.removeAttribute('data-close-menu');
-            link.click();
+            (link as HTMLAnchorElement).click();
             // Restore the attribute after navigation
             setTimeout(() => {
               link.setAttribute('data-close-menu', 'true');
               isNavigatingAfterMenuClose = false;
+              keepBlurForNavigation = false; // Reset flag
             }, 100);
           }, MENU_DURATION * 1000);
         }
