@@ -24,24 +24,108 @@ const { name, title } = Astro.props as Props;
     <link rel='preconnect' href='https://fonts.googleapis.com' />
     <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
 
-    <!-- <script is:inline>
+    <script is:inline>
+      // Custom view transition that waits for page readiness
       if ('startViewTransition' in document) {
-        document.__nativeStartViewTransition__ =
-          document.startViewTransition.bind(document);
-        document.startViewTransition = (cb) => {
-          let resolveFinished;
-          const finished = new Promise((res) => (resolveFinished = res));
-          const ready = Promise.resolve();
-          let updateCallbackDone = Promise.resolve();
-          try {
-            const r = cb?.();
-            if (r && typeof r.then === 'function') updateCallbackDone = r;
-          } catch (_) {}
-          Promise.resolve(updateCallbackDone).then(() => resolveFinished());
-          return { finished, ready, updateCallbackDone, skipTransition() {} };
+        document.__nativeStartViewTransition__ = document.startViewTransition.bind(document);
+        
+        // Override startViewTransition to wait for page readiness
+        document.startViewTransition = (updateCallback) => {
+          return document.__nativeStartViewTransition__(async () => {
+            // Execute the update callback (page navigation)
+            if (updateCallback) {
+              await updateCallback();
+            }
+            
+            // Wait for the new page to be fully ready
+            await new Promise((resolve) => {
+              // Wait for DOM to be ready
+              if (document.readyState === 'complete') {
+                resolve();
+              } else {
+                window.addEventListener('load', resolve, { once: true });
+              }
+            });
+            
+            // Additional wait for any dynamic content/animations to settle
+            await new Promise(resolve => {
+              // Wait for next few animation frames to ensure content is rendered
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  // Small additional delay for any lazy-loaded content
+                  setTimeout(resolve, 100);
+                });
+              });
+            });
+          });
         };
       }
-    </script> -->
+
+      // Also handle Astro's navigation events for additional control
+      document.addEventListener('astro:before-preparation', (event) => {
+        // You can add loading indicators here if needed
+        console.log('Navigation starting...');
+      });
+
+      document.addEventListener('astro:after-preparation', (event) => {
+        // Page is prepared but transition hasn't started yet
+        console.log('Page prepared, transition will start soon...');
+      });
+
+      document.addEventListener('astro:page-load', (event) => {
+        // New page is fully loaded
+        console.log('Page fully loaded!');
+      });
+    </script>
+
+    <script is:inline>
+      // Enhanced Astro navigation control
+      let isPageReady = false;
+      let pendingTransition = null;
+
+      // Function to check if page is truly ready
+      function checkPageReadiness() {
+        return new Promise((resolve) => {
+          // Check if all critical elements are present
+          const criticalSelectors = ['main', 'header', 'nav']; // Adjust based on your layout
+          const allElementsPresent = criticalSelectors.every(selector => 
+            document.querySelector(selector) !== null
+          );
+
+          if (allElementsPresent && document.readyState === 'complete') {
+            // Wait a bit more for any GSAP animations or dynamic content
+            setTimeout(() => {
+              isPageReady = true;
+              resolve();
+            }, 150);
+          } else {
+            // Keep checking
+            setTimeout(() => checkPageReadiness().then(resolve), 50);
+          }
+        });
+      }
+
+      // Override Astro's navigation behavior
+      document.addEventListener('astro:before-preparation', async (event) => {
+        isPageReady = false;
+        
+        // You can add a loading state here
+        document.body.classList.add('page-transitioning');
+      });
+
+      document.addEventListener('astro:after-preparation', async (event) => {
+        // Wait for page to be ready before allowing transition
+        await checkPageReadiness();
+        
+        // Remove loading state
+        document.body.classList.remove('page-transitioning');
+      });
+
+      // Reset readiness flag on each page load
+      document.addEventListener('astro:page-load', () => {
+        checkPageReadiness();
+      });
+    </script>
 
     <style is:global>
       html {
@@ -49,6 +133,33 @@ const { name, title } = Astro.props as Props;
       }
       html.no-scroll {
         padding-right: var(--sbw, 0px);
+      }
+
+      /* Page transition loading state */
+      body.page-transitioning {
+        pointer-events: none;
+      }
+      
+      body.page-transitioning::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--primary, #007acc) 50%,
+          transparent
+        );
+        animation: loading-bar 1.5s ease-in-out infinite;
+        z-index: 9999;
+      }
+
+      @keyframes loading-bar {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100vw); }
       }
 
       .page-container {
@@ -281,7 +392,7 @@ const { name, title } = Astro.props as Props;
     <script>
       import { gsap } from 'gsap';
 
-      const DURATION = 1,
+      const DURATION = 0.7,
         EASE = 'power2.out';
       const prefersReduced = matchMedia(
         '(prefers-reduced-motion: reduce)'
