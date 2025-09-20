@@ -45,7 +45,7 @@ const { name, title } = Astro.props as Props;
 
     <style is:global>
       html {
-        /* overflow-x: hidden; */
+        overflow-x: hidden;
       }
       html.no-scroll {
         padding-right: var(--sbw, 0px);
@@ -55,14 +55,6 @@ const { name, title } = Astro.props as Props;
         position: relative;
         width: 100%;
         min-height: 100vh;
-        max-width: var(--100vw);
-        margin: 0 auto;
-      }
-
-      @media only screen and (max-width: 768px) {
-        .page-container {
-          /* overflow: auto; */
-        }
       }
 
       .page-container {
@@ -78,6 +70,7 @@ const { name, title } = Astro.props as Props;
         transition-duration: var(--MENU_DURATION);
         transition-property: transform, opacity;
         transition-timing-function: linear;
+        /* transition-timing-function: linear; */
       }
 
       @media (max-width: 743px) {
@@ -136,16 +129,9 @@ const { name, title } = Astro.props as Props;
 
       /* NEW page enter — your slide-in-bottom */
       .page-enter {
-        transform: translateY(50%);
+        transform: translateY(115%);
         opacity: 1;
       }
-
-      @media (min-width: 769px) {
-        .page-enter {
-          transform: translateY(115%);
-        }
-      }
-
       .page-enter-active {
         transition: transform var(--transition-duration, 400ms)
           var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
@@ -255,11 +241,6 @@ const { name, title } = Astro.props as Props;
         box-shadow: 0 calc(-1 * var(--page-border-radius)) 0 0 #000;
         background-color: rgba(0, 0, 0, 0);
       }
-
-      .page-container[data-blurred='true'] #footer .container {
-        transform: scale(calc(1 - (var(--blr-s) * var(--blur-p))));
-        transition: none !important;
-      }
     </style>
   </head>
 
@@ -274,13 +255,13 @@ const { name, title } = Astro.props as Props;
     </div>
     <div
       data-slug={name}
-      class='page-container bg-background relative h-full w-full'
+      class='page-container bg-background relative h-full max-w-[var(--100vw)]'
       id='page'
     >
       <div class='page-content'>
         <slot />
+        <Footer />
       </div>
-      <Footer />
 
       <div
         data-blur-mask
@@ -365,11 +346,7 @@ const { name, title } = Astro.props as Props;
 
         page.offsetHeight;
 
-        // Responsive yPercent based on screen size
-        const isMobile = window.innerWidth <= 768;
-        const yPercentValue = isMobile ? 50 : 115; // Smaller value for mobile
-
-        gsap.set(page, { yPercent: yPercentValue });
+        gsap.set(page, { yPercent: 115 });
 
         // 4) Next frame: restore CSS transition (optional) and run the GSAP tween
         requestAnimationFrame(() => {
@@ -397,39 +374,11 @@ const { name, title } = Astro.props as Props;
 </html>
 
 <script>
-  const sbw = () => {
-    // On mobile devices, scrollbars are typically overlay and don't take up space
-    const isMobile =
-      window.innerWidth <= 768 ||
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      );
-
-    if (isMobile) {
-      return 0; // No scrollbar width on mobile
-    }
-
-    return window.innerWidth - document.documentElement.clientWidth;
-  };
-
-  const scrollbarWidth = sbw();
-  document.documentElement.style.setProperty('--sbw', scrollbarWidth + 'px');
-  document.documentElement.style.setProperty(
-    '--scrollbar-width',
-    scrollbarWidth + 'px'
+  const sbw = () => window.innerWidth - document.documentElement.clientWidth;
+  document.documentElement.style.setProperty('--sbw', sbw() + 'px');
+  addEventListener('resize', () =>
+    document.documentElement.style.setProperty('--sbw', sbw() + 'px')
   );
-
-  addEventListener('resize', () => {
-    const newScrollbarWidth = sbw();
-    document.documentElement.style.setProperty(
-      '--sbw',
-      newScrollbarWidth + 'px'
-    );
-    document.documentElement.style.setProperty(
-      '--scrollbar-width',
-      newScrollbarWidth + 'px'
-    );
-  });
 </script>
 
 <script>

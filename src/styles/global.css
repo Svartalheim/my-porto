@@ -241,3 +241,22 @@ body::-webkit-scrollbar {
   letter-spacing: -0.04em;
   ---letter-spacing: -0.04em;
 }
+
+.background-expander {
+  position: relative;
+}
+
+.background-expander::after {
+  content: '';
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(calc(1 + (var(--blr-s) * var(--blur-p))));
+  transition-delay: 0.5s;
+  transition: none !important;
+  background-color: inherit;
+  z-index: -1;
+}

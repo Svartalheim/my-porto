@@ -12,16 +12,16 @@ import { Separator } from '@components/ui/separator';
 type SpecialitiesItem = { header: string; desc: string };
 const SPECIALITIES: SpecialitiesItem[] = [
   {
-    header: '3 years of experience',
-    desc: 'Production UIs shipped with React/Next.js, Astro, and TypeScript. I target fast loads, solid a11y (WCAG 2.1), and clean component architecture—comfortable collaborating across time zones.',
+    header: 'Core Web Vitals & SEO',
+    desc: 'Fast, responsive pages with image optimization, SSR/ISR where it helps, and clean semantics. WCAG 2.1 paths checked so performance and accessibility win together.',
   },
   {
-    header: 'Innovation Aligned',
-    desc: 'I use modern tools only when they move metrics: View Transitions API, TanStack Router/Query, GSAP/Lenis, edge rendering. Outcomes first—faster pages, smoother flows, higher conversion.',
+    header: 'Type-safe, reusable UI',
+    desc: 'React/Next.js + TypeScript component systems, design tokens, and prop-driven patterns that keep code predictable, testable, and easy to extend.',
   },
   {
-    header: 'Full custom approach',
-    desc: 'No templates. I design brand-matched components, type-safe data flows, and scalable structure. You get maintainable code, clear docs, and a smooth handover—no theme lock-in.',
+    header: 'Modernize without drama',
+    desc: 'Refactor legacy code into maintainable SPAs/SSR apps. Sensible client-side caching/state management to cut API load and speed up real user flows.',
   },
 ];
 ---
@@ -53,13 +53,13 @@ const SPECIALITIES: SpecialitiesItem[] = [
       </header>
     </div>
   </div>
-  <div class='bg-primary text-background -mx-[5vw] px-[7vw]'>
+  <div class='bg-primary text-background background-expander relative'>
     <section
       id='whats-different'
-      class='mt-[100px] pb-[100px] py-[50px] lg:p-[8.333vw] p-[2.333vw] px-0'
+      class='mt-[100px] pb-[100px] py-[50px] px-[2vw] lg:p-[8.333vw] pt-[2.333vw]'
     >
       <div
-        class='flex justify-center lg:block px-4 mb-20 [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
+        class='flex justify-center lg:block px-4 mb-[10vw] [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
         id='about-title'
       >
         <FacetTitle />
@@ -73,24 +73,24 @@ const SPECIALITIES: SpecialitiesItem[] = [
         </span>
       </div>
       <Separator className={'bg-background'} />
-      <div class='p-medium gap-4 font-light flex flex-col'>
+      <div class='p-medium gap-1 font-light flex flex-col'>
         {
           SPECIALITIES.map((item, index) => (
             <>
               <div
-                class='pb-[2.333vw] pt-5 space-y-6'
+                class='pb-[1.333vw] py-[3.33vw] space-y-10'
                 id={`speciality-${index}`}
               >
                 <h3 class='p-large font-medium'>{item.header}</h3>
                 <p
-                  class='p-small font-light speciality-desc -mt-[2vw]'
+                  class='p-small min-h-0 h-0 opacity-0  font-light speciality-desc '
                   data-index={index}
                 >
                   {item.desc}
                 </p>
               </div>
-              <div class='pb-[4.333vw]'>
-                <Separator className={'bg-background '} />
+              <div class=' bg-primary'>
+                <Separator className={'speciality-separator bg-background'} />
               </div>
             </>
           ))
@@ -189,49 +189,6 @@ const SPECIALITIES: SpecialitiesItem[] = [
       </div>
     </section>
   </div>
-  <!-- <h1 class='text-4xl font-bold mb-8'>About Me</h1> -->
-  <!-- <div class='max-w-4xl mx-auto px-4 py-12'>
-    <a href={'/'} title='home' class='inline-block'> awawaa </a>
-
-    <div class='grid md:grid-cols-2 gap-8 items-center'>
-      <div>
-        <p class='text-lg text-gray-600 mb-6'>
-          Welcome to my portfolio! I'm a passionate developer who loves creating
-          amazing digital experiences.
-        </p>
-
-        <div class='space-y-4'>
-          <h2 class='text-2xl font-semibold'>Skills</h2>
-          <div class='flex flex-wrap gap-2'>
-            <span
-              class='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
-              >JavaScript</span
-            >
-            <span
-              class='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
-              >TypeScript</span
-            >
-            <span
-              class='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
-              >React</span
-            >
-            <span
-              class='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
-              >Astro</span
-            >
-            <span
-              class='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'
-              >GSAP</span
-            >
-          </div>
-        </div>
-      </div>
-
-      <div class='bg-gray-200 h-64 rounded-lg flex items-center justify-center'>
-        <span class='text-gray-500'>Your Photo Here</span>
-      </div>
-    </div>
-  </div> -->
 </Layout>
 <script>
   import { gsap } from 'gsap';
@@ -248,74 +205,51 @@ const SPECIALITIES: SpecialitiesItem[] = [
 
   function initSpecialitiesAnimation() {
     killSpecialities(); // prevent duplicates
-    console.log('initSpecialitiesAnimation');
     const descriptions = document.querySelectorAll('.speciality-desc');
-    if (!descriptions.length) return;
-
-    // Set initial state - hide all descriptions
-    gsap.set(descriptions, {
-      opacity: 0,
-      y: 'auto',
-      height: 0,
-      overflow: 'hidden',
-    });
-
-    descriptions.forEach((desc, index) => {
-      const container = document.getElementById(`speciality-${index}`);
-      if (!container) return;
-
-      const id = `speciality-${index}`;
-      // extra safety if something slipped through:
-      const existing = ScrollTrigger.getById(id);
-      if (existing) existing.kill();
-
-      const tween = gsap.to(desc, {
-        opacity: 1,
-        y: 0,
-        height: 'auto',
-        duration: 0.6,
-        ease: 'power2.out',
+    if (!descriptions.length) {
+      return;
+    }
+    descriptions.forEach((item) => {
+      const tl = gsap.timeline({
         scrollTrigger: {
-          id,
-          trigger: container,
-          start: 'top 70%',
-          end: 'bottom 50%',
-          toggleActions: 'play none none reverse',
-          markers: true, // Disabled for production
+          trigger: item,
+          start: 'top 65%',
+          end: 'bottom 30%',
+          scrub: true,
+          // markers: true,
         },
       });
 
-      // store the created ScrollTrigger instance
-      specialityTriggers.add(tween.scrollTrigger);
+      // First animate height
+      tl.fromTo(
+        item,
+        { height: 0 },
+        {
+          height: 'auto',
+          duration: 1,
+          immediateRender: false,
+        }
+      )
+        // Then animate opacity (starts before height finishes)
+        .fromTo(
+          item,
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: 0.4,
+            immediateRender: false,
+          },
+          '-=0.5' // Start 0.3 seconds before the height animation ends
+        );
     });
-
-    // Force ScrollTrigger refresh after setup
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
   }
 
   // Astro View Transitions lifecycle
   document.addEventListener('astro:before-swap', killSpecialities);
 
   document.addEventListener('astro:page-load', () => {
-    // Multiple timing strategies to ensure proper initialization
-    requestAnimationFrame(() => {
-      initSpecialitiesAnimation();
-    });
-
-    // Backup initialization with longer delay for complex layouts
     setTimeout(() => {
       initSpecialitiesAnimation();
-    }, 200);
+    }, 1000);
   });
-
-  // Also handle the initial page load (non-transition)
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(initSpecialitiesAnimation, 100);
-    });
-  } else {
-    setTimeout(initSpecialitiesAnimation, 100);
-  }
 </script>
