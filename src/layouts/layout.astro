@@ -36,7 +36,7 @@ const { name, title } = Astro.props as Props;
       body.page-transitioning {
         pointer-events: none;
       }
-      
+
       body.page-transitioning::before {
         content: '';
         position: fixed;
@@ -55,8 +55,12 @@ const { name, title } = Astro.props as Props;
       }
 
       @keyframes loading-bar {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100vw); }
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100vw);
+        }
       }
 
       .page-container {
@@ -253,6 +257,8 @@ const { name, title } = Astro.props as Props;
   </head>
 
   <body class='bg-black'>
+    <!-- Bottom bar overlay - part of each page for view transitions -->
+
     <!-- Persistent chrome -->
     <BottomBar transition:persist transition:animate='none' />
     <div
@@ -267,6 +273,11 @@ const { name, title } = Astro.props as Props;
       id='page'
     >
       <div class='page-content'>
+        <div
+          id='bottom-bar-overlay'
+          class='fixed inset-0 opacity-0 pointer-events-none backdrop-blur-[0px] bg-black/40 will-change-[opacity] z-[2]'
+        >
+        </div>
         <slot />
         <Footer />
       </div>
