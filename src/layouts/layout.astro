@@ -275,7 +275,8 @@ const { name, title } = Astro.props as Props;
       <div class='page-content'>
         <div
           id='bottom-bar-overlay'
-          class='fixed inset-0 opacity-0 pointer-events-none backdrop-blur-[0px] bg-black/40 will-change-[opacity] z-[2]'
+          class='fixed inset-0 pointer-events-none backdrop-blur-[0px] bg-black/40 will-change-[opacity] z-[2]'
+          style='opacity: 0;'
         >
         </div>
         <slot />

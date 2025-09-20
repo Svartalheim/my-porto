@@ -385,15 +385,23 @@ const NAV_ITEMS: NavItem[] = [
   let closeMenuFunc: (() => void) | null = null; // Store reference to close function
   let isNavigatingAfterMenuClose = false; // Flag to prevent recursion
   let keepBlurForNavigation = false; // Flag to keep blur during navigation
+  let overlayClickHandler: (() => void) | null = null; // Store reference to avoid duplicate listeners
 
   function refreshOverlayReference(): void {
+    // Clean up old event listener if it exists
+    if (currentOverlay && overlayClickHandler) {
+      currentOverlay.removeEventListener('click', overlayClickHandler);
+    }
+    
+    // Get fresh element reference
     currentOverlay = document.getElementById('bottom-bar-overlay');
 
-    // Re-attach event listener for overlay click
+    // Create new event handler and attach it
     if (currentOverlay && closeMenuFunc) {
-      currentOverlay.addEventListener('click', () => {
+      overlayClickHandler = () => {
         if (isExpanded) closeMenuFunc?.();
-      });
+      };
+      currentOverlay.addEventListener('click', overlayClickHandler);
     }
   }
 
@@ -410,6 +418,7 @@ const NAV_ITEMS: NavItem[] = [
 
     if (isReInit) {
       // Just refresh overlay reference for page transitions
+      // Note: closeMenuFunc should already be set from the initial initialization
       refreshOverlayReference();
       return;
     }
@@ -430,8 +439,6 @@ const NAV_ITEMS: NavItem[] = [
     const plusIcon = document.getElementById('plus-icon');
     const minusIcon = document.getElementById('minus-icon');
 
-    // Initialize overlay reference
-    refreshOverlayReference();
     // GSAP Animation elements
     const rLogo = document.getElementById('r-logo');
     const arrowIcon = document.getElementById('arrow-icon');
@@ -532,7 +539,10 @@ const NAV_ITEMS: NavItem[] = [
           );
         }
 
-        // Show overlay
+        // Show overlay - refresh reference first to ensure we have the current DOM element
+        refreshOverlayReference();
+
+        console.log(currentOverlay, 'co');
         if (currentOverlay) {
           gsap.to(currentOverlay, {
             autoAlpha: 1,
@@ -650,7 +660,9 @@ const NAV_ITEMS: NavItem[] = [
           }
         }
 
-        // Hide overlay
+        // Hide overlay - refresh reference first to ensure we have the current DOM element
+        refreshOverlayReference();
+        
         if (currentOverlay) {
           console.log(keepBlurForNavigation, 'kb');
           if (keepBlurForNavigation) {
@@ -738,6 +750,9 @@ const NAV_ITEMS: NavItem[] = [
 
     // Assign to global reference for overlay event listener
     closeMenuFunc = closeMenuFuncLocal;
+
+    // Initialize overlay reference after closeMenuFunc is set
+    refreshOverlayReference();
 
     // Event listeners
     mainBarContent?.addEventListener('click', (e) => {
