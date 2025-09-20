@@ -130,6 +130,7 @@ const NAV_ITEMS: NavItem[] = [
             title='home'
             class='relative inline-block'
             id='logo-close-menu'
+            data-close-menu="true"
           >
             <LogoR height={36} class='text-white' />
           </a>
@@ -161,6 +162,7 @@ const NAV_ITEMS: NavItem[] = [
                       '-active': isActive,
                       '-exact': isExact,
                     }}
+                    data-close-menu="true"
                   >
                     <figure class='relative'>
                       <Image
@@ -386,6 +388,7 @@ const NAV_ITEMS: NavItem[] = [
   let currentOverlay: HTMLElement | null = null;
   let isExpanded = false; // Move this to global scope
   let closeMenuFunc: (() => void) | null = null; // Store reference to close function
+  let isNavigatingAfterMenuClose = false; // Flag to prevent recursion
 
   function refreshOverlayReference(): void {
     currentOverlay = document.getElementById('bottom-bar-overlay');
@@ -755,14 +758,46 @@ const NAV_ITEMS: NavItem[] = [
     // Logo click closes menu
     const logoCloseMenu = document.getElementById('logo-close-menu');
     logoCloseMenu?.addEventListener('click', (e) => {
-      if (isExpanded) {
-        // e.preventDefault(); // Prevent navigation
+      if (isExpanded && !isNavigatingAfterMenuClose) {
+        e.preventDefault(); // Prevent immediate navigation
+        const href = logoCloseMenu.getAttribute('href') || '/';
         closeMenuFuncLocal();
-        // // Navigate after menu closes
-        // setTimeout(() => {
-        //   window.location.href = '/';
-        // }, MENU_DURATION * 1000);
+        // Navigate after menu closes
+        setTimeout(() => {
+          isNavigatingAfterMenuClose = true;
+          // Temporarily remove the data attribute to allow normal navigation
+          logoCloseMenu.removeAttribute('data-close-menu');
+          logoCloseMenu.click();
+          // Restore the attribute after navigation
+          setTimeout(() => {
+            logoCloseMenu.setAttribute('data-close-menu', 'true');
+            isNavigatingAfterMenuClose = false;
+          }, 100);
+        }, MENU_DURATION * 1000);
       }
+    });
+
+    // Handle all navigation links with data-close-menu attribute
+    const navLinks = document.querySelectorAll('a[data-close-menu="true"]');
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        if (isExpanded && !isNavigatingAfterMenuClose) {
+          e.preventDefault(); // Prevent immediate navigation
+          closeMenuFuncLocal();
+          // Navigate after menu closes
+          setTimeout(() => {
+            isNavigatingAfterMenuClose = true;
+            // Temporarily remove the data attribute to allow normal navigation
+            link.removeAttribute('data-close-menu');
+            link.click();
+            // Restore the attribute after navigation
+            setTimeout(() => {
+              link.setAttribute('data-close-menu', 'true');
+              isNavigatingAfterMenuClose = false;
+            }, 100);
+          }, MENU_DURATION * 1000);
+        }
+      });
     });
 
     closeMenu?.addEventListener('click', closeMenuFuncLocal);
