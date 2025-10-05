@@ -237,7 +237,24 @@ const { name, title } = Astro.props as Props;
         background-color: rgba(0, 0, 0, 0);
       }
 
-      
+      .page-container[data-blurred='true'] #bottom-bar-overlay::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background: inherit;
+      }
+
+      .footer-pin-wrapper {
+        position: relative !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        /* min-height: 100vh; */
+        overflow: hidden;
+      }
     </style>
   </head>
 
@@ -265,7 +282,9 @@ const { name, title } = Astro.props as Props;
         >
         </div>
         <slot />
-        <Footer />
+        <!-- <div class='footer-pin-wrapper'> -->
+          <Footer />
+        <!-- </div> -->
       </div>
 
       <div
@@ -525,27 +544,31 @@ const { name, title } = Astro.props as Props;
   function updateBlurScale(): void {
     const page = getPageEl();
     if (!page) return;
-    
+
     // Calculate scrollbar width
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
     const vw100 = window.innerWidth - scrollbarWidth;
-    
+
     // Calculate grid margin using the same formula from global.css
     // --grid-margin: clamp(8px, 4.412px + var(--100vw) * 0.0092, 20px);
     const gridMarginMin = 8;
     const gridMarginMax = 16;
     const gridMarginCalculated = 4.412 + vw100 * 0.0092;
-    const gridMargin = Math.max(gridMarginMin, Math.min(gridMarginMax, gridMarginCalculated));
-    
+    const gridMargin = Math.max(
+      gridMarginMin,
+      Math.min(gridMarginMax, gridMarginCalculated)
+    );
+
     // For small screens, use 10px as per the media query
     const finalBlrM = vw100 <= 743 ? 10 : gridMargin;
-    
+
     // Calculate the scale factor: (viewport - 2*margin) / viewport
     // This gives us the exact scale needed to fit content within the unmasked area
     const blrS = vw100 > 0 && finalBlrM > 0 ? (2 * finalBlrM) / vw100 : 0;
-    
+
     page.style.setProperty('--blr-s', blrS.toString());
-    
+
     // Enhanced debug log to verify calculation
     console.log('Blur scale calculation:', {
       scrollbarWidth,
@@ -555,14 +578,16 @@ const { name, title } = Astro.props as Props;
       finalBlrM,
       blrS,
       resultingScale: 1 - blrS,
-      windowInnerWidth: window.innerWidth
+      windowInnerWidth: window.innerWidth,
     });
   }
 
   // Update blur scale on resize
   window.addEventListener('resize', updateBlurScale, { passive: true });
-  window.addEventListener('orientationchange', updateBlurScale, { passive: true });
-  
+  window.addEventListener('orientationchange', updateBlurScale, {
+    passive: true,
+  });
+
   // Initialize blur scale
   function initBlurScale(): void {
     // Use requestAnimationFrame for immediate but deferred execution
@@ -570,11 +595,80 @@ const { name, title } = Astro.props as Props;
       updateBlurScale();
     });
   }
-  
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initBlurScale);
   } else {
     initBlurScale();
   }
   document.addEventListener('astro:after-swap', initBlurScale);
+</script>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initFooterPin(): void {
+    const footer = document.getElementById('footer');
+    const footerWrapper = footer?.closest('.footer-pin-wrapper');
+
+    if (!footer) return;
+
+    // Kill any existing ScrollTrigger instances for the footer
+    const existingTrigger = ScrollTrigger.getById('footer-pin');
+    existingTrigger?.kill();
+
+    // Reset transforms before applying the pin animation
+    gsap.killTweensOf(footer);
+    gsap.set(footer, { clearProps: 'transform,opacity' });
+
+    gsap.fromTo(
+      footer,
+      { yPercent: 100 },
+      {
+        yPercent: 0,
+        ease: 'none',
+        immediateRender: false,
+        scrollTrigger: {
+          id: 'footer-pin',
+          trigger: footer,
+          start: 'top bottom',
+          end: () => `+=${footer.clientHeight}`,
+          pin: true,
+          pinSpacing: true,
+          scrub: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          markers: true,
+        },
+      }
+    );
+
+    // Refresh ScrollTrigger after setup
+    ScrollTrigger.refresh();
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFooterPin);
+  } else {
+    setTimeout(() => {
+      // Delay to ensure DOM is fully ready
+      initFooterPin();
+    }, 5000);
+    initFooterPin();
+  }
+
+  // Reinitialize after Astro page transitions
+  document.addEventListener('astro:after-swap', () => {
+    // Small delay to ensure DOM updates settle before re-initialising
+    setTimeout(initFooterPin, 250);
+  });
+
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    ScrollTrigger.refresh();
+  });
 </script>

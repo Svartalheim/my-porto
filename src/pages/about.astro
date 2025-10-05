@@ -2,26 +2,30 @@
 import Layout from '../layouts/layout.astro';
 import AboutTitle from '@assets/svg/about-title.svg';
 import FacetTitle from '@assets/svg/facet-title.svg';
-
+import AboutPhoto from '@assets/images/case-study-all.webp';
 import Arrow from '@assets/svg/arrow.svg';
 import Flare from '@assets/svg/flare.svg';
 import ImageAboutNavbar from '@assets/images/about.png';
 import { Image } from 'astro:assets';
 import { Separator } from '@components/ui/separator';
 
-type SpecialitiesItem = { header: string; desc: string };
+type SpecialitiesItem = { header: string; desc: string; meta?: string };
+
 const SPECIALITIES: SpecialitiesItem[] = [
   {
-    header: 'Core Web Vitals & SEO',
-    desc: 'Fast, responsive pages with image optimization, SSR/ISR where it helps, and clean semantics. WCAG 2.1 paths checked so performance and accessibility win together.',
+    header: 'Analytics dashboards & data viz',
+    desc: 'Dashboard-builder UIs wired to MySQL, MariaDB, SingleStore, and PostgreSQL. Composable portlets, faceted filters, and configurable charts with clear empty/loading states.',
+    meta: 'Portlet — Pages — Dashboards',
   },
   {
-    header: 'Type-safe, reusable UI',
-    desc: 'React/Next.js + TypeScript component systems, design tokens, and prop-driven patterns that keep code predictable, testable, and easy to extend.',
+    header: 'Next.js architecture & design systems',
+    desc: 'Type-safe React/Next.js with shadcn/ui, TanStack (Table/Query), react-hook-form + Zod. Atomic components, design tokens, and pragmatic state management that scales.',
+    meta: 'SSR/ISR where useful · per-route caching',
   },
   {
-    header: 'Modernize without drama',
-    desc: 'Refactor legacy code into maintainable SPAs/SSR apps. Sensible client-side caching/state management to cut API load and speed up real user flows.',
+    header: 'Workflow-driven apps (LMS & enterprise)',
+    desc: 'Translate multi-role processes into robust web flows—courses, schedules, experts, classrooms, learners, and logistics—complete with RBAC, validation, and admin tooling.',
+    meta: 'Roles & permissions · audit-friendly forms',
   },
 ];
 ---
@@ -53,10 +57,12 @@ const SPECIALITIES: SpecialitiesItem[] = [
       </header>
     </div>
   </div>
-  <div class='bg-primary text-background background-expander relative'>
+  <div
+    class='text-background bg-primary background-expander relative px-[2vw] lg:p-[8.333vw]'
+  >
     <section
       id='whats-different'
-      class='mt-[100px] pb-[100px] py-[50px] px-[2vw] lg:p-[8.333vw] pt-[2.333vw]'
+      class='mt-[100px] pb-[50px] py-[50px] px-[2vw] lg:p-[8.333vw] pt-[2.333vw]'
     >
       <div
         class='flex justify-center lg:block px-4 mb-[10vw] [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
@@ -67,9 +73,9 @@ const SPECIALITIES: SpecialitiesItem[] = [
       <div class='pb-[4.333vw] flex gap-4 p-medium font-light mx-auto'>
         <Flare height={40} width={40} class={'min-w-[40px] h-auto'} />
         <span>
-          Whether it’s a small project or a large-scale build for established
-          brands, I create digital experiences that stand out and give
-          businesses a competitive edge.
+          I build fast, accessible web apps—analytics dashboards and workflow
+          tools—using Next.js/React and type-safe systems that turn complex data
+          into clear decisions.
         </span>
       </div>
       <Separator className={'bg-background'} />
@@ -77,17 +83,17 @@ const SPECIALITIES: SpecialitiesItem[] = [
         {
           SPECIALITIES.map((item, index) => (
             <>
-              <div
-                class='pb-[1.333vw] py-[3.33vw] space-y-10'
-                id={`speciality-${index}`}
-              >
-                <h3 class='p-large font-medium'>{item.header}</h3>
+              <div class='pb-[1.333vw] py-[3.33vw]' id={`speciality-${index}`}>
+                <h3 class='p-large font-medium speciality-title'>
+                  {item.header}
+                </h3>
                 <p
-                  class='p-small min-h-0 h-0 opacity-0  font-light speciality-desc '
+                  class='p-small min-h-0 h-0 opacity-0 max-h-fit  font-light speciality-desc '
                   data-index={index}
                 >
                   {item.desc}
                 </p>
+                {item.meta && <p class='mt-2 p-tiny'>{item.meta}</p>}
               </div>
               <div class=' bg-primary'>
                 <Separator className={'speciality-separator bg-background'} />
@@ -97,79 +103,26 @@ const SPECIALITIES: SpecialitiesItem[] = [
         }
       </div>
     </section>
-    <!-- <section id='why-us'>
+    <section id='why-us'>
       <div
-        class='lg:pr-[var(--size-20)] lg:w-[calc(100%-31.458333333333332vw)] lg:flex flex-col justify-between'
+        class='lg:pr-[var(--size-20)] lg:w-[calc(100%-31.458333333333332vw)] lg:flex flex-col justify-between pb-[200px]'
       >
         <div class='lg:pt-[0.20833333333333334vw]'>
           <div class='section-indent'>
-            <div
-              class='inline-flex absolute left-0 section_name invisible opacity-0 width-view-indent'
-            >
-              Why atoll
-            </div>
-            <div
-              class='section_name -mb-4 lg:mb-[-1.5277777777777777vw] pointer-events-none'
-            >
-              Why atoll
-            </div>
             <div>
-              <h2
-                class='p-large'
-                data-anim-splitting-scroll=''
-                data-splitting-lines-overflow=''
-                data-splitting=''
-                style='opacity: 1; visibility: inherit;'
-              >
-                <div class='wrapper_line'>
-                  <div
-                    class='line'
-                    style='display: block; text-align: start; position: relative; translate: none; rotate: none; scale: none; transform: translate(0px, 0px);'
-                  >
-                    <span
-                      class='mr-[8.472222222222223vw] indent-margin-right'
-                      style='margin-right: 89.3907px;'></span> Atoll Digital is born
-                    from the
-                  </div>
-                </div>
-                <div class='wrapper_line'>
-                  <div
-                    class='line'
-                    style='display: block; text-align: start; position: relative; translate: none; rotate: none; scale: none; transform: translate(0px, 0px);'
-                  >
-                    dynamic fusion of design, technology,
-                  </div>
-                </div><div class='wrapper_line'>
-                  <div
-                    class='line'
-                    style='display: block; text-align: start; position: relative; translate: none; rotate: none; scale: none; transform: translate(0px, 0px);'
-                  >
-                    and business development, crafting
-                  </div>
-                </div><div class='wrapper_line'>
-                  <div
-                    class='line'
-                    style='display: block; text-align: start; position: relative; translate: none; rotate: none; scale: none; transform: translate(0px, 0px);'
-                  >
-                    captivating, functional solutions for
-                  </div>
-                </div><div class='wrapper_line'>
-                  <div
-                    class='line'
-                    style='display: block; text-align: start; position: relative; translate: none; rotate: none; scale: none; transform: translate(0px, 0px);'
-                  >
-                    businesses.
-                  </div>
-                </div>
+              <h2>
+                Hello, I'm Svartalheim. A web developer mostly develop on
+                front-end side.
               </h2>
             </div>
           </div>
         </div>
         <div class='lg:hidden mt-[13px] mb-[38px]'>
-          <div class='overflow-hidden rounded-[var(--rounded-base)]'>
-            <img
-              src='https://atolldigital.com/wp-content/uploads/2025/02/Atoll_Fusion_Des_Dev_Mobile.webp'
+          <div class='overflow-hidden rounded-[5px]'>
+            <Image
+              src={AboutPhoto}
               class='w-full h-auto'
+              alt={'Photo about us'}
             />
           </div>
         </div>
@@ -187,7 +140,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
           </div>
         </div>
       </div>
-    </section> -->
+    </section>
   </div>
 </Layout>
 <script>
@@ -206,7 +159,8 @@ const SPECIALITIES: SpecialitiesItem[] = [
   function initSpecialitiesAnimation() {
     killSpecialities(); // prevent duplicates
     const descriptions = document.querySelectorAll('.speciality-desc');
-    if (!descriptions.length) {
+    const titles = document.querySelectorAll('.speciality-title');
+    if (!descriptions.length || !titles.length) {
       return;
     }
     descriptions.forEach((item) => {
@@ -241,6 +195,27 @@ const SPECIALITIES: SpecialitiesItem[] = [
           },
           '-=0.5' // Start 0.3 seconds before the height animation ends
         );
+    });
+    titles.forEach((item) => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 65%',
+          end: 'bottom 30%',
+          // scrub: true,
+          // markers: true,
+        },
+      });
+
+      // First animate height
+      tl.fromTo(
+        item,
+        { marginBottom: 0 },
+        {
+          marginBottom: '1rem',
+        },
+        '-=0.3' // Start 0.3 seconds before the height animation ends
+      );
     });
   }
 
