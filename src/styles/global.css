@@ -214,6 +214,12 @@ body::-webkit-scrollbar {
   /* contain: paint; . */
 }
 
+.p-xlarge {
+  font-size: clamp(28px, 25.621px + 100vw * 0.0061, 36px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
 .p-large {
   font-size: clamp(24px, 22.206px + 100vw * 0.0046, 30px);
   line-height: 1.1;

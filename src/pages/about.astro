@@ -121,7 +121,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
           <div class='overflow-hidden rounded-[5px]'>
             <Image
               src={AboutPhoto}
-              class='w-full h-auto'
+              class='w-full h-auto rotate-3 origin-top-left'
               alt={'Photo about us'}
             />
           </div>
@@ -154,6 +154,11 @@ const SPECIALITIES: SpecialitiesItem[] = [
   function killSpecialities() {
     specialityTriggers.forEach((t: any) => t.kill());
     specialityTriggers.clear();
+    // Reset completion tracking
+    document.querySelectorAll('.speciality-desc, .speciality-title').forEach(el => {
+      const element = el as HTMLElement;
+      delete element.dataset.completed;
+    });
   }
 
   function initSpecialitiesAnimation() {
@@ -163,19 +168,49 @@ const SPECIALITIES: SpecialitiesItem[] = [
     if (!descriptions.length || !titles.length) {
       return;
     }
-    descriptions.forEach((item) => {
-      const tl = gsap.timeline({
+
+    let completedAnimations = 0;
+    const totalAnimations = descriptions.length + titles.length;
+
+    // Helper function to check if all animations are complete
+    function checkAllComplete() {
+      completedAnimations++;
+      if (completedAnimations >= totalAnimations) {
+        // All speciality animations are complete, refresh footer ScrollTrigger
+        console.log('All speciality animations complete, refreshing ScrollTrigger...');
+        const refreshEvent = new CustomEvent('refreshScrollTrigger', {
+          detail: { 
+            source: 'about-specialities',
+            delay: 200 
+          }
+        });
+        document.dispatchEvent(refreshEvent);
+      }
+    }
+
+    descriptions.forEach((item, index) => {
+      const element = item as HTMLElement;
+      const trigger = gsap.timeline({
         scrollTrigger: {
           trigger: item,
           start: 'top 65%',
           end: 'bottom 30%',
           scrub: true,
           // markers: true,
+          onUpdate: (self: any) => {
+            // When animation reaches end, trigger refresh
+            if (self.progress === 1 && !element.dataset.completed) {
+              element.dataset.completed = 'true';
+              checkAllComplete();
+            }
+          }
         },
       });
 
+      specialityTriggers.add(trigger.scrollTrigger);
+
       // First animate height
-      tl.fromTo(
+      trigger.fromTo(
         item,
         { height: 0 },
         {
@@ -193,11 +228,13 @@ const SPECIALITIES: SpecialitiesItem[] = [
             duration: 0.4,
             immediateRender: false,
           },
-          '-=0.5' // Start 0.3 seconds before the height animation ends
+          '-=0.5' // Start 0.5 seconds before the height animation ends
         );
     });
-    titles.forEach((item) => {
-      const tl = gsap.timeline({
+
+    titles.forEach((item, index) => {
+      const element = item as HTMLElement;
+      const trigger = gsap.timeline({
         scrollTrigger: {
           trigger: item,
           start: 'top 65%',
@@ -207,12 +244,20 @@ const SPECIALITIES: SpecialitiesItem[] = [
         },
       });
 
-      // First animate height
-      tl.fromTo(
+      specialityTriggers.add(trigger.scrollTrigger);
+
+      // Animate margin bottom
+      trigger.fromTo(
         item,
         { marginBottom: 0 },
         {
           marginBottom: '1rem',
+          onComplete: () => {
+            if (!element.dataset.completed) {
+              element.dataset.completed = 'true';
+              checkAllComplete();
+            }
+          }
         },
         '-=0.3' // Start 0.3 seconds before the height animation ends
       );

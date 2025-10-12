@@ -542,7 +542,6 @@ const NAV_ITEMS: NavItem[] = [
         // Show overlay - refresh reference first to ensure we have the current DOM element
         refreshOverlayReference();
 
-        console.log(currentOverlay, 'co');
         if (currentOverlay) {
           gsap.to(currentOverlay, {
             autoAlpha: 1,

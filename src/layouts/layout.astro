@@ -27,9 +27,19 @@ const { name, title } = Astro.props as Props;
     <style is:global>
       html {
         overflow-x: hidden;
+        /* Default transition durations */
+        --transition-duration: 800ms;
+        --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
       }
       html.no-scroll {
         padding-right: var(--sbw, 0px);
+      }
+
+      /* Faster transitions on mobile */
+      @media (max-width: 768px) {
+        html {
+          --transition-duration: 400ms;
+        }
       }
 
       /* Page transition loading state */
@@ -131,6 +141,19 @@ const { name, title } = Astro.props as Props;
         transition: transform var(--transition-duration, 800ms)
           var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
         transform: translateY(0%);
+      }
+
+      /* Faster transitions on mobile */
+      @media (max-width: 768px) {
+        .ghost-leave-active {
+          transition:
+            transform 400ms var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1)),
+            opacity 400ms linear;
+        }
+        .page-enter-active {
+          transition: transform 400ms
+            var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
+        }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -255,6 +278,17 @@ const { name, title } = Astro.props as Props;
         /* min-height: 100vh; */
         overflow: hidden;
       }
+
+      .page-container[data-blurred='true'] #footer::after {
+        position: absolute;
+        overflow: hidden;
+        top: 100%;
+        content: '';
+        width: 100%;
+        height: 200px;
+        background-color: inherit;
+        z-index: -1;
+      }
     </style>
   </head>
 
@@ -282,9 +316,7 @@ const { name, title } = Astro.props as Props;
         >
         </div>
         <slot />
-        <!-- <div class='footer-pin-wrapper'> -->
-          <Footer />
-        <!-- </div> -->
+        <Footer />
       </div>
 
       <div
@@ -305,7 +337,9 @@ const { name, title } = Astro.props as Props;
     <script>
       import { gsap } from 'gsap';
 
-      const DURATION = 0.5,
+      // Faster transitions on mobile for better performance
+      const isMobile = window.innerWidth <= 768;
+      const DURATION = isMobile ? 0.35 : 0.5,
         EASE = 'power2.out';
       const prefersReduced = matchMedia(
         '(prefers-reduced-motion: reduce)'
@@ -568,18 +602,6 @@ const { name, title } = Astro.props as Props;
     const blrS = vw100 > 0 && finalBlrM > 0 ? (2 * finalBlrM) / vw100 : 0;
 
     page.style.setProperty('--blr-s', blrS.toString());
-
-    // Enhanced debug log to verify calculation
-    console.log('Blur scale calculation:', {
-      scrollbarWidth,
-      vw100,
-      gridMarginCalculated,
-      gridMargin,
-      finalBlrM,
-      blrS,
-      resultingScale: 1 - blrS,
-      windowInnerWidth: window.innerWidth,
-    });
   }
 
   // Update blur scale on resize
@@ -612,34 +634,24 @@ const { name, title } = Astro.props as Props;
 
   function initFooterPin(): void {
     const footer = document.getElementById('footer');
-    const footerWrapper = footer?.closest('.footer-pin-wrapper');
 
     if (!footer) return;
-
-    // Kill any existing ScrollTrigger instances for the footer
-    const existingTrigger = ScrollTrigger.getById('footer-pin');
-    existingTrigger?.kill();
-
     // Reset transforms before applying the pin animation
     gsap.killTweensOf(footer);
     gsap.set(footer, { clearProps: 'transform,opacity' });
 
     gsap.fromTo(
       footer,
-      { yPercent: 100 },
+      { y: -350, ease: 'none', immediateRender: false },
       {
-        yPercent: 0,
+        y: 0,
         ease: 'none',
         immediateRender: false,
         scrollTrigger: {
-          id: 'footer-pin',
           trigger: footer,
           start: 'top bottom',
-          end: () => `+=${footer.clientHeight}`,
-          pin: true,
-          pinSpacing: true,
+          end: 'bottom bottom',
           scrub: true,
-          anticipatePin: 1,
           invalidateOnRefresh: true,
           markers: true,
         },
@@ -657,18 +669,55 @@ const { name, title } = Astro.props as Props;
     setTimeout(() => {
       // Delay to ensure DOM is fully ready
       initFooterPin();
-    }, 5000);
+    }, 2000);
     initFooterPin();
   }
 
   // Reinitialize after Astro page transitions
   document.addEventListener('astro:after-swap', () => {
     // Small delay to ensure DOM updates settle before re-initialising
-    setTimeout(initFooterPin, 250);
+    setTimeout(initFooterPin, 2000);
   });
+
+  // Debounced refresh function to prevent excessive calls
+  let refreshTimeout: ReturnType<typeof setTimeout> | null = null;
+  let isRefreshing = false; // Prevent recursive calls
+
+  function debounceRefresh(delay: number = 100): void {
+    if (isRefreshing || refreshTimeout !== null) return;
+
+    refreshTimeout = setTimeout(() => {
+      isRefreshing = true;
+      ScrollTrigger.refresh();
+      refreshTimeout = null;
+      // Reset flag after a short delay to allow legitimate refreshes
+      setTimeout(() => {
+        isRefreshing = false;
+      }, 100);
+    }, delay);
+  }
 
   // Handle window resize
   window.addEventListener('resize', () => {
-    ScrollTrigger.refresh();
+    debounceRefresh(150);
   });
+
+  // Cross-page communication for ScrollTrigger refresh
+  // Listen for custom events from page-specific animations
+  document.addEventListener('refreshScrollTrigger', (e: any) => {
+    console.log(
+      'Received refresh request from:',
+      e.detail?.source || 'unknown'
+    );
+    debounceRefresh(e.detail?.delay || 100);
+  });
+
+  // Global function to manually refresh ScrollTrigger (for programmatic changes)
+  (window as any).__refreshScrollTrigger = debounceRefresh;
+
+  // Test function - you can call this in console to verify it works
+  (window as any).__testScrollTriggerRefresh = () => {
+    console.log('Manual ScrollTrigger refresh triggered');
+    debounceRefresh(0);
+  };
 </script>
