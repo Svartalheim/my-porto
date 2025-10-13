@@ -15,8 +15,8 @@
   .infinite-logo-container {
     width: 100%;
     overflow: hidden;
-    margin: 3rem 0;
-    padding: 2rem 0;
+    /* margin: 3rem 0;
+    padding: 2rem 0; */
   }
 
   .logo-track {
@@ -52,26 +52,55 @@
     font-weight: bold;
     user-select: none;
   }
+
+  .socials a {
+    transition-property: width, opacity;
+    transition: all 0.3s ease;
+  }
+
+  .socials a:hover {
+    margin-left: 1.5vw;
+    margin-right: 1.5vw;
+    opacity: 60%;
+  }
 </style>
 <footer
   id='footer'
   class='pt-4 mt-auto relative max-w-[var(--100vw)] bg-black text-white'
 >
-  <div class='container mx-auto px-4 py-24'>
-    <div class='space-y-4'>
+  <div class='container mx-auto px-4 space-y-10'>
+    <div class='space-y-4 space-x-6'>
       <span class='p-small text-background/80'>(SEND YOUR BRIEF HERE)</span>
       <span class='p-xlarge text-background font-medium'
-        >gboomers313@gmail.com</span
+        ><!--email_off-->gboomers313@gmail.com<!--/email_off--></span
       >
-      <!-- <div class='flex gap-5 items-center'>
-        <span class='p-small text-background/80'>(EMAIL)</span>
-        <span class='p-large text-background'>gboomers313@gmail.com</span>
-      </div> -->
     </div>
     <div class='grid grid-cols-2'>
-      <div>
-        <span class='p-small text-background/80'>(SOCIALS)</span>
-        <div class='space-y-4'></div>
+      <div class='space-y-5'>
+        <p class='p-small text-background/80'>(SOCIALS)</p>
+        <ul
+          class='relative socials space-y-2 w-fit p-large text-background whitespace-nowrap'
+        >
+          <li>
+            <a target='_blank' href='https://github.com/Svartalheim'>Github 1</a
+            >
+            <span> / </span>
+            <a target='_blank' href='https://github.com/aqsyalraihanjamil'
+              >Github 2</a
+            >
+          </li>
+          <li>
+            <a target='_blank' href='https://www.linkedin.com/in/jamilss1437/'
+              >Linkedin</a
+            >
+          </li>
+          <li>
+            <a
+              target='_blank'
+              href='https://discord.com/users/572704110999240704'>Discord</a
+            >
+          </li>
+        </ul>
       </div>
     </div>
     <div
@@ -126,11 +155,39 @@
 <script>
   import { gsap } from 'gsap';
 
+  let currentAnimation: gsap.core.Tween | null = null;
+  let resizeTimeout: NodeJS.Timeout | null = null;
+
+  function clearMarquee() {
+    const track = document.getElementById('logoTrack');
+    if (!track) return;
+
+    // Kill current animation
+    if (currentAnimation) {
+      currentAnimation.kill();
+      currentAnimation = null;
+    }
+
+    // Keep only the first logo unit and remove clones
+    const logoUnits = track.querySelectorAll('.logo-unit');
+    logoUnits.forEach((unit, index) => {
+      if (index > 0) {
+        unit.remove();
+      }
+    });
+
+    // Reset position
+    gsap.set(track, { x: 0 });
+  }
+
   function initLogoMarquee() {
     const container = document.getElementById('logoMarquee');
     const track = document.getElementById('logoTrack');
 
     if (!container || !track) return;
+
+    // Clear any existing setup
+    clearMarquee();
 
     // Get the original logo unit
     const logoUnit = track.querySelector('.logo-unit');
@@ -151,7 +208,7 @@
     gsap.set(track, { x: 0 });
 
     // Create infinite loop animation
-    const animation = gsap.to(track, {
+    currentAnimation = gsap.to(track, {
       x: -unitWidth,
       duration: 15,
       ease: 'none',
@@ -161,15 +218,38 @@
       },
     });
 
-    return animation;
+    return currentAnimation;
+  }
+
+  function handleResize() {
+    // Clear existing timeout
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout);
+    }
+
+    // Debounce resize events
+    resizeTimeout = setTimeout(() => {
+      initLogoMarquee();
+    }, 250);
   }
 
   // Initialize on page load
   document.addEventListener('DOMContentLoaded', initLogoMarquee);
 
+  // Handle viewport changes
+  window.addEventListener('resize', handleResize);
+
   // Reinitialize on Astro page transitions
   document.addEventListener('astro:after-swap', () => {
     // Small delay to ensure DOM is ready
     setTimeout(initLogoMarquee, 100);
+  });
+
+  // Cleanup on page unload
+  document.addEventListener('astro:before-preparation', () => {
+    if (currentAnimation) {
+      currentAnimation.kill();
+    }
+    window.removeEventListener('resize', handleResize);
   });
 </script>

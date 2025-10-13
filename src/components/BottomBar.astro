@@ -116,7 +116,7 @@ const NAV_ITEMS: NavItem[] = [
   >
     <div class='blurred-background h-full absolute w-full pointer-events-none'>
     </div>
-    <div id='menu-container' class='h-auto menu-container opacity-0 relative'>
+    <div id='menu-container' class='h-auto flex flex-col menu-container opacity-0 relative'>
       <header class='pt-[30px] p-5 relative flex justify-between items-end'>
         <div class='relative'>
           <a
@@ -175,7 +175,7 @@ const NAV_ITEMS: NavItem[] = [
           })
         }
       </ul>
-      <ul class='p-5 relative socials w-fit p-tiny'>
+      <ul class='p-5 relative socials w-fit p-tiny mt-auto'>
         <li>
           <a target='_blank' href='https://www.linkedin.com/in/jamilss1437/'
             >Linkedin</a
@@ -336,7 +336,7 @@ const NAV_ITEMS: NavItem[] = [
     /* SVG fractal noise as data URI */
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.35'/></svg>");
     background-size: 128px 128px;
-    opacity: 0.5; /* grain strength */
+    opacity: 0.7; /* grain strength */
     mix-blend-mode: overlay; /* sits nicely on light/dark */
   }
   /* Control the collapsed bar's background alpha without affecting its children */
@@ -599,7 +599,7 @@ const NAV_ITEMS: NavItem[] = [
         });
         if (blurredBackground) {
           gsap.to(blurredBackground, {
-            opacity: 0.85,
+            opacity: 0.80,
             duration: MENU_DURATION,
             ease: 'power2.out',
           });
