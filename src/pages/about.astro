@@ -8,6 +8,7 @@ import Flare from '@assets/svg/flare.svg';
 import ImageAboutNavbar from '@assets/images/about.png';
 import { Image } from 'astro:assets';
 import { Separator } from '@components/ui/separator';
+import { cn } from '@/lib/utils';
 
 type SpecialitiesItem = { header: string; desc: string; meta?: string };
 
@@ -41,11 +42,66 @@ const SPECIALITIES: SpecialitiesItem[] = [
     transition: box-shadow 0.1s ease-out;
     position: sticky;
     top: 0px;
-    background: white;
+    background: var(--background);
   }
 
   .what-i-do-item:first-child {
     margin-top: 0 !important;
+  }
+
+  :global(.page-container:not([data-blurred='true'])) #what-i-do-overlay {
+    z-index: 5;
+  }
+
+  #what-i-do-overlay span {
+    position: absolute;
+    z-index: 2;
+    width: var(--page-border-radius);
+    height: var(--page-border-radius);
+    background-color: #000;
+    transform: scale(0);
+    will-change: transform;
+    transition: 0.2s ease;
+  }
+
+  #what-i-do-overlay span:first-child {
+    top: 0;
+    left: 0;
+    transform-origin: 0% 0%;
+  }
+
+  #what-i-do-overlay span:nth-child(2) {
+    top: 0;
+    right: 0;
+    transform-origin: 100% 0%;
+  }
+
+  :global(.page-container:not([data-blurred='true']))
+    #what-i-do-overlay[data-active='true']
+    span {
+    transform: scale(1);
+  }
+
+  #what-i-do-overlay span:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-background);
+  }
+
+  #what-i-do-overlay span:first-child:before {
+    border-top-left-radius: var(--page-border-radius);
+  }
+
+  #what-i-do-overlay span:nth-child(2):before {
+    border-top-right-radius: var(--page-border-radius);
+  }
+
+  #what-i-do-overlay span:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-background);
   }
 </style>
 
@@ -167,9 +223,18 @@ const SPECIALITIES: SpecialitiesItem[] = [
       </div>
     </section>
   </div>
-  <div class='p-2 bg-white' id='what-i-do-section'>
+  <div class='bg-background' id='what-i-do-section'>
     <h2 class='h2 my-20'>What i do</h2>
     <div class='what-i-do-container' id='whatIDoContainer'>
+      <div
+        inert='inert'
+        id='what-i-do-overlay'
+        class='borders w-full h-full sticky top-0 inset-0'
+        data-active='false'
+      >
+        <span></span>
+        <span></span>
+      </div>
       {
         [
           {
@@ -191,16 +256,21 @@ const SPECIALITIES: SpecialitiesItem[] = [
         ].map((item, index) => {
           return (
             <div
-              class='what-i-do-item h-screen flex flex-col bg-white'
+              class={cn(
+                'what-i-do-item h-screen flex flex-col ',
+                index !== 0 && 'shadow-[0px_-24px_40px_-10px_rgba(0,_0,_0,_0.1)]'
+              )}
               data-index={index}
-              style={`z-index: ${10 + index}`}
+              style={`z-index: ${1 + index}`}
             >
               <Separator className={'bg-foreground/20'} />
-              <div class='flex justify-between gap-10 lg:gap-20 py-4'>
-                <p class='big-statement'>{index + 1}</p>
-                <div class='space-y-4'>
+              <div class='grid grid-cols-24 gap-1 pt-[64px]'>
+                <p class='big-statement col-span-8 h-fit'>{index + 1}</p>
+                <div class=' min-w-0 min-h-0 col-start-12 col-span-12'>
                   <p class='text-foreground/80 p-small'>{item.title}</p>
-                  <p class='indent-28 h2 font-light'>{item.desc}</p>
+                  <p class='indent-20 h2 font-light hyphens-auto' lang='en'>
+                    {item.desc}
+                  </p>
                 </div>
               </div>
             </div>
@@ -271,10 +341,6 @@ const SPECIALITIES: SpecialitiesItem[] = [
     function checkAllComplete() {
       completedAnimations++;
       if (completedAnimations >= totalAnimations) {
-        // All speciality animations are complete, refresh footer ScrollTrigger
-        console.log(
-          'All speciality animations complete, refreshing ScrollTrigger...'
-        );
         const refreshEvent = new CustomEvent('refreshScrollTrigger', {
           detail: {
             source: 'about-specialities',
@@ -367,7 +433,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
 
     const container = document.getElementById('whatIDoContainer');
     const items = document.querySelectorAll('.what-i-do-item');
-
+    const overlay = document.getElementById('what-i-do-overlay');
     if (!container || !items.length) return;
 
     items.forEach((item, index) => {
@@ -375,53 +441,32 @@ const SPECIALITIES: SpecialitiesItem[] = [
       const isLast = index === items.length - 1;
 
       // Set initial z-index for stacking
-      element.style.zIndex = `${100 + index}`;
+      element.style.zIndex = `${1 + index}`;
 
-      if (isLast) {
-        // Last item: simple pin without animation
-        const trigger = ScrollTrigger.create({
-          trigger: element,
-          start: 'top top',
-          end: 'bottom bottom',
-          pin: false,
-          pinSpacing: false,
-        });
-        whatIDoTriggers.add(trigger);
-      } else {
-        // All other items: pin and animate when next item approaches
-        const trigger = ScrollTrigger.create({
-          trigger: element,
-          start: 'top top',
-          end: () => `+=${window.innerHeight}`,
-          pin: false,
-          pinSpacing: false,
-          scrub: 1,
-          // animation: gsap.timeline().to(element, {
-          //   yPercent: -20,
-          //   scale: 0.9,
-          //   opacity: 0.7,
-          //   ease: 'power2.out',
-          //   duration: 1,
-          // }),
-          // onUpdate: (self: any) => {
-          //   // Add progressive shadow as item gets covered
-          //   const progress = self.progress;
-          //   const shadowBlur = progress * 40;
-          //   const shadowSpread = progress * 20;
-          //   const shadowOpacity = progress * 0.4;
-          //   element.style.boxShadow = `0 ${shadowSpread}px ${shadowBlur}px rgba(0,0,0,${shadowOpacity})`;
-          // },
-        });
-        whatIDoTriggers.add(trigger);
-      }
-    });
-
-    // Add spacing between items for proper scroll behavior
-    items.forEach((item, index) => {
-      const element = item as HTMLElement;
-      // if (index > 0) {
-      //   element.style.marginTop = '100vh';
-      // }
+      // All other items: pin and animate when next item approaches
+      const trigger = ScrollTrigger.create({
+        trigger: element,
+        start: 'top top',
+        end: () => `+=${window.innerHeight}`,
+        pin: false,
+        pinSpacing: false,
+        scrub: 1,
+        onToggle: (self) => {
+          if (self.isActive) {
+            if (index === 3) {
+              overlay?.setAttribute('data-active', 'false');
+              return;
+            }
+            overlay?.setAttribute('data-active', 'true');
+          } else {
+            if (index === 0) {
+              overlay?.setAttribute('data-active', 'false');
+              return;
+            }
+          }
+        },
+      });
+      whatIDoTriggers.add(trigger);
     });
   }
 
