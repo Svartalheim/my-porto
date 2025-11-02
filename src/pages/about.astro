@@ -6,6 +6,8 @@ import AboutPhoto from '@assets/images/case-study-all.webp';
 import Arrow from '@assets/svg/arrow.svg';
 import Flare from '@assets/svg/flare.svg';
 import ImageAboutNavbar from '@assets/images/about.png';
+import BrandVideo1 from '@assets/vid/brand-1.mp4';
+import BrandVideo2 from '@assets/vid/Brand-2-1.mp4';
 import { Image } from 'astro:assets';
 import { Separator } from '@components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -106,30 +108,46 @@ const SPECIALITIES: SpecialitiesItem[] = [
 </style>
 
 <Layout title='about' name='about'>
-  <div class='lg:p-[8.333vw] p-[2.333vw]'>
+  <div class='lg:p-[0px] p-[2.333vw] relative' style=''>
     <div
-      class='flex justify-center lg:block px-4 mb-20 [&>*]:w-full [&>*]:h-auto'
-      id='about-title'
+      class='flex flex-col lg:flex-row lg:items-start lg:h-[120vw]'
+      id='about-wrapper'
     >
-      <AboutTitle />
-    </div>
-    <div id='about-header' class='flex justify-center flex-col'>
-      <div class='bg-black rounded-[5px] w-[80%] mx-auto overflow-hidden'>
-        <Image src={ImageAboutNavbar} alt='about' class='scale-[101%]' />
+      <div
+        class='flex flex-col justify-center pt-5 lg:px-8 lg:h-[95vh] lg:sticky lg:w-[65%] lg:top-0 px-4 mb-20 lg:mb-0 [&>*]:w-full [&>*]:h-auto'
+        id='about-title'
+      >
+        <AboutTitle />
+        <Arrow
+          id={'about-arrow'}
+          class={'max-h-[48px] origin-bottom-left mt-auto max-w-[48px] rotate-45 sticky bottom-0 -ml-8'}
+        />
       </div>
-      <Arrow class={'my-12 mx-auto'} />
-      <header id='about-hero' class='space-y-5 text-center w-[80%] mx-auto'>
-        <p class='p-large'>An Indie Web Developer</p>
-        <p class='p-medium font-light'>
-          Web Developer based in Indonesia. Presently engaged as a front-end web
-          engineer operating on a fulltime basis. Open for a remote position
-          anywhere.
-        </p>
-        <p class='p-medium font-light'>
-          I’ve always believed the best websites don’t just look good — they
-          make an impact.
-        </p>
-      </header>
+      <div
+        id='about-header'
+        class='flex justify-center lg:items-center lg:px-4 lg:sticky lg:h-screen lg:border-l lg:top-0 flex-col lg:w-[35%]'
+      >
+        <div class='bg-black rounded-[5px] w-full overflow-hidden'>
+          <Image
+            src={ImageAboutNavbar}
+            alt='about'
+            class='scale-[101%] w-full h-auto lg:max-h-[300px] lg:object-fill'
+          />
+        </div>
+        <Arrow class={'my-12 mx-auto'} />
+        <header id='about-hero' class='space-y-5 text-center w-full mx-auto'>
+          <p class='p-large'>An Indie Web Developer</p>
+          <p class='p-medium font-light'>
+            Web Developer based in Indonesia. Presently engaged as a front-end
+            web engineer operating on a fulltime basis. Open for a remote
+            position anywhere.
+          </p>
+          <p class='p-medium font-light'>
+            I’ve always believed the best websites don’t just look good — they
+            make an impact.
+          </p>
+        </header>
+      </div>
     </div>
   </div>
   <div
@@ -178,7 +196,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
         }
       </div>
     </section>
-    <section id='why-us'>
+    <section id='why-us' class='flex gap-5'>
       <div
         class='lg:pr-[var(--size-20)] lg:w-[calc(100%-31.458333333333332vw)] lg:flex flex-col justify-between pb-[50px]'
       >
@@ -193,7 +211,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
         </div>
 
         <div
-          class='lg:max-w-[31.458333333333332vw] p-medium font-light space-y-4 lg:ml-auto lg:mt-[1.555555555555555vw]'
+          class='lg:w-[31.458333333333332vw] p-medium font-light space-y-4 lg:ml-auto lg:mt-[1.555555555555555vw]'
         >
           <p>Crafting Seamless Digital Experiences.</p>
           <p>
@@ -221,6 +239,13 @@ const SPECIALITIES: SpecialitiesItem[] = [
           </div>
         </div>
       </div>
+      <div class='sticky top-0 mb-auto'>
+        <Image
+          src={AboutPhoto}
+          class='h-full w-auto hidden lg:block rounded-2xl'
+          alt={'Photo about us'}
+        />
+      </div>
     </section>
   </div>
   <div class='bg-background' id='what-i-do-section'>
@@ -239,11 +264,11 @@ const SPECIALITIES: SpecialitiesItem[] = [
         [
           {
             title: 'Web Apps',
-            desc: 'Develop High-Performance Web Apps: Create fast, responsive, and SEO-friendly web solutions (including SPAs and Server-Rendered Apps) using modern frameworks like Next.js and React.js.',
+            desc: 'Develop High-Performance Web Apps: Create fast, responsive, and innovative web solutions (including SPAs and Server-Rendered Apps) using modern frameworks like Next.js and React.js.',
           },
           {
-            title: 'UI/UX Design',
-            desc: 'Build scalable, reusable components that are meticulously optimized for Core Web Vitals and meet the highest accessibility standards (WCAG).',
+            title: 'Implementation-Focused (accurate + dev-centric)',
+            desc: 'UI Implementation — Translate design concepts into responsive, accessible, perfect-pixel and performant interfaces with meticulous attention to detail and consistency.',
           },
           {
             title: 'Modernize Codebases',
@@ -252,27 +277,69 @@ const SPECIALITIES: SpecialitiesItem[] = [
           {
             title: 'Full-Stack Tooling (Focus: Frontend)',
             desc: 'Leverage TypeScript and modern JavaScript to deliver robust frontends, ensuring stability and type safety across all projects.',
+            extra: [
+              'Astro (static)',
+              'GSAP (animations)',
+              'Next.js (fullstack)',
+              'Node.js (backend)',
+              'Python (backend/script)',
+              'React.js (frontend)',
+              'react-hook-form + Zod (forms/validation)',
+              'shadcn/ui (components)',
+              'Tailwind CSS (styling)',
+              'TanStack (Table/Query)',
+            ],
           },
         ].map((item, index) => {
+          const videoSrc = index % 2 === 0 ? BrandVideo1 : BrandVideo2;
+
           return (
             <div
               class={cn(
-                'what-i-do-item h-screen flex flex-col ',
-                index !== 0 && 'shadow-[0px_-24px_40px_-10px_rgba(0,_0,_0,_0.1)]'
+                'what-i-do-item h-screen flex flex-col gap-4',
+                index !== 0 &&
+                  'shadow-[0px_-24px_40px_-10px_rgba(0,_0,_0,_0.1)]'
               )}
               data-index={index}
               style={`z-index: ${1 + index}`}
             >
               <Separator className={'bg-foreground/20'} />
-              <div class='grid grid-cols-24 gap-1 pt-[64px]'>
+              <div class='grid grid-cols-24 gap-1 pt-[64px] lg:pt-[16px]'>
                 <p class='big-statement col-span-8 h-fit'>{index + 1}</p>
                 <div class=' min-w-0 min-h-0 col-start-12 col-span-12'>
-                  <p class='text-foreground/80 p-small'>{item.title}</p>
-                  <p class='indent-20 h2 font-light hyphens-auto' lang='en'>
+                  <p
+                    class=' mt-[2vw] p-xlarge font-light hyphens-auto'
+                    lang='en'
+                  >
                     {item.desc}
                   </p>
+                  <video
+                    class=' flex justify-start h-auto max-h-[200px] rounded-lg my-4'
+                    src={videoSrc}
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                  />
+                  <p class='text-foreground/80 p-small'>{item.title}</p>
                 </div>
               </div>
+              <p
+                class='lg:hidden indent-[45%] lg:indent-[40%] mx-2 mt-[2vw] p-xlarge font-light hyphens-auto'
+                lang='en'
+              >
+                {item.desc}
+              </p>
+              {item.extra && (
+                <div class='px-2 space-y-2'>
+                  <Separator className={'bg-foreground'} />
+                  <ul class='list-none list-inside p-medium text-foreground/40'>
+                    {item.extra.map((tech) => (
+                      <li>{tech}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           );
         })
@@ -470,6 +537,67 @@ const SPECIALITIES: SpecialitiesItem[] = [
     });
   }
 
+  function initAboutAnimation() {
+    const aboutTitle = document.getElementById('about-title');
+    const aboutHeader = document.getElementById('about-header');
+    const aboutWrapper = document.getElementById('about-wrapper');
+    const aboutArrow = document.getElementById('about-arrow');
+    if (!aboutTitle || !aboutHeader || !aboutWrapper) return;
+
+    // Create a timeline for the animation with from-to approach
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: aboutWrapper,
+        start: 'top top',
+        end: 'bottom -10%',
+        pin: false,
+        scrub: true,
+        markers: true,
+      },
+    });
+
+    tl.fromTo(
+      aboutArrow,
+      {
+        scale: 1,
+      },
+      {
+        scale: 0,
+        ease: 'power2.out',
+      }
+    );
+
+    tl.fromTo(
+      aboutTitle,
+      {
+        width: '65%',
+        minWidth: '65%',
+        maxWidth: '65%',
+      },
+      {
+        width: '35%',
+        minWidth: '35%',
+        maxWidth: '35%',
+        ease: 'power2.out',
+      },
+      0
+    ).fromTo(
+      aboutHeader,
+      {
+        width: '35%',
+        minWidth: '35%',
+        maxWidth: '35%',
+      },
+      {
+        width: '65%',
+        minWidth: '65%',
+        maxWidth: '65%',
+        ease: 'power2.out',
+      },
+      0
+    );
+  }
+
   // Astro View Transitions lifecycle
   document.addEventListener('astro:before-swap', () => {
     killSpecialities();
@@ -480,6 +608,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
     setTimeout(() => {
       initSpecialitiesAnimation();
       initWhatIDoAnimation();
+      initAboutAnimation();
     }, 1000);
   });
 </script>

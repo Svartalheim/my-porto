@@ -11,12 +11,22 @@ import { Image } from 'astro:assets';
 const currentPath = Astro.url.pathname;
 const normalizePath = (p: string) => (p === '/' ? '/' : p.replace(/\/+$/, ''));
 
-type NavItem = { href: string; label: string; image?: ImageMetadata };
+type NavItem = {
+  href: string;
+  label: string;
+  image?: ImageMetadata;
+  comingsoon?: boolean;
+};
 const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Homepage' },
   { href: '/about', label: 'About', image: ImageAboutNavbar },
-  { href: '/services', label: 'Services', image: ImageServiceNavbar },
   { href: '/work', label: 'Work', image: ImageWorkNavbar },
+  {
+    href: '/services',
+    label: 'Services',
+    image: ImageServiceNavbar,
+    comingsoon: true,
+  },
 ];
 ---
 
@@ -116,7 +126,10 @@ const NAV_ITEMS: NavItem[] = [
   >
     <div class='blurred-background h-full absolute w-full pointer-events-none'>
     </div>
-    <div id='menu-container' class='h-auto flex flex-col menu-container opacity-0 relative'>
+    <div
+      id='menu-container'
+      class='h-auto flex flex-col menu-container opacity-0 relative'
+    >
       <header class='pt-[30px] p-5 relative flex justify-between items-end'>
         <div class='relative'>
           <a
@@ -138,7 +151,7 @@ const NAV_ITEMS: NavItem[] = [
       <div class='!bg-background/10 !opacity-100 w-full h-[1px]'></div>
       <ul class='menu-pages relative flex flex-col p-large'>
         {
-          NAV_ITEMS.map(({ href, label, image }) => {
+          NAV_ITEMS.map(({ href, label, image, comingsoon }) => {
             const nHref = normalizePath(href);
             const nCurrent = normalizePath(currentPath);
             const isExact = nCurrent === nHref;
@@ -150,14 +163,17 @@ const NAV_ITEMS: NavItem[] = [
               <li class='relative'>
                 <div class='page-navigator'>
                   <a
-                    data-astro-prefetch
-                    href={href}
+                    {...(!comingsoon && { 'data-astro-prefetch': true })}
+                    href={comingsoon ? undefined : href}
                     class:list={{
                       page: true,
                       '-active': isActive,
                       '-exact': isExact,
+                      '-comingsoon': comingsoon,
                     }}
-                    data-close-menu='true'
+                    {...(comingsoon
+                      ? { 'aria-disabled': 'true' }
+                      : { 'data-close-menu': 'true' })}
                   >
                     <figure class='relative'>
                       <Image
@@ -167,7 +183,10 @@ const NAV_ITEMS: NavItem[] = [
                         alt={`${label} preview image`}
                       />
                     </figure>
-                    <span>{label}</span>
+                    <span>
+                      {label}
+                      {comingsoon && ' coming soon!'}
+                    </span>
                   </a>
                 </div>
               </li>
@@ -234,6 +253,25 @@ const NAV_ITEMS: NavItem[] = [
   .page-navigator a.-active.-exact {
     filter: brightness(0.5);
     pointer-events: none;
+  }
+  .page-navigator a.-comingsoon {
+    filter: brightness(0.5);
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .page-navigator a.-comingsoon span {
+    position: relative;
+  }
+  .page-navigator a.-comingsoon span::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.3;
   }
   .page-navigator {
     position: relative;
@@ -599,7 +637,7 @@ const NAV_ITEMS: NavItem[] = [
         });
         if (blurredBackground) {
           gsap.to(blurredBackground, {
-            opacity: 0.80,
+            opacity: 0.8,
             duration: MENU_DURATION,
             ease: 'power2.out',
           });
