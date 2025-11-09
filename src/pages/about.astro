@@ -1,16 +1,10 @@
 ---
-import Layout from '../layouts/layout.astro';
-import AboutTitle from '@assets/svg/about-title.svg';
-import FacetTitle from '@assets/svg/facet-title.svg';
-import AboutPhoto from '@assets/images/case-study-all.webp';
-import Arrow from '@assets/svg/arrow.svg';
-import Flare from '@assets/svg/flare.svg';
 import ImageAboutNavbar from '@assets/images/about.png';
-import BrandVideo1 from '@assets/vid/brand-1.mp4';
-import BrandVideo2 from '@assets/vid/Brand-2-1.mp4';
+import AboutPhoto from '@assets/images/case-study-all.webp';
+import AboutTitle from '@assets/svg/about-title.svg';
+import Arrow from '@assets/svg/arrow.svg';
 import { Image } from 'astro:assets';
-import { Separator } from '@components/ui/separator';
-import { cn } from '@/lib/utils';
+import Layout from '../layouts/layout.astro';
 
 type SpecialitiesItem = { header: string; desc: string; meta?: string };
 
@@ -120,29 +114,32 @@ const SPECIALITIES: SpecialitiesItem[] = [
         <AboutTitle />
         <Arrow
           id={'about-arrow'}
-          class={'max-h-[48px] origin-bottom-left mt-auto max-w-[48px] rotate-45 sticky bottom-0 -ml-8'}
+          class={'max-h-[48px] hidden lg:block origin-bottom-left mt-auto max-w-[48px] rotate-45 sticky bottom-0 -ml-4'}
         />
       </div>
       <div
         id='about-header'
-        class='flex justify-center lg:items-center lg:px-4 lg:sticky lg:h-screen lg:border-l lg:top-0 flex-col lg:w-[35%]'
+        class='flex justify-center lg:justify-start lg:items-center lg:px-0 lg:sticky lg:h-screen lg:border-l lg:top-0 flex-col lg:w-[35%]'
       >
-        <div class='bg-black rounded-[5px] w-full overflow-hidden'>
+        <div class='lg:p-4 w-full overflow-hidden border-b'>
           <Image
             src={ImageAboutNavbar}
             alt='about'
-            class='scale-[101%] w-full h-auto lg:max-h-[300px] lg:object-fill'
+            class='scale-[101%] rounded-[5px] overflow-hidden w-full h-auto lg:max-h-[450px] lg:object-cover'
           />
         </div>
-        <Arrow class={'my-12 mx-auto'} />
-        <header id='about-hero' class='space-y-5 text-center w-full mx-auto'>
-          <p class='p-large'>An Indie Web Developer</p>
-          <p class='p-medium font-light'>
+        <Arrow class={'my-12 lg:hidden mx-auto'} />
+        <header
+          id='about-hero'
+          class='lg:p-4 lg:py-8 lg:flex-1 flex flex-col gap-5 lg:text-start text-center w-full mx-auto'
+        >
+          <p class='p-xlarge'>An Indie Web Developer</p>
+          <p class='p-medium font-light lg:mt-auto'>
             Web Developer based in Indonesia. Presently engaged as a front-end
             web engineer operating on a fulltime basis. Open for a remote
             position anywhere.
           </p>
-          <p class='p-medium font-light'>
+          <p class='p-medium font-light lg:mb-12'>
             I’ve always believed the best websites don’t just look good — they
             make an impact.
           </p>
@@ -151,19 +148,21 @@ const SPECIALITIES: SpecialitiesItem[] = [
     </div>
   </div>
   <div
-    class='text-background bg-primary background-expander relative px-[2vw] lg:p-[8.333vw]'
+    class='text-background bg-primary background-expander relative px-[2vw] lg:p-0'
   >
-    <section
+    <!-- <section
       id='whats-different'
-      class='mt-[100px] pb-[50px] py-[50px] px-[2vw] lg:p-[8.333vw] pt-[2.333vw]'
+      class='mt-[100px] lg:mt-0 pb-[50px] py-[50px] px-[2vw] lg:p-0 pt-[2.333vw]'
     >
       <div
-        class='flex justify-center lg:block px-4 mb-[10vw] [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
+        class='flex justify-center lg:block px-4 mb-[10vw] lg:w-[60%] [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
         id='about-title'
       >
         <FacetTitle />
       </div>
-      <div class='pb-[4.333vw] flex gap-4 p-medium font-light mx-auto'>
+      <div
+        class='pb-[4.333vw] flex gap-4 p-medium font-light mx-auto lg:ml-[50%]'
+      >
         <Flare height={40} width={40} class={'min-w-[40px] h-auto'} />
         <span>
           I build fast, accessible web apps—analytics dashboards and workflow
@@ -171,13 +170,18 @@ const SPECIALITIES: SpecialitiesItem[] = [
           into clear decisions.
         </span>
       </div>
-      <Separator className={'bg-background'} />
-      <div class='p-medium gap-1 font-light flex flex-col'>
+      <Separator
+        className={'speciality-separator bg-background lg:w-1/2 lg:ml-auto'}
+      />
+      <div class='p-medium gap-1 font-light lg:ml-[50%] flex flex-col'>
         {
           SPECIALITIES.map((item, index) => (
             <>
-              <div class='pb-[1.333vw] py-[3.33vw]' id={`speciality-${index}`}>
-                <h3 class='p-large font-medium speciality-title'>
+              <div
+                class='pb-[1.333vw] lg:py-[1vw] py-[3.33vw]'
+                id={`speciality-${index}`}
+              >
+                <h3 class='p-large font-medium speciality-title lg:mb-[2rem]'>
                   {item.header}
                 </h3>
                 <p
@@ -188,30 +192,33 @@ const SPECIALITIES: SpecialitiesItem[] = [
                 </p>
                 {item.meta && <p class='mt-2 p-tiny'>{item.meta}</p>}
               </div>
-              <div class=' bg-primary'>
-                <Separator className={'speciality-separator bg-background'} />
+              <div class='lg:w-screen lg:relative lg:left-[-50vw] bg-primary overflow-hidden'>
+                <Separator
+                  className={
+                    'speciality-separator bg-background lg:w-1/2 lg:ml-auto'
+                  }
+                />
               </div>
             </>
           ))
         }
       </div>
-    </section>
-    <section id='why-us' class='flex gap-5'>
+    </section> -->
+    <section id='why-us' class='flex gap-[2vw] lg:py-[2vw]'>
       <div
         class='lg:pr-[var(--size-20)] lg:w-[calc(100%-31.458333333333332vw)] lg:flex flex-col justify-between pb-[50px]'
       >
-        <div class='lg:pt-[0.20833333333333334vw]'>
+        <div class='lg:pt-[0.20833333333333334vw] '>
           <div class='relative'>
-            <span class='absolute left-0 -top-2'>Why me</span>
-            <h2 class='h2 indent-24 mb-5'>
-              wassup, I'm Svartalheim. A web developer hugely invested in
+            <span class='absolute left-0 p-small lg:-top-5'>Why me</span>
+            <h2 class='h2 indent-24 mb-5 lg:ml-12 break-words hyphens-auto'>
+              What's up, I'm Svartalheim. A web developer hugely invested in
               front-end side.
             </h2>
           </div>
         </div>
-
         <div
-          class='lg:w-[31.458333333333332vw] p-medium font-light space-y-4 lg:ml-auto lg:mt-[1.555555555555555vw]'
+          class='lg:w-[31.458333333333332vw] p-small font-light space-y-4 lg:ml-auto lg:mt-[1.555555555555555vw]'
         >
           <p>Crafting Seamless Digital Experiences.</p>
           <p>
@@ -228,6 +235,15 @@ const SPECIALITIES: SpecialitiesItem[] = [
             engagement. When you work with me, you're investing in a solution
             that’s scalable, user-focused, and built to modern standards.
           </p>
+          <p>
+            Specializing in performance and quality, I build scalable, reusable
+            components that are optimized for Core Web Vitals and meet the
+            highest accessibility standards. Whether I'm building modern
+            Server-Rendered Apps (SRAs), Single-Page Applications (SPAs), or
+            refactoring legacy codebases, my focus is always on deliverable and
+            responsive solutions that translate complex ideas into intuitive
+            digital experiences.
+          </p>
           <div class='lg:hidden mt-[13px] mb-[38px]'>
             <div class='overflow-hidden rounded-[5px]'>
               <Image
@@ -239,7 +255,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
           </div>
         </div>
       </div>
-      <div class='sticky top-0 mb-auto'>
+      <div class='sticky top-2 mb-auto'>
         <Image
           src={AboutPhoto}
           class='h-full w-auto hidden lg:block rounded-2xl'
@@ -248,7 +264,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
       </div>
     </section>
   </div>
-  <div class='bg-background' id='what-i-do-section'>
+  <!-- <div class='bg-background' id='what-i-do-section'>
     <h2 class='h2 my-20'>What i do</h2>
     <div class='what-i-do-container' id='whatIDoContainer'>
       <div
@@ -308,7 +324,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
                 <p class='big-statement col-span-8 h-fit'>{index + 1}</p>
                 <div class=' min-w-0 min-h-0 col-start-12 col-span-12'>
                   <p
-                    class=' mt-[2vw] p-xlarge font-light hyphens-auto'
+                    class=' mt-[2vw] p-xlarge hidden lg:block font-light hyphens-auto'
                     lang='en'
                   >
                     {item.desc}
@@ -365,7 +381,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
         future-proof digital product.
       </p>
     </div>
-  </div>
+  </div> -->
 </Layout>
 <script>
   import { gsap } from 'gsap';
@@ -463,6 +479,34 @@ const SPECIALITIES: SpecialitiesItem[] = [
         );
     });
 
+    const separators = document.querySelectorAll('.speciality-separator');
+
+    separators.forEach((item) => {
+      const trigger = gsap.timeline({
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 90%',
+          end: 'bottom 70%',
+          scrub: true,
+          // markers: true,
+        },
+      });
+
+      specialityTriggers.add(trigger.scrollTrigger);
+
+      trigger.fromTo(
+        item,
+        {
+          width: '50%',
+        },
+        {
+          width: '100%',
+          // ease:'power1.out'
+          ease: 'none',
+        }
+      );
+    });
+
     titles.forEach((item, index) => {
       const element = item as HTMLElement;
       const trigger = gsap.timeline({
@@ -482,7 +526,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
         item,
         { marginBottom: 0 },
         {
-          marginBottom: '1rem',
+          marginBottom: '2rem',
           onComplete: () => {
             if (!element.dataset.completed) {
               element.dataset.completed = 'true';
@@ -544,58 +588,63 @@ const SPECIALITIES: SpecialitiesItem[] = [
     const aboutArrow = document.getElementById('about-arrow');
     if (!aboutTitle || !aboutHeader || !aboutWrapper) return;
 
-    // Create a timeline for the animation with from-to approach
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: aboutWrapper,
-        start: 'top top',
-        end: 'bottom -10%',
-        pin: false,
-        scrub: true,
-        markers: true,
-      },
+    const mm = gsap.matchMedia();
+
+    mm.add('(min-width: 1024px)', () => {
+      // Create a timeline for the animation with from-to approach
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: aboutWrapper,
+          start: 'top top',
+          end: 'bottom -10%',
+          pin: false,
+          scrub: true,
+          // markers: true,
+        },
+      });
+
+      tl.fromTo(
+        aboutArrow,
+        {
+          scale: 1,
+        },
+        {
+          scale: 0,
+          ease: 'power2.out',
+          translateY: 20,
+        }
+      );
+
+      tl.fromTo(
+        aboutTitle,
+        {
+          width: '65%',
+          minWidth: '65%',
+          maxWidth: '65%',
+        },
+        {
+          width: '35%',
+          minWidth: '35%',
+          maxWidth: '35%',
+          ease: 'power2.out',
+        },
+        0
+      ).fromTo(
+        aboutHeader,
+        {
+          width: '35%',
+          minWidth: '35%',
+          maxWidth: '35%',
+        },
+        {
+          width: '65%',
+          minWidth: '65%',
+          maxWidth: '65%',
+          ease: 'power2.out',
+        },
+        0
+      );
     });
-
-    tl.fromTo(
-      aboutArrow,
-      {
-        scale: 1,
-      },
-      {
-        scale: 0,
-        ease: 'power2.out',
-      }
-    );
-
-    tl.fromTo(
-      aboutTitle,
-      {
-        width: '65%',
-        minWidth: '65%',
-        maxWidth: '65%',
-      },
-      {
-        width: '35%',
-        minWidth: '35%',
-        maxWidth: '35%',
-        ease: 'power2.out',
-      },
-      0
-    ).fromTo(
-      aboutHeader,
-      {
-        width: '35%',
-        minWidth: '35%',
-        maxWidth: '35%',
-      },
-      {
-        width: '65%',
-        minWidth: '65%',
-        maxWidth: '65%',
-        ease: 'power2.out',
-      },
-      0
-    );
   }
 
   // Astro View Transitions lifecycle

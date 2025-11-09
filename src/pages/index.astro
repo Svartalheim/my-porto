@@ -1,125 +1,566 @@
 ---
-import { MenuIcon } from "lucide-react";
-import Layout from "../layouts/layout.astro";
+import { MenuIcon } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+import BrandVideo1 from '@assets/vid/brand-1.mp4';
+import BrandVideo2 from '@assets/vid/Brand-2-1.mp4';
+import Layout from '../layouts/layout.astro';
+import AboutTitle from '@assets/svg/about-title.svg';
+import FacetTitle from '@assets/svg/facet-title.svg';
+import AboutPhoto from '@assets/images/case-study-all.webp';
+import Arrow from '@assets/svg/arrow.svg';
+import Flare from '@assets/svg/flare.svg';
+import ImageAboutNavbar from '@assets/images/about.png';
+import Image from 'astro/components/Image.astro';
+
+type SpecialitiesItem = { header: string; desc: string; meta?: string };
+
+const SPECIALITIES: SpecialitiesItem[] = [
+  {
+    header: 'Analytics dashboards & data viz',
+    desc: 'Dashboard-builder UIs wired to MySQL, MariaDB, SingleStore, and PostgreSQL. Composable portlets, faceted filters, and configurable charts with clear empty/loading states.',
+    meta: 'Portlet — Pages — Dashboards',
+  },
+  {
+    header: 'Next.js architecture & design systems',
+    desc: 'Type-safe React/Next.js with shadcn/ui, TanStack (Table/Query), react-hook-form + Zod. Atomic components, design tokens, and pragmatic state management that scales.',
+    meta: 'SSR/ISR where useful · per-route caching',
+  },
+  {
+    header: 'Workflow-driven apps (LMS & enterprise)',
+    desc: 'Translate multi-role processes into robust web flows—courses, schedules, experts, classrooms, learners, and logistics—complete with RBAC, validation, and admin tooling.',
+    meta: 'Roles & permissions · audit-friendly forms',
+  },
+];
 ---
 
 <style>
-  /* position the logo container in bottom-left of loading screen */
-  .logo-container {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+  .what-i-do-container {
+    position: relative;
   }
-  .logo-letter {
-    /* Dynamic sizing based on viewport width */
-    height: 17vw;
-    width: auto;
-    flex: 1;
-    display: inline-block;
-    pointer-events: none;
-    user-select: none;
+
+  .what-i-do-item {
+    will-change: transform, opacity, box-shadow;
+    transform-origin: center center;
+    transition: box-shadow 0.1s ease-out;
+    position: sticky;
+    top: 0px;
+    background: var(--background);
+  }
+
+  .what-i-do-item:first-child {
+    margin-top: 0 !important;
+  }
+
+  :global(.page-container:not([data-blurred='true'])) #what-i-do-overlay {
+    z-index: 5;
+  }
+
+  #what-i-do-overlay span {
+    position: absolute;
+    z-index: 2;
+    width: var(--page-border-radius);
+    height: var(--page-border-radius);
+    background-color: #000;
+    transform: scale(0);
+    will-change: transform;
+    transition: 0.2s ease;
+  }
+
+  #what-i-do-overlay span:first-child {
+    top: 0;
+    left: 0;
+    transform-origin: 0% 0%;
+  }
+
+  #what-i-do-overlay span:nth-child(2) {
+    top: 0;
+    right: 0;
+    transform-origin: 100% 0%;
+  }
+
+  :global(.page-container:not([data-blurred='true']))
+    #what-i-do-overlay[data-active='true']
+    span {
+    transform: scale(1);
+  }
+
+  #what-i-do-overlay span:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-background);
+  }
+
+  #what-i-do-overlay span:first-child:before {
+    border-top-left-radius: var(--page-border-radius);
+  }
+
+  #what-i-do-overlay span:nth-child(2):before {
+    border-top-right-radius: var(--page-border-radius);
+  }
+
+  #what-i-do-overlay span:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-background);
   }
 </style>
 
-<Layout name="home" title="Home">
-  <div class="w-[50vw] p-5 border-b hidden lg:flex">
-    <img src="/logo/main-logo/logo_s.svg" alt="S" class="logo-letter -ml-[3vw]" data-letter="s" />
-    <img src="/logo/main-logo/logo_v.svg" alt="V" class="logo-letter -ml-[6vw]" data-letter="v" />
-    <img src="/logo/main-logo/logo_r.svg" alt="R" class="logo-letter -ml-[8vw] -mb-[56px]" data-letter="r" />
-    <img src="/logo/main-logo/logo_h.svg" alt="H" class="logo-letter -ml-[9vw]" data-letter="h" />
-    <img src="/logo/main-logo/logo_m.svg" alt="M" class="logo-letter -ml-[2vw]" data-letter="m" />
+<Layout name='home' title='Home'>
+  <div class='p-medium space-y-4 py-4'>
+    <p>
+      Specializing in performance and quality, I build scalable, reusable
+      components that are optimized for Core Web Vitals and meet the highest
+      accessibility standards. Whether I'm building modern Server-Rendered Apps
+      (SRAs), Single-Page Applications (SPAs), or refactoring legacy codebases,
+      my focus is always on delivering fast, responsive, and SEO-friendly
+      solutions that translate complex ideas into intuitive digital experiences.
+    </p>
+    <p>
+      I combine technical precision with a deep understanding of business goals
+      to ensure my work consistently enhances application performance,
+      maintainability, and user engagement.
+    </p>
+    <p>
+      Let’s collaborate to turn your vision into a fast, engaging, and
+      future-proof digital product.
+    </p>
   </div>
-  <div class="relative px-[25vw] py-[7.333vh] border-b-container">
-    <!-- Animated border element -->
-    <!-- <div
-      class='animated-border absolute bottom-0 left-1/2 h-[1px] bg-current transform -translate-x-1/2'
-      style='width: 0%'
+  <div
+    class='text-background bg-primary background-expander relative px-[2vw] lg:p-0'
+  >
+    <section
+      id='whats-different'
+      class='mt-[100px] lg:mt-0 pb-[50px] py-[50px] px-[2vw] lg:px-0 pt-[2.333vw]'
     >
-    </div> -->
-
-    <h1 class="text-center text-4xl lg:text-7xl tracking-tight">
-      Crafting Powerful Digital Solutions ✦ Montreal Web Design & Development
-    </h1>
-    <div
-      class="border rounded-md min-w-0 w-[250px] mt-[5vh] tracking-tighter text-center justify-center mx-auto p-2 flex gap-2 items-center text-sm"
-    >
-      <p class="text-right text-xs font-medium leading-none uppercase">Grinding development since</p>
-      <span class="whitespace-nowrap text-2xl"> © 2022 </span>
-    </div>
-    <a href={"/about"} title="home" class="inline-block"> awawaa </a>
-    <div class="h-[2000px]">sss</div>
+      <div
+        class='flex justify-center lg:block px-4 lg:mb-[4vw] mb-[10vw] lg:w-[60%] [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
+        id='about-title'
+      >
+        <FacetTitle />
+      </div>
+      <div
+        class='pb-[4.333vw] flex gap-4 p-medium font-light mx-auto lg:ml-[50%]'
+      >
+        <Flare height={40} width={40} class={'min-w-[40px] h-auto'} />
+        <span>
+          I build fast, accessible web apps—analytics dashboards and workflow
+          tools—using Next.js/React and type-safe systems that turn complex data
+          into clear decisions.
+        </span>
+      </div>
+      <Separator
+        className={'speciality-separator bg-background lg:w-1/2 lg:ml-auto'}
+      />
+      <div class='p-medium gap-1 font-light lg:ml-[50%] flex flex-col'>
+        {
+          SPECIALITIES.map((item, index) => (
+            <>
+              <div
+                class='pb-[1.333vw] lg:py-[1vw] py-[3.33vw]'
+                id={`speciality-${index}`}
+              >
+                <h3 class='p-large font-medium speciality-title lg:mb-[2rem]'>
+                  {item.header}
+                </h3>
+                <p
+                  class='p-small min-h-0 h-0 opacity-0 max-h-fit  font-light speciality-desc '
+                  data-index={index}
+                >
+                  {item.desc}
+                </p>
+                {item.meta && <p class='mt-2 p-tiny'>{item.meta}</p>}
+              </div>
+              <div class='lg:w-screen lg:relative lg:left-[-50vw] bg-primary overflow-hidden'>
+                <Separator
+                  className={
+                    'speciality-separator bg-background lg:w-1/2 lg:ml-auto'
+                  }
+                />
+              </div>
+            </>
+          ))
+        }
+      </div>
+    </section>
   </div>
-
-  <script>
-    import { gsap } from "gsap";
-    import { MotionPathPlugin } from "gsap/MotionPathPlugin";
-    gsap.registerPlugin(MotionPathPlugin);
-    document.addEventListener("DOMContentLoaded", () => {
-      const letters = document.querySelectorAll(".logo-letter");
-      const progressFill = document.querySelector(".progress-fill");
-      const progressText = document.querySelector(".progress-text");
-      const animatedBorder = document.querySelector(".animated-border");
-
-      // Set initial state for all letters off-screen top-right
-      gsap.set(letters, {
-        x: "100vw",
-        y: "-100vh",
-        skewX: 0,
-        skewY: -60,
-        opacity: 0,
-        scale: 0.4,
-        rotation: 45,
-        ease: "elastic.out",
-      });
-
-      // Animate border from center expanding left and right
-      if (animatedBorder) {
-        gsap.fromTo(
-          animatedBorder,
+  <div class='bg-background' id='what-i-do-section'>
+    <h2 class='h2 py-20'>What i do</h2>
+    <div class='what-i-do-container' id='whatIDoContainer'>
+      <div
+        inert='inert'
+        id='what-i-do-overlay'
+        class='borders w-full h-full sticky top-0 inset-0'
+        data-active='false'
+      >
+        <span></span>
+        <span></span>
+      </div>
+      {
+        [
           {
-            width: "0%",
+            title: 'Web Apps',
+            desc: 'Develop High-Performance Web Apps: Create fast, responsive, and innovative web solutions (including SPAs and Server-Rendered Apps) using modern frameworks like Next.js and React.js.',
           },
           {
-            width: "100%",
-            duration: 1.5,
-            ease: "power2.out",
-            delay: 0.5, // Start after a small delay
-          }
-        );
-      }
+            title: 'Implementation-Focused (accurate + dev-centric)',
+            desc: 'UI Implementation — Translate design concepts into responsive, accessible, perfect-pixel and performant interfaces with meticulous attention to detail and consistency.',
+          },
+          {
+            title: 'Modernize Codebases',
+            desc: 'Specialize in refactoring legacy codebases and translating complex technical requirements into clean, maintainable, and well-documented code.',
+          },
+          {
+            title: 'Full-Stack Tooling (Focus: Frontend)',
+            desc: 'Leverage TypeScript and modern JavaScript to deliver robust frontends, ensuring stability and type safety across all projects.',
+            extra: [
+              'Astro (static)',
+              'GSAP (animations)',
+              'Next.js (fullstack)',
+              'Node.js (backend)',
+              'Python (backend/script)',
+              'React.js (frontend)',
+              'react-hook-form + Zod (forms/validation)',
+              'shadcn/ui (components)',
+              'Tailwind CSS (styling)',
+              'TanStack (Table/Query)',
+            ],
+          },
+        ].map((item, index) => {
+          const videoSrc = index % 2 === 0 ? BrandVideo1 : BrandVideo2;
 
-      // Animate each letter one by one with stagger
-      gsap.to(letters, {
-        duration: 0.8,
-        ease: "power1.out",
-        motionPath: {
-          path: [
-            { x: "50vw", y: "-100vh" },
-            { x: "5vw", y: "-50vh" },
-            { x: 0, y: 0 },
-          ],
-          curviness: 2,
-          autoRotate: false,
-        },
-        skewX: 0,
-        skewY: 0,
-        opacity: 1,
-        scale: 1,
-        rotation: 0,
-        stagger: 0.2, // delay between each letter animation
+          return (
+            <div
+              class={cn(
+                'what-i-do-item h-screen flex flex-col gap-4',
+                index !== 0 &&
+                  'shadow-[0px_-24px_40px_-10px_rgba(0,_0,_0,_0.1)]'
+              )}
+              data-index={index}
+              style={`z-index: ${1 + index}`}
+            >
+              <Separator className={'bg-foreground/20'} />
+              <div class='grid grid-cols-24 gap-1 pt-[64px] lg:pt-[16px]'>
+                <p class='big-statement col-span-8 h-fit'>{index + 1}</p>
+                <div class=' min-w-0 min-h-0 col-start-12 col-span-12'>
+                  <p
+                    class=' mt-[2vw] p-xlarge hidden lg:block font-light hyphens-auto'
+                    lang='en'
+                  >
+                    {item.desc}
+                  </p>
+                  <video
+                    class=' flex justify-start h-auto max-h-[200px] rounded-lg my-4'
+                    src={videoSrc}
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                  />
+                  <p class='text-foreground/80 p-small'>{item.title}</p>
+                </div>
+              </div>
+              <p
+                class='lg:hidden indent-[45%] lg:indent-[40%] mx-2 mt-[2vw] p-xlarge font-light hyphens-auto'
+                lang='en'
+              >
+                {item.desc}
+              </p>
+              {item.extra && (
+                <div class='px-2 space-y-2'>
+                  <Separator className={'bg-foreground'} />
+                  <ul class='list-none list-inside p-medium text-foreground/40'>
+                    {item.extra.map((tech) => (
+                      <li>{tech}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  // keep track of just our triggers
+  let specialityTriggers = new Set();
+  let whatIDoTriggers = new Set();
+
+  function killSpecialities() {
+    specialityTriggers.forEach((t: any) => t.kill());
+    specialityTriggers.clear();
+    // Reset completion tracking
+    document
+      .querySelectorAll('.speciality-desc, .speciality-title')
+      .forEach((el) => {
+        const element = el as HTMLElement;
+        delete element.dataset.completed;
       });
-      // Animate progress bar
-      gsap.to(progressFill, {
-        width: "100%",
-        duration: 3,
-        ease: "power2.out",
-        onUpdate: function () {
-          const progress = Math.round(this.progress() * 100);
-          if (progressText) {
-            progressText.textContent = progress + "%";
+  }
+
+  function killWhatIDo() {
+    whatIDoTriggers.forEach((t: any) => t.kill());
+    whatIDoTriggers.clear();
+  }
+
+  function initSpecialitiesAnimation() {
+    killSpecialities(); // prevent duplicates
+    const descriptions = document.querySelectorAll('.speciality-desc');
+    const titles = document.querySelectorAll('.speciality-title');
+    if (!descriptions.length || !titles.length) {
+      return;
+    }
+
+    let completedAnimations = 0;
+    const totalAnimations = descriptions.length + titles.length;
+
+    // Helper function to check if all animations are complete
+    function checkAllComplete() {
+      completedAnimations++;
+      if (completedAnimations >= totalAnimations) {
+        const refreshEvent = new CustomEvent('refreshScrollTrigger', {
+          detail: {
+            source: 'about-specialities',
+            delay: 200,
+          },
+        });
+        document.dispatchEvent(refreshEvent);
+      }
+    }
+
+    descriptions.forEach((item, index) => {
+      const element = item as HTMLElement;
+      const trigger = gsap.timeline({
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 65%',
+          end: 'bottom 30%',
+          scrub: true,
+          // markers: true,
+          onUpdate: (self: any) => {
+            // When animation reaches end, trigger refresh
+            if (self.progress === 1 && !element.dataset.completed) {
+              element.dataset.completed = 'true';
+              checkAllComplete();
+            }
+          },
+        },
+      });
+
+      specialityTriggers.add(trigger.scrollTrigger);
+
+      // First animate height
+      trigger
+        .fromTo(
+          item,
+          { height: 0 },
+          {
+            height: 'auto',
+            duration: 1,
+            immediateRender: false,
+          }
+        )
+        // Then animate opacity (starts before height finishes)
+        .fromTo(
+          item,
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: 0.4,
+            immediateRender: false,
+          },
+          '-=0.5' // Start 0.5 seconds before the height animation ends
+        );
+    });
+
+    const separators = document.querySelectorAll('.speciality-separator');
+
+    separators.forEach((item) => {
+      const trigger = gsap.timeline({
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 90%',
+          end: 'bottom 70%',
+          scrub: true,
+          // markers: true,
+        },
+      });
+
+      specialityTriggers.add(trigger.scrollTrigger);
+
+      trigger.fromTo(
+        item,
+        {
+          width: '50%',
+        },
+        {
+          width: '100%',
+          // ease:'power1.out'
+          ease: 'none',
+        }
+      );
+    });
+
+    titles.forEach((item, index) => {
+      const element = item as HTMLElement;
+      const trigger = gsap.timeline({
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 65%',
+          end: 'bottom 30%',
+          // scrub: true,
+          // markers: true,
+        },
+      });
+
+      specialityTriggers.add(trigger.scrollTrigger);
+
+      // Animate margin bottom
+      trigger.fromTo(
+        item,
+        { marginBottom: 0 },
+        {
+          marginBottom: '2rem',
+          onComplete: () => {
+            if (!element.dataset.completed) {
+              element.dataset.completed = 'true';
+              checkAllComplete();
+            }
+          },
+        },
+        '-=0.3' // Start 0.3 seconds before the height animation ends
+      );
+    });
+  }
+
+  function initWhatIDoAnimation() {
+    killWhatIDo(); // prevent duplicates
+
+    const container = document.getElementById('whatIDoContainer');
+    const items = document.querySelectorAll('.what-i-do-item');
+    const overlay = document.getElementById('what-i-do-overlay');
+    if (!container || !items.length) return;
+
+    items.forEach((item, index) => {
+      const element = item as HTMLElement;
+      const isLast = index === items.length - 1;
+
+      // Set initial z-index for stacking
+      element.style.zIndex = `${1 + index}`;
+
+      // All other items: pin and animate when next item approaches
+      const trigger = ScrollTrigger.create({
+        trigger: element,
+        start: 'top top',
+        end: () => `+=${window.innerHeight}`,
+        pin: false,
+        pinSpacing: false,
+        scrub: 1,
+        onToggle: (self) => {
+          if (self.isActive) {
+            if (index === 3) {
+              overlay?.setAttribute('data-active', 'false');
+              return;
+            }
+            overlay?.setAttribute('data-active', 'true');
+          } else {
+            if (index === 0) {
+              overlay?.setAttribute('data-active', 'false');
+              return;
+            }
           }
         },
       });
+      whatIDoTriggers.add(trigger);
     });
-  </script>
-</Layout>
+  }
+
+  function initAboutAnimation() {
+    const aboutTitle = document.getElementById('about-title');
+    const aboutHeader = document.getElementById('about-header');
+    const aboutWrapper = document.getElementById('about-wrapper');
+    const aboutArrow = document.getElementById('about-arrow');
+    if (!aboutTitle || !aboutHeader || !aboutWrapper) return;
+
+    const mm = gsap.matchMedia();
+
+    mm.add('(min-width: 1024px)', () => {
+      // Create a timeline for the animation with from-to approach
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: aboutWrapper,
+          start: 'top top',
+          end: 'bottom -10%',
+          pin: false,
+          scrub: true,
+          markers: true,
+        },
+      });
+
+      tl.fromTo(
+        aboutArrow,
+        {
+          scale: 1,
+        },
+        {
+          scale: 0,
+          ease: 'power2.out',
+          translateY: 20,
+        }
+      );
+
+      tl.fromTo(
+        aboutTitle,
+        {
+          width: '65%',
+          minWidth: '65%',
+          maxWidth: '65%',
+        },
+        {
+          width: '35%',
+          minWidth: '35%',
+          maxWidth: '35%',
+          ease: 'power2.out',
+        },
+        0
+      ).fromTo(
+        aboutHeader,
+        {
+          width: '35%',
+          minWidth: '35%',
+          maxWidth: '35%',
+        },
+        {
+          width: '65%',
+          minWidth: '65%',
+          maxWidth: '65%',
+          ease: 'power2.out',
+        },
+        0
+      );
+    });
+  }
+
+  // Astro View Transitions lifecycle
+  document.addEventListener('astro:before-swap', () => {
+    killSpecialities();
+    killWhatIDo();
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    setTimeout(() => {
+      initSpecialitiesAnimation();
+      initWhatIDoAnimation();
+      initAboutAnimation();
+    }, 1000);
+  });
+</script>

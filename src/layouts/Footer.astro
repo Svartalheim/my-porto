@@ -67,7 +67,7 @@
 </style>
 <footer
   id='footer'
-  class='pt-16 mt-auto relative max-w-[var(--100vw)] bg-black text-white'
+  class='pt-16 mt-auto relative max-w-[var(--100vw)] h-screen bg-black text-white'
 >
   <div class='container mx-auto px-4 space-y-10'>
     <div class='space-y-4 space-x-6'>
@@ -243,7 +243,7 @@
   // Reinitialize on Astro page transitions
   document.addEventListener('astro:after-swap', () => {
     // Small delay to ensure DOM is ready
-    setTimeout(initLogoMarquee, 100);
+    setTimeout(initLogoMarquee, 1000);
   });
 
   // Cleanup on page unload
