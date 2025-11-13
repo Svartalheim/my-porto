@@ -109,6 +109,9 @@
     var(--page-scale-min) + var(--page-scale-rate),
     var(--page-scale-max)
   );
+  -webkit-font-smoothing: antialiased; /* macOS */
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: always;
 }
 /* Media queries AFTER the main :root block */
 @media only screen and (max-width: 1290px) {
