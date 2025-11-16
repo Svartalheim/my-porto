@@ -5,12 +5,13 @@ import react from '@astrojs/react';
 
 import tailwindcss from '@tailwindcss/vite';
 import viteCompression from 'vite-plugin-compression';
+import vue from '@astrojs/vue';
 
 import sentry from '@sentry/astro';
 import spotlightjs from '@spotlightjs/astro';
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react()],
+  integrations: [react(), vue()],
   output: 'static',
   vite: {
     plugins: [

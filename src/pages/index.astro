@@ -1,18 +1,15 @@
 ---
-import { MenuIcon } from 'lucide-react';
+import HeroSignatureFluid from '@/components/HeroSignatureFluid.astro';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import FacetTitle from '@assets/svg/facet-title.svg';
+import Flare from '@assets/svg/flare.svg';
 import BrandVideo1 from '@assets/vid/brand-1.mp4';
 import BrandVideo2 from '@assets/vid/Brand-2-1.mp4';
 import Layout from '../layouts/layout.astro';
-import AboutTitle from '@assets/svg/about-title.svg';
-import FacetTitle from '@assets/svg/facet-title.svg';
-import AboutPhoto from '@assets/images/case-study-all.webp';
-import Arrow from '@assets/svg/arrow.svg';
-import Flare from '@assets/svg/flare.svg';
-import ImageAboutNavbar from '@assets/images/about.png';
-import Image from 'astro/components/Image.astro';
-
+import FluidSignature from '@/components/ui/fluid-cursor.vue';
+import faceAsset from '../assets/images/pp.webp';
+import signatureAsset from '../assets/images/signature.png';
 type SpecialitiesItem = { header: string; desc: string; meta?: string };
 
 const SPECIALITIES: SpecialitiesItem[] = [
@@ -109,14 +106,24 @@ const SPECIALITIES: SpecialitiesItem[] = [
 </style>
 
 <Layout name='home' title='Home'>
+  <!-- <FluidSignature
+    client:only='vue'
+    face-url='/images/face.png'
+    signature-url='/images/signature.png'
+    :sim-resolution='128'
+    :dye-resolution='1440'
+    :density-dissipation='3.5'
+    class='pointer-events-none fixed inset-0 z-0'
+  /> -->
   <div class='p-medium space-y-4 py-4'>
-    <p>🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧
-      Specializing in performance and quality, I build scalable, reusable
-      components that are optimized for Core Web Vitals and meet the highest
-      accessibility standards. Whether I'm building modern Server-Rendered Apps
-      (SRAs), Single-Page Applications (SPAs), or refactoring legacy codebases,
-      my focus is always on delivering fast, responsive, and SEO-friendly
-      solutions that translate complex ideas into intuitive digital experiences.
+    <p>
+      🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧 Specializing in performance
+      and quality, I build scalable, reusable components that are optimized for
+      Core Web Vitals and meet the highest accessibility standards. Whether I'm
+      building modern Server-Rendered Apps (SRAs), Single-Page Applications
+      (SPAs), or refactoring legacy codebases, my focus is always on delivering
+      fast, responsive, and SEO-friendly solutions that translate complex ideas
+      into intuitive digital experiences.
     </p>
     <p>
       I combine technical precision with a deep understanding of business goals

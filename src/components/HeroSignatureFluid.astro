@@ -1,0 +1,356 @@
+---
+import faceAsset from '../assets/images/pp-2.webp';
+import signatureAsset from '../assets/images/signature.svg';
+
+const faceSrc = faceAsset.src;
+const signatureSrc = signatureAsset.src;
+---
+
+<section class='hero-fluid'>
+  <canvas id='topo-canvas'></canvas>
+  <canvas id='heroCanvas'></canvas>
+</section>
+
+<script define:vars={{ faceSrc, signatureSrc }}>
+  if (typeof window !== 'undefined') {
+    const initSignature = () => {
+      const canvas = document.getElementById('heroCanvas');
+      if (!canvas) throw new Error('Canvas element not found for signature');
+      const ctx = canvas.getContext('2d');
+      const faceImg = new Image();
+      const sigImg = new Image();
+
+      faceImg.src = faceSrc;
+      sigImg.src = signatureSrc;
+
+      const sigCanvas = document.createElement('canvas');
+      const sigCtx = sigCanvas.getContext('2d');
+
+      let pointer = { x: 0, y: 0, vx: 0, vy: 0 };
+      let lastPointer = { x: 0, y: 0 };
+      let lastMoveTime = Date.now();
+      let isInside = false;
+
+      const ERASE_RADIUS = 80;
+      const IDLE_RESET_MS = 500;
+
+      function resizeCanvas() {
+        if (!ctx || !sigCtx) throw new Error('2D context not available');
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * window.devicePixelRatio;
+        canvas.height = rect.height * window.devicePixelRatio;
+        ctx.setTransform(
+          window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0
+        );
+
+        sigCanvas.width = canvas.width;
+        sigCanvas.height = canvas.height;
+        sigCtx.setTransform(
+          window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0
+        );
+
+        if (sigImg.complete) {
+          drawFullSignature();
+        }
+      }
+
+      function drawFullSignature() {
+        sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+        const rect = canvas.getBoundingClientRect();
+        const scale = Math.min(rect.width / sigImg.width, rect.height / sigImg.height) / 1.5;
+        const sigW = sigImg.width * scale;
+        const sigH = sigImg.height * scale;
+        const sigX = (rect.width - sigW) / 2;
+        const sigY = (rect.height - sigH) / 2;
+        sigCtx.drawImage(sigImg, sigX, sigY, sigW, sigH);
+      }
+
+      function drawFace() {
+        const rect = canvas.getBoundingClientRect();
+        const scale = Math.min(rect.width / faceImg.width, rect.height / faceImg.height);
+        const imgW = faceImg.width * scale;
+        const imgH = faceImg.height * scale;
+        const imgX = (rect.width - imgW) / 2;
+        const imgY = (rect.height - imgH) / 2;
+        ctx.drawImage(faceImg, imgX, imgY, imgW, imgH);
+      }
+
+      function eraseSignatureFluid(x, y) {
+        sigCtx.save();
+        sigCtx.globalCompositeOperation = 'destination-out';
+        const r = ERASE_RADIUS;
+        const g = sigCtx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, 'rgba(0,0,0,1)');
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        sigCtx.fillStyle = g;
+        sigCtx.beginPath();
+        sigCtx.arc(x, y, r, 0, Math.PI * 2);
+        sigCtx.fill();
+        const trailCount = 3;
+        for (let i = 1; i <= trailCount; i++) {
+          const t = i / (trailCount + 1);
+          const tx = x - pointer.vx * t * 3;
+          const ty = y - pointer.vy * t * 3;
+          const tr = r * (1 - t * 0.4);
+          const tg = sigCtx.createRadialGradient(tx, ty, 0, tx, ty, tr);
+          tg.addColorStop(0, 'rgba(0,0,0,0.9)');
+          tg.addColorStop(1, 'rgba(0,0,0,0)');
+          sigCtx.fillStyle = tg;
+          sigCtx.beginPath();
+          sigCtx.arc(tx, ty, tr, 0, Math.PI * 2);
+          sigCtx.fill();
+        }
+        sigCtx.restore();
+      }
+
+      function updatePointer(x, y) {
+        const rect = canvas.getBoundingClientRect();
+        const px = x - rect.left;
+        const py = y - rect.top;
+        pointer.vx = px - lastPointer.x;
+        pointer.vy = py - lastPointer.y;
+        pointer.x = px;
+        pointer.y = py;
+        lastPointer.x = px;
+        lastPointer.y = py;
+      }
+
+      function onPointerMove(e) {
+        isInside = true;
+        lastMoveTime = Date.now();
+        const targetX = e.touches?.[0]?.clientX ?? e.clientX;
+        const targetY = e.touches?.[0]?.clientY ?? e.clientY;
+        updatePointer(targetX, targetY);
+        eraseSignatureFluid(pointer.x, pointer.y);
+      }
+
+      function onPointerLeave() {
+        isInside = false;
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        if (!faceImg.complete || !sigImg.complete) return;
+        const now = Date.now();
+        if (now - lastMoveTime > IDLE_RESET_MS && !isInside) {
+          drawFullSignature();
+          lastMoveTime = now;
+        }
+        const rect = canvas.getBoundingClientRect();
+        ctx.clearRect(0, 0, rect.width, rect.height);
+        ctx.drawImage(sigCanvas, 0, 0, rect.width, rect.height);
+        ctx.globalCompositeOperation = 'destination-over';
+        drawFace();
+        ctx.globalCompositeOperation = 'source-over';
+      }
+
+      resizeCanvas();
+      faceImg.onload = () => sigImg.complete && drawFullSignature();
+      sigImg.onload = () => drawFullSignature();
+
+      const signatureObserver = new ResizeObserver(resizeCanvas);
+      if (canvas.parentElement) {
+        signatureObserver.observe(canvas.parentElement);
+      }
+
+      canvas.addEventListener('pointermove', onPointerMove);
+      canvas.addEventListener('pointerdown', onPointerMove);
+      canvas.addEventListener('pointerenter', () => (isInside = true));
+      canvas.addEventListener('pointerleave', onPointerLeave);
+      animate();
+    };
+
+    const initTopo = () => {
+      const canvas = document.getElementById('topo-canvas');
+      if (!canvas) {
+        console.warn('[TopographicBackground] canvas element not found');
+        return;
+      }
+      const gl = canvas.getContext('webgl', { antialias: true });
+      if (!gl) {
+        console.warn('WebGL not supported');
+        return;
+      }
+
+      const vertexSrc = `
+        attribute vec2 a_position;
+        varying vec2 v_uv;
+        void main() {
+          v_uv = a_position * 0.5 + 0.5;
+          gl_Position = vec4(a_position, 0.0, 1.0);
+        }
+      `;
+      const fragmentSrc = `
+        precision highp float;
+        varying vec2 v_uv;
+        uniform vec2 u_resolution;
+        uniform float u_time;
+        uniform vec4 u_bgColor;
+        uniform vec4 u_lineColor;
+        uniform vec2 u_freq1;
+        uniform vec2 u_freq2;
+        uniform float u_lineThickness;
+        uniform float u_lineSpacing;
+
+        float hash(vec2 p) {
+          p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+          return -1.0 + 2.0 * fract(sin(p.x) * 43758.5453123 + sin(p.y) * 43758.5453123);
+        }
+
+        float noise(vec2 p) {
+          vec2 i = floor(p);
+          vec2 f = fract(p);
+          float a = hash(i);
+          float b = hash(i + vec2(1.0, 0.0));
+          float c = hash(i + vec2(0.0, 1.0));
+          float d = hash(i + vec2(1.0, 1.0));
+          vec2 u = f * f * (3.0 - 2.0 * f);
+          return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+        }
+
+        void main() {
+          vec2 uv = v_uv;
+          vec2 aspect = vec2(u_resolution.x / u_resolution.y, 1.0);
+          vec2 p = (uv - 0.5) * aspect;
+          vec2 time_offset = vec2(noise(p + u_time * 0.2), noise(p + u_time * 0.2 + vec2(5.2, 1.3)));
+          p += time_offset * 0.7;
+          float h = sin(p.x * u_freq1.x) + sin(p.y * u_freq1.y) + sin((p.x + p.y) * u_freq2.x) * 0.7 + noise(p * u_freq2.y) * 0.6;
+          float dynamicThickness = u_lineThickness;
+          float dynamicSpacing = u_lineSpacing * (0.5 + 0.1 * cos(u_time * 0.9));
+          float scaled = h * dynamicSpacing;
+          float f = abs(fract(scaled) - 0.5);
+          float line = smoothstep(dynamicThickness, 0.0, f);
+          vec3 color = mix(u_bgColor.rgb, u_lineColor.rgb, line);
+          gl_FragColor = vec4(color, 1.0);
+        }
+      `;
+
+      function createShader(gl, type, src) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, src);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error(gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      }
+
+      function createProgram(gl, vsSrc, fsSrc) {
+        const vs = createShader(gl, gl.VERTEX_SHADER, vsSrc);
+        const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSrc);
+        if (!vs || !fs) return null;
+        const program = gl.createProgram();
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+          console.error(gl.getProgramInfoLog(program));
+          gl.deleteProgram(program);
+          return null;
+        }
+        return program;
+      }
+
+      const program = createProgram(gl, vertexSrc, fragmentSrc);
+      if (!program) return;
+      gl.useProgram(program);
+
+      const quad = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+      const aPosLoc = gl.getAttribLocation(program, 'a_position');
+      gl.enableVertexAttribArray(aPosLoc);
+      gl.vertexAttribPointer(aPosLoc, 2, gl.FLOAT, false, 0, 0);
+
+      const uResolution = gl.getUniformLocation(program, 'u_resolution');
+      const uTime = gl.getUniformLocation(program, 'u_time');
+      const uBgColor = gl.getUniformLocation(program, 'u_bgColor');
+      const uLineColor = gl.getUniformLocation(program, 'u_lineColor');
+      const uFreq1 = gl.getUniformLocation(program, 'u_freq1');
+      const uFreq2 = gl.getUniformLocation(program, 'u_freq2');
+      const uLineThickness = gl.getUniformLocation(program, 'u_lineThickness');
+      const uLineSpacing = gl.getUniformLocation(program, 'u_lineSpacing');
+
+      const rand = Math.random;
+      const params = {
+        freq1: [1.0 + rand() * 3.0, 2.0 + rand() * 3.0],
+        freq2: [0.5 + rand() * 2.0, 2.0 + rand() * 3.0],
+        lineThickness: 0.03 + rand() * 0.01,
+        lineSpacing: 3.0 + rand() * 2.5,
+        bgColor: [0.9582, 0.9582, 0.9582, 1.0], // oklch(0.9582 0.0041 271.37)
+        lineColor: [0.82, 0.82, 0.82, 1.0],
+      };
+
+      function resize() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        if (uResolution) {
+          gl.uniform2f(uResolution, canvas.width, canvas.height);
+        }
+      }
+
+      const topoObserver = new ResizeObserver(resize);
+      if (canvas.parentElement) {
+        topoObserver.observe(canvas.parentElement);
+      }
+      resize();
+
+      gl.uniform4fv(uBgColor, new Float32Array(params.bgColor));
+      gl.uniform4fv(uLineColor, new Float32Array(params.lineColor));
+      gl.uniform2f(uFreq1, params.freq1[0], params.freq1[1]);
+      gl.uniform2f(uFreq2, params.freq2[0], params.freq2[1]);
+      gl.uniform1f(uLineThickness, params.lineThickness);
+      gl.uniform1f(uLineSpacing, params.lineSpacing);
+
+      const start = performance.now();
+      function render() {
+        const t = (performance.now() - start) / 1000;
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.uniform1f(uTime, t);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(render);
+      }
+      render();
+    };
+
+    // Initialize both animations
+    document.addEventListener('astro:page-load', () => {
+      initSignature();
+      initTopo();
+    });
+  }
+</script>
+
+<style>
+  .hero-fluid {
+    position: relative;
+    width: 100%;
+    height: min(100vh, 1400px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  #topo-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  #heroCanvas {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: transparent;
+  }
+</style>

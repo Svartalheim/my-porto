@@ -5,6 +5,7 @@ import AboutTitle from '@assets/svg/about-title.svg';
 import Arrow from '@assets/svg/arrow.svg';
 import { Image } from 'astro:assets';
 import Layout from '../layouts/layout.astro';
+import HeroSignatureFluid from '@/components/HeroSignatureFluid.astro';
 
 type SpecialitiesItem = { header: string; desc: string; meta?: string };
 
@@ -147,6 +148,8 @@ const SPECIALITIES: SpecialitiesItem[] = [
       </div>
     </div>
   </div>
+  <HeroSignatureFluid />
+
   <div
     class='text-background bg-primary background-expander relative px-[2vw] lg:p-0'
   >
@@ -208,7 +211,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
       <div
         class='lg:pr-[var(--size-20)] lg:w-[calc(100%-31.458333333333332vw)] lg:flex flex-col justify-between pb-[50px]'
       >
-        <div class='lg:pt-[0.20833333333333334vw] '>
+        <div class='lg:pt-[0.20833333333333334vw]'>
           <div class='relative'>
             <span class='absolute left-0 p-small lg:-top-5'>Why me</span>
             <h2 class='h2 indent-24 mb-5 lg:ml-12 break-words hyphens-auto'>
