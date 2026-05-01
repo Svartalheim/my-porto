@@ -1,4 +1,3 @@
-cat << 'EOF' > tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 
 // -------------------------------------------------------
@@ -12,7 +11,7 @@ cat << 'EOF' > tailwind.config.js
 // -------------------------------------------------------
 
 module.exports = {
-  content: ["./src/**/*.{js,ts,jsx,tsx,html}"],
+  content: ["./src/**/*.{astro,js,ts,jsx,tsx,html}"],
   theme: {
     extend: {
 
@@ -20,7 +19,7 @@ module.exports = {
       fontFamily: {
         display: ["'Clash Display'", "system-ui", "sans-serif"],  // headings
         sans:    ["'Satoshi'", "system-ui", "sans-serif"],         // body, UI
-        mono:    ["'JetBrains Mono'", "monospace"],                // code
+        mono:    ["'JetBrains Mono'", "'Fira Code'", "'Inconsolata'", "Consolas", "monospace"], // code
       },
 
       // ── Font sizes + line heights ──────────────────────
@@ -56,4 +55,3 @@ module.exports = {
   },
   plugins: [],
 };
-EOF

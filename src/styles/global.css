@@ -190,22 +190,19 @@ body::-webkit-scrollbar {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      sans-serif;
+    @apply bg-background text-foreground font-sans;
   }
 
   /* Heading font family */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Clash Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    @apply font-display;
   }
 
   /* Monospace font for code elements */
   code,
   pre,
   .font-mono {
-    font-family: 'JetBrains Mono', 'Fira Code', 'Inconsolata', Consolas,
-      monospace;
+    @apply font-mono;
   }
 }
 
