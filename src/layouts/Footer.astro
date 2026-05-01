@@ -4,20 +4,17 @@
 
 <style>
   #footer {
-    /* position: sticky; */
-    z-index: -1;
     position: relative;
-    /* inset: auto auto 0;
-    margin-top: auto; */
+    z-index: -1;
   }
 
   /* Infinite Logo Marquee Styles */
   .infinite-logo-container {
     width: 100%;
     overflow: hidden;
-    height: 340px;
-    /* margin: 3rem 0;
-    padding: 2rem 0; */
+    min-height: 500px;
+    height: 70vh;
+    margin: 4rem 0;
   }
 
   .logo-track {
@@ -31,7 +28,6 @@
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    /* height: 64px; */
   }
 
   .logo-svg {
@@ -41,61 +37,50 @@
   }
 
   .logo-svg svg {
-    height: 100%;
-    /* height: 130px; */
-    width: 100vw;
-  }
-
-  .separator {
-    font-size: 3rem;
-    margin: 0 4rem;
-    color: rgb(255, 255, 255);
-    font-weight: bold;
-    user-select: none;
+    height: 300px;
+    width: auto;
   }
 
   .socials a {
-    transition-property: width, opacity;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease;
   }
 
   .socials a:hover {
-    margin-left: 1.5vw;
-    margin-right: 1.5vw;
-    opacity: 60%;
+    opacity: 0.7;
   }
 </style>
 <footer
   id='footer'
-  class='pt-16 mt-auto relative max-w-[var(--100vw)] h-screen bg-black text-white'
+  class='pt-32 pb-32 mt-auto relative max-w-[var(--100vw)] h-screen bg-black text-white'
 >
-  <div class='container mx-auto px-4 space-y-10'>
-    <div class='space-y-4 space-x-6'>
-      <span class='p-small text-background/80'>(SEND YOUR BRIEF HERE)</span>
-      <span class='p-xlarge text-background font-medium'
-        ><!--email_off-->gboomers313@gmail.com<!--/email_off--></span
+  <div class='container mx-auto px-4 space-y-28'>
+    <div class='space-y-6'>
+      <span class='p-large text-background/80 uppercase font-bold tracking-widest'>(SEND YOUR BRIEF HERE)</span>
+      <span
+        class='text-5xl lg:text-7xl font-black tracking-tight text-background break-all'
+      ><!--email_off-->gboomers313@gmail.com<!--/email_off--></span
       >
     </div>
     <div class='grid grid-cols-2'>
-      <div class='space-y-5'>
-        <p class='p-small text-background/80'>(SOCIALS)</p>
+      <div class='space-y-8'>
+        <p class='p-large text-background/80 uppercase font-bold tracking-widest'>(SOCIALS)</p>
         <ul
-          class='relative socials space-y-2 w-fit p-large text-background whitespace-nowrap'
+          class='relative socials space-y-6 w-fit p-medium text-background whitespace-nowrap'
         >
-          <li>
+          <li class='text-2xl lg:text-3xl font-bold'>
             <a target='_blank' href='https://github.com/Svartalheim'>Github 1</a
             >
-            <span> / </span>
+            <span class='text-background/50'> / </span>
             <a target='_blank' href='https://github.com/aqsyalraihanjamil'
               >Github 2</a
             >
           </li>
-          <li>
+          <li class='text-2xl lg:text-3xl font-bold'>
             <a target='_blank' href='https://www.linkedin.com/in/jamilss1437/'
               >Linkedin</a
             >
           </li>
-          <li>
+          <li class='text-2xl lg:text-3xl font-bold'>
             <a
               target='_blank'
               href='https://discord.com/users/572704110999240704'>Discord</a
@@ -105,7 +90,7 @@
       </div>
     </div>
     <div
-      class='flex flex-col lg:flex-row lg:justify-between p-tiny space-y-1 text-background/50'
+      class='flex flex-col lg:flex-row lg:justify-between lg:gap-8 p-large space-y-2 text-background/50 pt-20'
     >
       <span>Copyright @2025 All Right Reserved </span>
       <span>Design by me 🤍</span>
@@ -146,7 +131,6 @@
                 fill='currentColor'></path>
             </svg>
           </div>
-          <!-- <div class="separator">•</div> -->
         </div>
       </div>
     </div>
@@ -208,10 +192,10 @@
     // Set initial position
     gsap.set(track, { x: 0 });
 
-    // Create infinite loop animation
+    // Create infinite loop animation (slower 30s duration for more impact)
     currentAnimation = gsap.to(track, {
       x: -unitWidth,
-      duration: 15,
+      duration: 30,
       ease: 'none',
       repeat: -1,
       modifiers: {
