@@ -106,35 +106,6 @@ const SPECIALITIES: SpecialitiesItem[] = [
 </style>
 
 <Layout name='home' title='Home'>
-  <!-- <FluidSignature
-    client:only='vue'
-    face-url='/images/face.png'
-    signature-url='/images/signature.png'
-    :sim-resolution='128'
-    :dye-resolution='1440'
-    :density-dissipation='3.5'
-    class='pointer-events-none fixed inset-0 z-0'
-  /> -->
-  <div class='p-medium space-y-4 py-4'>
-    <p>
-      🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧 Specializing in performance
-      and quality, I build scalable, reusable components that are optimized for
-      Core Web Vitals and meet the highest accessibility standards. Whether I'm
-      building modern Server-Rendered Apps (SRAs), Single-Page Applications
-      (SPAs), or refactoring legacy codebases, my focus is always on delivering
-      fast, responsive, and SEO-friendly solutions that translate complex ideas
-      into intuitive digital experiences.
-    </p>
-    <p>
-      I combine technical precision with a deep understanding of business goals
-      to ensure my work consistently enhances application performance,
-      maintainability, and user engagement.
-    </p>
-    <p>
-      Let’s collaborate to turn your vision into a fast, engaging, and
-      future-proof digital product.
-    </p>
-  </div>
   <div
     class='text-background bg-primary background-expander relative px-[2vw] lg:p-0'
   >
@@ -243,7 +214,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
               class={cn(
                 'what-i-do-item h-screen flex flex-col gap-4',
                 index !== 0 &&
-                  'shadow-[0px_-24px_40px_-10px_rgba(0,_0,_0,_0.1)]'
+                  'shadow-[0px_-24px_40px_-10px_rgba(0,_0,_0,_0.1)]',
               )}
               data-index={index}
               style={`z-index: ${1 + index}`}
@@ -374,7 +345,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
             height: 'auto',
             duration: 1,
             immediateRender: false,
-          }
+          },
         )
         // Then animate opacity (starts before height finishes)
         .fromTo(
@@ -385,7 +356,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
             duration: 0.4,
             immediateRender: false,
           },
-          '-=0.5' // Start 0.5 seconds before the height animation ends
+          '-=0.5', // Start 0.5 seconds before the height animation ends
         );
     });
 
@@ -413,7 +384,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
           width: '100%',
           // ease:'power1.out'
           ease: 'none',
-        }
+        },
       );
     });
 
@@ -444,7 +415,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
             }
           },
         },
-        '-=0.3' // Start 0.3 seconds before the height animation ends
+        '-=0.3', // Start 0.3 seconds before the height animation ends
       );
     });
   }
@@ -522,7 +493,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
           scale: 0,
           ease: 'power2.out',
           translateY: 20,
-        }
+        },
       );
 
       tl.fromTo(
@@ -538,7 +509,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
           maxWidth: '35%',
           ease: 'power2.out',
         },
-        0
+        0,
       ).fromTo(
         aboutHeader,
         {
@@ -552,7 +523,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
           maxWidth: '65%',
           ease: 'power2.out',
         },
-        0
+        0,
       );
     });
   }
