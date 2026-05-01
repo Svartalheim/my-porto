@@ -1,3 +1,6 @@
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=jetbrains-mono@400,500,700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -190,15 +193,20 @@ body::-webkit-scrollbar {
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
       sans-serif;
+  }
+
+  /* Heading font family */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Clash Display', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   /* Monospace font for code elements */
   code,
   pre,
   .font-mono {
-    font-family: 'Inconsolata', 'Fira Code', 'JetBrains Mono', Consolas,
+    font-family: 'JetBrains Mono', 'Fira Code', 'Inconsolata', Consolas,
       monospace;
   }
 }
@@ -215,54 +223,6 @@ body::-webkit-scrollbar {
   backface-visibility: hidden;
   transform: translateZ(0);
   /* contain: paint; . */
-}
-
-.big-statement {
-  font-size: clamp(180px, 141.312px + 100vw * 0.0992, 310px);
-  line-height: 0.8;
-  letter-spacing: -0.05em;
-  ---letter-spacing: -0.05em;
-}
-
-.h2 {
-  font-size: /*lrs=64*/ clamp(32px, 22.484px + 100vw * 0.0244, 64px);
-  line-height: 1.1;
-  letter-spacing: -0.07em;
-  ---letter-spacing: -0.07em;
-}
-
-.p-xlarge {
-  font-size: clamp(28px, 25.621px + 100vw * 0.0061, 36px);
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-}
-
-.p-large {
-  font-size: clamp(24px, 22.206px + 100vw * 0.0046, 30px);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  ---letter-spacing: -0.03em;
-}
-
-.p-medium {
-  font-size: /*lrs=24*/ clamp(20px, 18.791px + 100vw * 0.0031, 24px);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  ---letter-spacing: -0.02em;
-}
-
-.p-small {
-  font-size: /*lrs=18*/ clamp(16px, 15.415px + 100vw * 0.0015, 18px);
-  line-height: 1.2;
-  letter-spacing: -0.04em;
-  ---letter-spacing: -0.04em;
-}
-
-.p-tiny {
-  font-size: /*lrs=16*/ clamp(13px, 12.103px + 100vw * 0.0023, 16px);
-  line-height: 1.3;
-  letter-spacing: -0.04em;
-  ---letter-spacing: -0.04em;
 }
 
 .background-expander {
