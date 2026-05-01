@@ -116,7 +116,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
         <FacetTitle />
       </div>
       <div
-        class='pb-[4.333vw] flex gap-4 p-medium font-light max-w-2xl mx-auto'
+        class='pb-[4.333vw] flex gap-4 text-body font-light max-w-2xl mx-auto'
       >
         <Flare height={40} width={40} class={'min-w-[40px] h-auto'} />
         <span>
@@ -132,11 +132,11 @@ const SPECIALITIES: SpecialitiesItem[] = [
               class='speciality-card bg-background/5 rounded-xl p-6 shadow-sm border border-background/10'
               id={`speciality-${index}`}
             >
-              <h3 class='p-large font-medium speciality-title'>
+              <h3 class='text-h3 font-medium speciality-title'>
                 {item.header}
               </h3>
               <p
-                class='p-small min-h-0 h-0 opacity-0 max-h-fit font-light speciality-desc '
+                class='text-small min-h-0 h-0 opacity-0 max-h-fit font-light speciality-desc '
                 data-index={index}
               >
                 {item.desc}
@@ -144,7 +144,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
               {item.meta && (
                 <div class='mt-3 flex flex-wrap gap-2'>
                   {item.meta.split(' — ').map((tag) => (
-                    <span class='bg-background/20 text-sm px-3 py-1 rounded-full'>{tag}</span>
+                    <span class='bg-background/20 text-small px-3 py-1 rounded-full'>{tag}</span>
                   ))}
                 </div>
               )}
@@ -155,7 +155,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
     </section>
   </div>
   <div class='bg-background' id='what-i-do-section'>
-    <h2 class='h2 py-20'>What i do</h2>
+    <h2 class='text-h2 py-20'>What i do</h2>
     <div class='what-i-do-container' id='whatIDoContainer'>
       <div
         inert='inert'
@@ -211,10 +211,10 @@ const SPECIALITIES: SpecialitiesItem[] = [
             >
               <Separator className={'bg-foreground/20'} />
               <div class='grid grid-cols-24 gap-1 pt-[64px] lg:pt-[16px]'>
-                <p class='big-statement col-span-8 h-fit'>{index + 1}</p>
+                <p class='text-display col-span-8 h-fit'>{index + 1}</p>
                 <div class=' min-w-0 min-h-0 col-start-12 col-span-12'>
                   <p
-                    class=' mt-[2vw] p-xlarge hidden lg:block font-light hyphens-auto'
+                    class=' mt-[2vw] text-h3 hidden lg:block font-light hyphens-auto'
                     lang='en'
                   >
                     {item.desc}
@@ -227,11 +227,11 @@ const SPECIALITIES: SpecialitiesItem[] = [
                     loop
                     playsinline
                   />
-                  <p class='text-foreground/80 p-small'>{item.title}</p>
+                  <p class='text-foreground/80 text-small'>{item.title}</p>
                 </div>
               </div>
               <p
-                class='lg:hidden indent-[45%] lg:indent-[40%] mx-2 mt-[2vw] p-xlarge font-light hyphens-auto'
+                class='lg:hidden indent-[45%] lg:indent-[40%] mx-2 mt-[2vw] text-h3 font-light hyphens-auto'
                 lang='en'
               >
                 {item.desc}
@@ -239,7 +239,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
               {item.extra && (
                 <div class='px-2 space-y-2'>
                   <Separator className={'bg-foreground'} />
-                  <ul class='list-none list-inside p-medium text-foreground/40'>
+                  <ul class='list-none list-inside text-body text-foreground/40'>
                     {item.extra.map((tech) => (
                       <li>{tech}</li>
                     ))}
