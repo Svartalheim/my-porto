@@ -6,6 +6,7 @@ import Flare from '@assets/svg/flare.svg';
 import BrandVideo1 from '@assets/vid/brand-1.mp4';
 import BrandVideo2 from '@assets/vid/Brand-2-1.mp4';
 import Layout from '../layouts/layout.astro';
+import AnchorText from '@/components/ui/AnchorText.astro';
 type SpecialitiesItem = { header: string; desc: string; meta?: string };
 
 const SPECIALITIES: SpecialitiesItem[] = [
@@ -105,9 +106,10 @@ const SPECIALITIES: SpecialitiesItem[] = [
   <div
     class='text-background bg-primary background-expander relative px-[2vw] lg:p-0'
   >
+    <AnchorText href={'/projects'}>Projects</AnchorText>
     <section
       id='whats-different'
-      class='mt-[100px] lg:mt-0 pb-[50px] py-[50px] px-4 lg:px-8 pt-[2.333vw] max-w-6xl mx-auto'
+      class='pb-[50px] py-[50px] px-4 lg:px-8 pt-[2.333vw] max-w-6xl mx-auto'
     >
       <div
         class='flex justify-center lg:block px-4 mb-[10vw] lg:mb-[4vw] max-w-2xl lg:mx-0 [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
@@ -120,9 +122,9 @@ const SPECIALITIES: SpecialitiesItem[] = [
       >
         <Flare height={40} width={40} class={'min-w-[40px] h-auto'} />
         <span>
-          I build fast, accessible web apps — think analytics dashboards and workflow
-          tools — using Next.js, React, and type-safe systems that turn complex data
-          into clear decisions.
+          I build fast, accessible web apps — think analytics dashboards and
+          workflow tools — using Next.js, React, and type-safe systems that turn
+          complex data into clear decisions.
         </span>
       </div>
       <div class='flex flex-col gap-6 max-w-4xl mx-auto'>
@@ -144,7 +146,9 @@ const SPECIALITIES: SpecialitiesItem[] = [
               {item.meta && (
                 <div class='mt-3 flex flex-wrap gap-2'>
                   {item.meta.split(' — ').map((tag) => (
-                    <span class='bg-background/20 text-small px-3 py-1 rounded-full'>{tag}</span>
+                    <span class='bg-background/20 text-small px-3 py-1 rounded-full'>
+                      {tag}
+                    </span>
                   ))}
                 </div>
               )}

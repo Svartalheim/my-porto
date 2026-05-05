@@ -351,7 +351,7 @@ const { name, title } = Astro.props as Props;
       // Faster transitions on mobile for better performance
       const isMobile = window.innerWidth <= 768;
       const DURATION = isMobile ? 0.35 : 0.5,
-        EASE = 'power2.out';
+        EASE = 'power3.out';
       const prefersReduced = matchMedia(
         '(prefers-reduced-motion: reduce)'
       ).matches;

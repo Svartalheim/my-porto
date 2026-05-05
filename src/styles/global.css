@@ -45,6 +45,59 @@
   --min-width-navbar: var(--navbar-width);
   --spacing-navbar: var(--navbar-width);
 }
+@theme {
+  /* ── Font families ────────────────────────────────── */
+  --font-display: 'Clash Display', system-ui, sans-serif;
+  --font-sans: 'Satoshi', system-ui, sans-serif;
+  --font-mono:
+    'JetBrains Mono', 'Fira Code', 'Inconsolata', Consolas, monospace;
+
+  /* ── Font sizes + line heights + letter spacing ───── */
+  --text-display: 4.5rem;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.04em;
+
+  --text-h1: 3.5rem;
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.03em;
+
+  --text-h2: 2.5rem;
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.02em;
+
+  --text-h3: 1.75rem;
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.01em;
+
+  --text-subtitle: 1.25rem;
+  --text-subtitle--line-height: 1.4;
+  --text-subtitle--letter-spacing: -0.01em;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.7;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.6;
+
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.5;
+  --text-label--letter-spacing: 0.06em;
+
+  --text-code: 0.9375rem;
+  --text-code--line-height: 1.7;
+
+  --text-code-sm: 0.8125rem;
+  --text-code-sm--line-height: 1.6;
+
+  /* ── Font weights ─────────────────────────────────── */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+}
 :root {
   --radius: 0.625rem;
   --transition-duration: 0.4s;
@@ -194,9 +247,9 @@ body::-webkit-scrollbar {
   }
 
   /* Heading font family */
-  h1, h2, h3, h4, h5, h6 {
+  /* h1, h2, h3, h4, h5, h6 {
     @apply font-display;
-  }
+  } */
 
   /* Monospace font for code elements */
   code,

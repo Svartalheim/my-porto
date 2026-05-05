@@ -1,0 +1,104 @@
+---
+export interface Props {
+  /** URL for the anchor link */
+  href: string;
+  /** Target attribute for the link (e.g., '_blank' for external links) */
+  target?: string;
+  /** Rel attribute for the link */
+  rel?: string;
+  /** Additional CSS classes to apply to the anchor */
+  class?: string;
+}
+
+const { href, target, rel, class: className } = Astro.props;
+---
+
+<a
+  href={href}
+  target={target}
+  rel={target === '_blank' ? 'noopener noreferrer' : rel}
+  class:list={[
+    'uline-double text-current font-mono no-underline text-subtitle', 
+    className
+  ]}
+  {...(!target && { 'data-astro-prefetch': true })}
+>
+  <slot />
+</a>
+
+<style>
+  .uline {
+    display: inline-flex;
+    white-space: nowrap;
+    position: relative; /* Added to keep pseudo-elements constrained to the text */
+    --bottom: -.2em;
+  }
+
+  .uline:before {
+    background-color: currentColor;
+    bottom: var(--bottom);
+    content: "";
+    height: .05em;
+    left: 0;
+    min-height: 1px;
+    position: absolute;
+    right: 0;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform .55s cubic-bezier(.785,.135,.15,.86);
+  }
+
+  .uline:hover:before {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .uline-double {
+    display: inline-flex;
+    position: relative;
+    white-space: nowrap;
+    --bottom: -.2em;
+  }
+
+  .uline-double:after, 
+  .uline-double:before {
+    background-color: currentColor;
+    bottom: var(--bottom);
+    content: "";
+    height: .05em;
+    left: 0;
+    min-height: 1px;
+    position: absolute;
+    right: 0;
+  }
+
+  .uline-double:before {
+    transform: scaleX(1);
+    transform-origin: left;
+    transition: transform .55s cubic-bezier(.785,.135,.15,.86);
+    transition-delay: .5s;
+  }
+
+  .uline-double:after {
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform .55s cubic-bezier(.785,.135,.15,.86);
+    transition-delay: 0s;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .uline-double:hover:before {
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform .55s cubic-bezier(.785,.135,.15,.86);
+      transition-delay: 0s;
+    }
+
+    .uline-double:hover:after {
+      transform: scaleX(1);
+      transform-origin: left;
+      transition: transform .55s cubic-bezier(.785,.135,.15,.86);
+      transition-delay: .2s;
+    }
+  }
+</style>
