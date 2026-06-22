@@ -109,44 +109,44 @@ const SPECIALITIES: SpecialitiesItem[] = [
     <AnchorText href={'/projects'}>Projects</AnchorText>
     <section
       id='whats-different'
-      class='pb-[50px] py-[50px] px-4 lg:px-8 pt-[2.333vw] max-w-6xl mx-auto'
+      class='py-32 lg:py-48 px-6 md:px-12 max-w-5xl mx-auto'
     >
       <div
-        class='flex justify-center lg:block px-4 mb-[10vw] lg:mb-[4vw] max-w-2xl lg:mx-0 [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
+        class='flex lg:block mb-24 lg:mb-32 max-w-3xl [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
         id='about-title'
       >
         <FacetTitle />
       </div>
-      <div
-        class='pb-[4.333vw] flex gap-4 text-body font-light max-w-2xl mx-auto'
-      >
-        <Flare height={40} width={40} class={'min-w-[40px] h-auto'} />
-        <span>
+
+      <div class='mb-32 flex gap-6 text-xl md:text-2xl font-light text-white/70 max-w-2xl'>
+        <Flare height={32} width={32} class={'shrink-0 mt-1 opacity-50'} />
+        <p class='leading-relaxed'>
           I build fast, accessible web apps — think analytics dashboards and
           workflow tools — using Next.js, React, and type-safe systems that turn
           complex data into clear decisions.
-        </span>
+        </p>
       </div>
-      <div class='flex flex-col gap-6 max-w-4xl mx-auto'>
+
+      <div class='flex flex-col gap-24 md:gap-32'>
         {
           SPECIALITIES.map((item, index) => (
             <div
-              class='speciality-card bg-background/5 rounded-xl p-6 shadow-sm border border-background/10'
+              class='speciality-card flex flex-col gap-4'
               id={`speciality-${index}`}
             >
-              <h3 class='text-h3 font-medium speciality-title'>
+              <h3 class='text-5xl md:text-7xl font-medium tracking-tighter speciality-title'>
                 {item.header}
               </h3>
               <p
-                class='text-small min-h-0 h-0 opacity-0 max-h-fit font-light speciality-desc '
+                class='text-lg md:text-xl font-light text-white/60 leading-relaxed max-w-2xl speciality-desc'
                 data-index={index}
               >
                 {item.desc}
               </p>
               {item.meta && (
-                <div class='mt-3 flex flex-wrap gap-2'>
+                <div class='flex flex-wrap gap-3 mt-4'>
                   {item.meta.split(' — ').map((tag) => (
-                    <span class='bg-background/20 text-small px-3 py-1 rounded-full'>
+                    <span class='text-xs uppercase tracking-widest text-white/30 border border-white/10 px-4 py-1.5 rounded-full'>
                       {tag}
                     </span>
                   ))}
