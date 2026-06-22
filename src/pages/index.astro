@@ -110,23 +110,44 @@ const SPECIALITIES: SpecialitiesItem[] = [
 
     <section
       id='brutality-approach'
-      class='pt-24 lg:pt-40 px-6 md:px-12 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center relative'
+      class='pt-24 lg:pt-40 px-6 md:px-12 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch relative'
     >
       <div class='lg:col-span-5 flex flex-col gap-6'>
-        <div class='[&_*]:fill-white w-full max-w-[320px] md:max-w-[420px] lg:max-w-[520px]'>
-          <FacetTitle />
+        <div class='border-2 border-white rounded-none p-6 md:p-8 bg-black shadow-[8px_8px_0_0_#ffffff]'>
+          <div class='[&_*]:fill-white w-full max-w-[320px] md:max-w-[420px] lg:max-w-[520px]'>
+            <FacetTitle />
+          </div>
         </div>
-        <p class='text-sm text-white/60 leading-relaxed max-w-sm'>
-          A bold visual direction that supports the typography, sets the tone,
-          and gives the section a more intentional editorial feel.
-        </p>
+
+        <div class='border-2 border-white rounded-none p-6 md:p-8 bg-black shadow-[8px_8px_0_0_#ffffff]'>
+          <p class='font-mono text-white uppercase tracking-[0.2em] text-xs leading-loose'>
+            Bold systems. Raw hierarchy. Deliberate tension. A visual language
+            built to feel direct, structural, and unapologetically digital.
+          </p>
+        </div>
       </div>
 
       <div class='lg:col-span-7'>
-        <div
-          class='w-full aspect-[16/10] rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-white/10 text-xs tracking-[0.3em] uppercase'
-        >
-          Image Placeholder
+        <div class='h-full min-h-[420px] border-4 border-white rounded-none bg-white text-black shadow-[12px_12px_0_0_#ffffff] px-6 py-8 md:px-10 md:py-10 flex flex-col justify-between'>
+          <div class='flex items-start justify-between gap-4 border-b-2 border-black pb-4'>
+            <span class='font-mono text-[11px] md:text-xs uppercase tracking-[0.3em]'>
+              Brutality Approach
+            </span>
+            <span class='font-mono text-[11px] md:text-xs uppercase tracking-[0.3em]'>
+              Placeholder
+            </span>
+          </div>
+
+          <div class='flex-1 flex items-center justify-center border-2 border-black my-6 px-4 py-8'>
+            <p class='text-center font-black uppercase leading-none tracking-tight text-[2.5rem] md:text-[4rem] lg:text-[5.5rem]'>
+              Image
+            </p>
+          </div>
+
+          <div class='grid grid-cols-2 gap-4 border-t-2 border-black pt-4 font-mono text-[11px] md:text-xs uppercase tracking-[0.3em]'>
+            <span>Hard Grid</span>
+            <span class='text-right'>High Contrast</span>
+          </div>
         </div>
       </div>
     </section>
