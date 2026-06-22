@@ -90,7 +90,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
     border-top-left-radius: var(--page-border-radius);
   }
 
-  #what-i-do-overlay span:nth-child(2):before {
+  #what-i-do-overlay span:nth-child(2:before) {
     border-top-right-radius: var(--page-border-radius);
   }
 
@@ -107,46 +107,42 @@ const SPECIALITIES: SpecialitiesItem[] = [
     class='text-background bg-primary background-expander relative px-[2vw] lg:p-0'
   >
     <AnchorText href={'/projects'}>Projects</AnchorText>
+    
     <section
       id='whats-different'
-      class='py-32 lg:py-48 px-6 md:px-12 max-w-5xl mx-auto'
+      class='py-24 lg:py-48 px-6 md:px-12 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start relative'
     >
-      <div
-        class='flex lg:block mb-24 lg:mb-32 max-w-3xl [&>*]:w-full [&>*]:h-auto [&_*]:fill-white'
-        id='about-title'
-      >
-        <FacetTitle />
-      </div>
-
-      <div class='mb-32 flex gap-6 text-xl md:text-2xl font-light text-white/70 max-w-2xl'>
-        <Flare height={32} width={32} class={'shrink-0 mt-1 opacity-50'} />
-        <p class='leading-relaxed'>
-          I build fast, accessible web apps — think analytics dashboards and
-          workflow tools — using Next.js, React, and type-safe systems that turn
-          complex data into clear decisions.
+      <!-- Left Column -->
+      <div class='lg:col-span-3 sticky top-32'>
+        <div class='[&_*]:fill-white w-full mb-8'>
+          <FacetTitle />
+        </div>
+        <p class='text-sm text-white/60 leading-normal max-w-[200px]'>
+          Modern interfaces built for high-performance workflows and scalable data systems.
         </p>
       </div>
 
-      <div class='flex flex-col gap-24 md:gap-32'>
+      <!-- Middle Column -->
+      <div class='lg:col-span-5 flex flex-col gap-6'>
+        <div class='w-full aspect-[4/5] rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-white/10 text-xs tracking-widest'>IMAGE PLACEHOLDER</div>
+        <div class='w-full aspect-[4/5] rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-white/10 text-xs tracking-widest'>IMAGE PLACEHOLDER</div>
+      </div>
+
+      <!-- Right Column -->
+      <div class='lg:col-span-4 flex flex-col gap-16'>
         {
-          SPECIALITIES.map((item, index) => (
-            <div
-              class='speciality-card flex flex-col gap-4'
-              id={`speciality-${index}`}
-            >
-              <h3 class='text-5xl md:text-7xl font-medium tracking-tighter speciality-title'>
+          SPECIALITIES.map((item) => (
+            <div class='flex flex-col gap-4'>
+              <h3 class='text-2xl lg:text-3xl font-light text-white leading-tight'>
                 {item.header}
               </h3>
-              <p
-                class='text-lg md:text-xl font-light text-white/60 leading-relaxed max-w-2xl speciality-desc'
-                data-index={index}
-              >
+              <p class='text-xs text-white/50 leading-relaxed uppercase tracking-tight'>
                 {item.desc}
               </p>
               {item.meta && (
-                <div class='flex flex-wrap gap-3 mt-4'>
+                <div class='flex flex-wrap gap-2'>
                   {item.meta.split(' — ').map((tag) => (
-                    <span class='text-xs uppercase tracking-widest text-white/30 border border-white/10 px-4 py-1.5 rounded-full'>
+                    <span class='text-[10px] uppercase tracking-widest text-white/30 border border-white/10 px-3 py-1 rounded-full'>
                       {tag}
                     </span>
                   ))}
@@ -158,6 +154,7 @@ const SPECIALITIES: SpecialitiesItem[] = [
       </div>
     </section>
   </div>
+
   <div class='bg-background' id='what-i-do-section'>
     <h2 class='text-h2 py-20'>What i do</h2>
     <div class='what-i-do-container' id='whatIDoContainer'>
@@ -267,120 +264,9 @@ const SPECIALITIES: SpecialitiesItem[] = [
   let specialityTriggers = new Set();
   let whatIDoTriggers = new Set();
 
-  function killSpecialities() {
-    specialityTriggers.forEach((t: any) => t.kill());
-    specialityTriggers.clear();
-    // Reset completion tracking
-    document
-      .querySelectorAll('.speciality-desc, .speciality-title')
-      .forEach((el) => {
-        const element = el as HTMLElement;
-        delete element.dataset.completed;
-      });
-  }
-
   function killWhatIDo() {
     whatIDoTriggers.forEach((t: any) => t.kill());
     whatIDoTriggers.clear();
-  }
-
-  function initSpecialitiesAnimation() {
-    killSpecialities(); // prevent duplicates
-    const descriptions = document.querySelectorAll('.speciality-desc');
-    const titles = document.querySelectorAll('.speciality-title');
-    if (!descriptions.length || !titles.length) {
-      return;
-    }
-
-    let completedAnimations = 0;
-    const totalAnimations = descriptions.length + titles.length;
-
-    // Helper function to check if all animations are complete
-    function checkAllComplete() {
-      completedAnimations++;
-      if (completedAnimations >= totalAnimations) {
-        const refreshEvent = new CustomEvent('refreshScrollTrigger', {
-          detail: {
-            source: 'about-specialities',
-            delay: 200,
-          },
-        });
-        document.dispatchEvent(refreshEvent);
-      }
-    }
-
-    descriptions.forEach((item, index) => {
-      const element = item as HTMLElement;
-      const trigger = gsap.timeline({
-        scrollTrigger: {
-          trigger: item,
-          start: 'top 65%',
-          end: 'bottom 30%',
-          scrub: true,
-          onUpdate: (self: any) => {
-            // When animation reaches end, trigger refresh
-            if (self.progress === 1 && !element.dataset.completed) {
-              element.dataset.completed = 'true';
-              checkAllComplete();
-            }
-          },
-        },
-      });
-
-      specialityTriggers.add(trigger.scrollTrigger);
-
-      // First animate height
-      trigger
-        .fromTo(
-          item,
-          { height: 0 },
-          {
-            height: 'auto',
-            duration: 1,
-            immediateRender: false,
-          },
-        )
-        // Then animate opacity (starts before height finishes)
-        .fromTo(
-          item,
-          { opacity: 0 },
-          {
-            opacity: 1,
-            duration: 0.4,
-            immediateRender: false,
-          },
-          '-=0.5', // Start 0.5 seconds before the height animation ends
-        );
-    });
-
-    titles.forEach((item, index) => {
-      const element = item as HTMLElement;
-      const trigger = gsap.timeline({
-        scrollTrigger: {
-          trigger: item,
-          start: 'top 65%',
-          end: 'bottom 30%',
-        },
-      });
-
-      specialityTriggers.add(trigger.scrollTrigger);
-
-      // Animate margin bottom
-      trigger.fromTo(
-        item,
-        { marginBottom: 0 },
-        {
-          marginBottom: '2rem',
-          onComplete: () => {
-            if (!element.dataset.completed) {
-              element.dataset.completed = 'true';
-              checkAllComplete();
-            }
-          },
-        },
-        '-=0.3', // Start 0.3 seconds before the height animation ends
-      );
-    });
   }
 
   function initWhatIDoAnimation() {
@@ -393,8 +279,6 @@ const SPECIALITIES: SpecialitiesItem[] = [
 
     items.forEach((item, index) => {
       const element = item as HTMLElement;
-      const isLast = index === items.length - 1;
-
       // Set initial z-index for stacking
       element.style.zIndex = `${1 + index}`;
 
@@ -493,13 +377,11 @@ const SPECIALITIES: SpecialitiesItem[] = [
 
   // Astro View Transitions lifecycle
   document.addEventListener('astro:before-swap', () => {
-    killSpecialities();
     killWhatIDo();
   });
 
   document.addEventListener('astro:page-load', () => {
     setTimeout(() => {
-      initSpecialitiesAnimation();
       initWhatIDoAnimation();
       initAboutAnimation();
     }, 1000);
