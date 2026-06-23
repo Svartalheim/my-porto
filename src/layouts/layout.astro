@@ -13,7 +13,7 @@ const { name, title } = Astro.props as Props;
 
 <html lang='en'>
   <head>
-    <ClientRouter fallback={'none'} transition:animate={'none'} />
+    <ClientRouter fallback={'none'} />
 
     <meta charset='utf-8' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
@@ -85,7 +85,7 @@ const { name, title } = Astro.props as Props;
         --blr-s: 0.032; /* fallback, will be calculated via JS */
         position: relative;
         z-index: 1;
-        will-change: transform;
+        will-change: auto;
         transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
         transition-duration: var(--MENU_DURATION);
         transition-property: transform, opacity;
@@ -311,7 +311,7 @@ const { name, title } = Astro.props as Props;
     <div
       id='ghost-layer'
       transition:persist
-      style='position:fixed; inset:0; pointer-events:none; '
+      style='position:fixed; inset:0; pointer-events:none;z-index:-1; '
     >
     </div>
     <div
@@ -353,7 +353,7 @@ const { name, title } = Astro.props as Props;
       const DURATION = isMobile ? 0.35 : 0.5,
         EASE = 'power3.out';
       const prefersReduced = matchMedia(
-        '(prefers-reduced-motion: reduce)'
+        '(prefers-reduced-motion: reduce)',
       ).matches;
       const ghostLayer = document.getElementById('ghost-layer');
 
@@ -430,14 +430,14 @@ const { name, title } = Astro.props as Props;
       }
 
       // Hook the Astro lifecycle
-      document.addEventListener('astro:before-preparation', () => {
-        const current = document.getElementById('page');
-        stageOldPageLeave(current);
-      });
+      // document.addEventListener('astro:before-preparation', () => {
+      //   const current = document.getElementById('page');
+      //   stageOldPageLeave(current);
+      // });
 
-      document.addEventListener('astro:after-swap', () => {
-        animateNewPageEnter();
-      });
+      // document.addEventListener('astro:after-swap', () => {
+      //   animateNewPageEnter();
+      // });
     </script>
   </body>
 </html>
@@ -446,7 +446,7 @@ const { name, title } = Astro.props as Props;
   const sbw = () => window.innerWidth - document.documentElement.clientWidth;
   document.documentElement.style.setProperty('--sbw', sbw() + 'px');
   addEventListener('resize', () =>
-    document.documentElement.style.setProperty('--sbw', sbw() + 'px')
+    document.documentElement.style.setProperty('--sbw', sbw() + 'px'),
   );
 </script>
 
@@ -501,7 +501,7 @@ const { name, title } = Astro.props as Props;
     const scrollable = Math.max(pageHeight - viewportH, 0);
     const scrollInPage = Math.min(
       scrollable,
-      Math.max(0, window.scrollY - pageTopAbs)
+      Math.max(0, window.scrollY - pageTopAbs),
     );
     const p = scrollable > 0 ? scrollInPage / scrollable : 0.5;
     const yPct = lerp(edgePadPct, 100 - edgePadPct, p);
@@ -524,11 +524,11 @@ const { name, title } = Astro.props as Props;
       ((yWithin + window.scrollY - (rect.top + window.scrollY)) / h) * 100;
     page.style.setProperty(
       '--origin-x',
-      `${Math.min(100, Math.max(0, xPct))}%`
+      `${Math.min(100, Math.max(0, xPct))}%`,
     );
     page.style.setProperty(
       '--origin-y',
-      `${Math.min(100, Math.max(0, yPct))}%`
+      `${Math.min(100, Math.max(0, yPct))}%`,
     );
   }
 
@@ -538,12 +538,12 @@ const { name, title } = Astro.props as Props;
     if (typeof xPct === 'number')
       page.style.setProperty(
         '--origin-x',
-        `${Math.min(100, Math.max(0, xPct))}%`
+        `${Math.min(100, Math.max(0, xPct))}%`,
       );
     if (typeof yPct === 'number')
       page.style.setProperty(
         '--origin-y',
-        `${Math.min(100, Math.max(0, yPct))}%`
+        `${Math.min(100, Math.max(0, yPct))}%`,
       );
   };
 
@@ -572,7 +572,7 @@ const { name, title } = Astro.props as Props;
         setOriginFromEvent(e);
       }
     },
-    { capture: true }
+    { capture: true },
   );
 
   function initOrigin(): void {
@@ -602,7 +602,7 @@ const { name, title } = Astro.props as Props;
     const gridMarginCalculated = 4.412 + vw100 * 0.0092;
     const gridMargin = Math.max(
       gridMarginMin,
-      Math.min(gridMarginMax, gridMarginCalculated)
+      Math.min(gridMarginMax, gridMarginCalculated),
     );
 
     // For small screens, use 10px as per the media query
@@ -666,7 +666,7 @@ const { name, title } = Astro.props as Props;
           invalidateOnRefresh: true,
           // markers: true,
         },
-      }
+      },
     );
 
     // Refresh ScrollTrigger after setup
@@ -718,7 +718,7 @@ const { name, title } = Astro.props as Props;
   document.addEventListener('refreshScrollTrigger', (e: any) => {
     console.log(
       'Received refresh request from:',
-      e.detail?.source || 'unknown'
+      e.detail?.source || 'unknown',
     );
     debounceRefresh(e.detail?.delay || 100);
   });

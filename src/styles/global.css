@@ -99,12 +99,14 @@
   --font-weight-bold: 700;
 }
 :root {
+  view-transition-name: root; 
   --radius: 0.625rem;
   --transition-duration: 0.4s;
   --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
   --transition-delay: 0s;
   --bar-safe: calc(var(--navbar-height) + var(--navbar-bottom) + 12px);
-
+  --ease-page-in: cubic-bezier(0.5, 0.5, 0, 1);
+  --ease-page-out: cubic-bezier(0.5, 0.55, 0, 1);
   /* Dynamic viewport width minus scrollbar width (0 if no overflow) */
   --scrollbar-width: 0px;
   --100vw: calc(100vw - var(--scrollbar-width));
@@ -256,6 +258,58 @@ body::-webkit-scrollbar {
   pre,
   .font-mono {
     @apply font-mono;
+  }
+}
+::view-transition-old(root) {
+    animation: vt-old 1.4s var(--ease-page-out) .05s both
+}
+
+::view-transition-new(root) {
+    animation: vt-new 1.4s var(--ease-page-in) both
+}
+
+@keyframes vt-old {
+    0% {
+        transform: translateY(0);
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+        overflow: hidden
+    }
+
+    to {
+        transform: translateY(-50vh);
+        clip-path: inset(50% 0 50% 0);
+        opacity: .25;
+        overflow: hidden
+    }
+}
+
+@keyframes vt-new {
+    0% {
+        transform: translateY(50vh);
+        clip-path: inset(50% 0 50% 0);
+        overflow: hidden
+    }
+
+    to {
+        clip-path: inset(0 0 0 0);
+        transform: translateY(0);
+        overflow: auto
+    }
+}
+
+@media (max-width: 767px) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* Reduced motion — already have this, keep it */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
   }
 }
 
