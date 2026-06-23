@@ -37,7 +37,7 @@ const NAV_ITEMS: NavItem[] = [
 >
   <div
     id='collapsed-bar'
-    class='bg-black cursor-pointer z-[1] relative text-white rounded-[20px] flex flex-col'
+    class='bg-black c‍ursor-pointer z-[1] relative text-white rounded-[20px] flex flex-col'
     style='--collapsed-bg-alpha: 1;'
   >
     <div
@@ -106,13 +106,13 @@ const NAV_ITEMS: NavItem[] = [
           id='plus-icon'
           class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
         >
-          <Plus size={24} className='cursor-pointer' />
+          <Plus size={24} className='c‍ursor-pointer' />
         </div>
         <div
           id='minus-icon'
           class='absolute -translate-x-1/2 -left-2 top-1/2 -translate-y-1/2'
         >
-          <Minus size={24} className='cursor-pointer' />
+          <Minus size={24} className='c‍ursor-pointer' />
         </div>
         <span class='span-menu'>Open / Close Menu</span>
       </button>
@@ -196,17 +196,17 @@ const NAV_ITEMS: NavItem[] = [
       </ul>
       <ul class='p-5 relative socials w-fit p-tiny mt-auto'>
         <li>
-          <a target='_blank' href='https://www.linkedin.com/in/jamilss1437/'
+          <a target='_blank' rel='noopener noreferrer' href='https://www.linkedin.com/in/jamilss1437/'
             >Linkedin</a
           >
         </li>
         <li>
-          <a target='_blank' href='https://discord.com/users/572704110999240704'
+          <a target='_blank' rel='noopener noreferrer' href='https://discord.com/users/572704110999240704'
             >Discord</a
           >
         </li>
         <li>
-          <a target='_blank' href='https://github.com/Svartalheim'>Github</a>
+          <a target='_blank' rel='noopener noreferrer' href='https://github.com/Svartalheim'>Github</a>
         </li>
       </ul>
     </div>
@@ -219,10 +219,12 @@ const NAV_ITEMS: NavItem[] = [
   }
   .socials {
     pointer-events: all;
+    position: relative;
+    z-index: 10;
   }
   .socials a {
     position: relative;
-    z-index: 3;
+    z-index: 11;
   }
   .socials a:hover {
     filter: brightness(0.5);
@@ -258,7 +260,7 @@ const NAV_ITEMS: NavItem[] = [
     filter: brightness(0.5);
     pointer-events: none;
     opacity: 0.6;
-    cursor: not-allowed;
+    c‍ursor: not-allowed;
   }
   .page-navigator a.-comingsoon span {
     position: relative;
@@ -295,7 +297,7 @@ const NAV_ITEMS: NavItem[] = [
     /* padding: var(--y-padding) var(--x-padding); */
     padding-right: 8px;
     transition: filter 0.2s ease;
-    /* cursor: none; */
+    /* c‍ursor: none; */
     position: relative;
   }
   .menu-pages figure img {
@@ -342,13 +344,13 @@ const NAV_ITEMS: NavItem[] = [
     top: -16px;
     overflow: hidden;
     opacity: 0;
-    cursor: pointer;
+    c‍ursor: pointer;
   }
-  /* When menu is open, don't let the big invisible button overlay intercept clicks */
-  /* #bottom-bar[data-open='true'] #menu-toggle-button,
-  #bottom-bar[data-open='true'] #menu-toggle-button .span-menu {
+
+  /* When menu is open, disable the invisible span-menu overlay so socials are clickable */
+  #bottom-bar[data-open='true'] .span-menu {
     pointer-events: none;
-  } */
+  }
 
   .blurred-background {
     position: absolute;
@@ -556,6 +558,10 @@ const NAV_ITEMS: NavItem[] = [
       if (collapsedBar && expandedContent && !isExpanded) {
         isExpanded = true;
         window.__bottomBarExpanded = true;
+
+        // Set data-open attribute for CSS rules (e.g. disabling span-menu overlay)
+        bottomBar?.setAttribute('data-open', 'true');
+
         const pageEl = document.getElementById('page');
         window.__lenis?.stop?.();
         if (pageEl) {
@@ -675,6 +681,10 @@ const NAV_ITEMS: NavItem[] = [
 
         isExpanded = false;
         window.__bottomBarExpanded = false;
+
+        // Remove data-open attribute
+        bottomBar?.removeAttribute('data-open');
+
         const pageEl = document.getElementById('page');
         if (pageEl) {
           if (keepBlurForNavigation) {
@@ -854,6 +864,14 @@ const NAV_ITEMS: NavItem[] = [
             keepBlurForNavigation = false;
           }, MENU_DURATION * 100);
         }
+      });
+    });
+
+    // Stop propagation on social links so clicks don't bubble up to close the menu
+    const socialLinks = document.querySelectorAll('#bottom-bar .socials a');
+    socialLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.stopPropagation();
       });
     });
 
