@@ -47,11 +47,14 @@
   class='relative w-full max-w-[var(--100vw)] bg-[#050505] text-white border-t-[8px] border-white/90 flex flex-col'
 >
   <!-- TOP ROW: Email Block -->
-  <div class='border-b-[4px] border-white/90 p-6 md:p-12 lg:p-16 transition-colors duration-300 hover:bg-white hover:text-black group flex flex-col justify-center'>
-    <div class='font-mono text-xs md:text-sm uppercase tracking-[0.2em] font-bold mb-8 md:mb-12 opacity-70 group-hover:opacity-100 transition-opacity'>
+  <div
+    id='emailContainer'
+    class='border-b-[4px] border-white/90 p-6 md:p-12 lg:p-16 flex flex-col justify-center bg-[#050505] cursor-pointer'
+  >
+    <div class='font-mono text-xs md:text-sm uppercase tracking-[0.2em] font-bold mb-8 md:mb-12 opacity-70 email-heading'>
       [ SEND YOUR BRIEF HERE ]
     </div>
-    <a href='mailto:gboomers313@gmail.com' class='text-[10vw] md:text-[8vw] leading-[0.85] font-black tracking-tighter uppercase break-all w-full block'>
+    <a href='mailto:gboomers313@gmail.com' class='text-[10vw] md:text-[8vw] leading-[0.85] font-black tracking-tighter uppercase break-all w-full block email-link'>
       <!--email_off-->gboomers313@gmail.com<!--/email_off-->
     </a>
   </div>
@@ -209,6 +212,54 @@
     return currentAnimation;
   }
 
+  function initEmailHoverAnimation() {
+    const container = document.getElementById('emailContainer');
+    if (!container) return;
+
+    const heading = container.querySelector('.email-heading');
+    const link = container.querySelector('.email-link');
+
+    // Reset properties to default styling state
+    gsap.set(container, { backgroundColor: '#050505', color: '#ffffff' });
+    if (heading) gsap.set(heading, { opacity: 0.7 });
+
+    container.addEventListener('mouseenter', () => {
+      gsap.to(container, {
+        backgroundColor: '#ffffff',
+        color: '#050505',
+        duration: 0.45,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
+      if (heading) {
+        gsap.to(heading, {
+          opacity: 1,
+          duration: 0.45,
+          ease: 'power3.out',
+          overwrite: 'auto'
+        });
+      }
+    });
+
+    container.addEventListener('mouseleave', () => {
+      gsap.to(container, {
+        backgroundColor: '#050505',
+        color: '#ffffff',
+        duration: 0.45,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
+      if (heading) {
+        gsap.to(heading, {
+          opacity: 0.7,
+          duration: 0.45,
+          ease: 'power3.out',
+          overwrite: 'auto'
+        });
+      }
+    });
+  }
+
   function handleResize() {
     // Clear existing timeout
     if (resizeTimeout) {
@@ -222,7 +273,10 @@
   }
 
   // Initialize on page load
-  document.addEventListener('DOMContentLoaded', initLogoMarquee);
+  document.addEventListener('DOMContentLoaded', () => {
+    initLogoMarquee();
+    initEmailHoverAnimation();
+  });
 
   // Handle viewport changes
   window.addEventListener('resize', handleResize);
@@ -230,7 +284,10 @@
   // Reinitialize on Astro page transitions
   document.addEventListener('astro:after-swap', () => {
     // Small delay to ensure DOM is ready
-    setTimeout(initLogoMarquee, 1000);
+    setTimeout(() => {
+      initLogoMarquee();
+      initEmailHoverAnimation();
+    }, 1000);
   });
 
   // Cleanup on page unload
